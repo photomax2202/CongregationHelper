@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{876F9222-CAB8-4EA6-970E-5A10BF07BD8C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="CongregationHelper.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="CongregationHelper">
+        <MSBuild Projects="CongregationHelper.dproj"/>
+    </Target>
+    <Target Name="CongregationHelper:Clean">
+        <MSBuild Projects="CongregationHelper.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CongregationHelper:Make">
+        <MSBuild Projects="CongregationHelper.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="CongregationHelper"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="CongregationHelper:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="CongregationHelper:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
