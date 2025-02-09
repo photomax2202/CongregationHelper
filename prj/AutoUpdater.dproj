@@ -1,15 +1,15 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{AC56A5DE-0D59-439E-8880-F7EEB0DD994D}</ProjectGuid>
+        <ProjectGuid>{4B68AB08-1448-44F0-BD01-C7DD5295D021}</ProjectGuid>
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
-        <ProjectName Condition="'$(ProjectName)'==''">CongregationHelper</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">AutoUpdater</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
-        <MainSource>CongregationHelper.dpr</MainSource>
+        <MainSource>AutoUpdater.dpr</MainSource>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -70,7 +70,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
-        <SanitizedProjectName>CongregationHelper</SanitizedProjectName>
+        <SanitizedProjectName>AutoUpdater</SanitizedProjectName>
         <VerInfo_Locale>1031</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
@@ -108,9 +108,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <DCC_ExeOutput>..\$(Platform)\$(Config)</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <Debugger_RunParams>CongregationHelper CongregationHelper.exe v0.0.1_alpha</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -128,27 +128,10 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\src\uCongregationHelper.pas">
-            <Form>Form1</Form>
+        <DCCReference Include="..\src\uAutoUpdater.pas">
+            <Form>FormAutoUpdater</Form>
         </DCCReference>
-        <DCCReference Include="..\src\Settings\uConfig.pas"/>
-        <DCCReference Include="..\src\Settings\uConfigCamera.pas">
-            <Form>FormConfigCamera</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\src\uValidation.pas"/>
-        <DCCReference Include="..\src\Settings\uConfigMonitor.pas">
-            <Form>FormConfigMonitor</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\src\uPageMaster.pas">
-            <Form>FormPageMaster</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\src\FunctionPage\uPageFunctionSample.pas">
-            <Form>FormPageFunctionSample</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
+        <DCCReference Include="..\src\uGitHub.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -167,7 +150,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">CongregationHelper.dpr</Source>
+                    <Source Name="MainSource">AutoUpdater.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Beispiele für gekapselte Komponenten für Automatisierungsserver</Excluded_Packages>
@@ -175,21 +158,21 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">
-                <DeployFile LocalName="..\Win64\Debug\CongregationHelper.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\Win64\Debug\AutoUpdater.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>CongregationHelper.exe</RemoteName>
+                        <RemoteName>AutoUpdater.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\Win64\Debug\CongregationHelper.rsm" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile LocalName="..\Win64\Debug\AutoUpdater.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="Win64">
-                        <RemoteName>CongregationHelper.rsm</RemoteName>
+                        <RemoteName>AutoUpdater.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\CongregationHelper.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\AutoUpdater.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>CongregationHelper.exe</RemoteName>
+                        <RemoteName>AutoUpdater.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

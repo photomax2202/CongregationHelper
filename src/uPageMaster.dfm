@@ -1,7 +1,7 @@
-object Form1: TForm1
+object FormPageMaster: TFormPageMaster
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'FormPageMaster'
   ClientHeight = 441
   ClientWidth = 624
   Color = clBtnFace
