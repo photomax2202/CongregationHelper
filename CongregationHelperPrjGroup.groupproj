@@ -3,7 +3,10 @@
         <ProjectGuid>{876F9222-CAB8-4EA6-970E-5A10BF07BD8C}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="CongregationHelper.dproj">
+        <Projects Include="prj\CongregationHelper.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="prj\AutoUpdater.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -15,22 +18,31 @@
         </BorlandProject>
     </ProjectExtensions>
     <Target Name="CongregationHelper">
-        <MSBuild Projects="CongregationHelper.dproj"/>
+        <MSBuild Projects="prj\CongregationHelper.dproj"/>
     </Target>
     <Target Name="CongregationHelper:Clean">
-        <MSBuild Projects="CongregationHelper.dproj" Targets="Clean"/>
+        <MSBuild Projects="prj\CongregationHelper.dproj" Targets="Clean"/>
     </Target>
     <Target Name="CongregationHelper:Make">
-        <MSBuild Projects="CongregationHelper.dproj" Targets="Make"/>
+        <MSBuild Projects="prj\CongregationHelper.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AutoUpdater">
+        <MSBuild Projects="prj\AutoUpdater.dproj"/>
+    </Target>
+    <Target Name="AutoUpdater:Clean">
+        <MSBuild Projects="prj\AutoUpdater.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AutoUpdater:Make">
+        <MSBuild Projects="prj\AutoUpdater.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="CongregationHelper"/>
+        <CallTarget Targets="CongregationHelper;AutoUpdater"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="CongregationHelper:Clean"/>
+        <CallTarget Targets="CongregationHelper:Clean;AutoUpdater:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="CongregationHelper:Make"/>
+        <CallTarget Targets="CongregationHelper:Make;AutoUpdater:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

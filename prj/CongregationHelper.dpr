@@ -2,13 +2,19 @@ program CongregationHelper;
 
 uses
   Vcl.Forms,
-  CongregationHelperMain in '..\src\CongregationHelperMain.pas' {Form1};
+  uCongregationHelper in '..\src\uCongregationHelper.pas' {Form1},
+  uConfig in '..\src\Settings\uConfig.pas',
+  uConfigCamera in '..\src\Settings\uConfigCamera.pas' {FormConfigCamera},
+  uValidation in '..\src\uValidation.pas',
+  uConfigMonitor in '..\src\Settings\uConfigMonitor.pas' {FormConfigMonitor};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormCongregationHelper, FormCongregationHelper);
+  Application.CreateForm(TFormConfigCamera, FormConfigCamera);
+  Application.CreateForm(TFormConfigMonitor, FormConfigMonitor);
   Application.Run;
 end.
