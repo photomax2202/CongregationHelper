@@ -16,16 +16,24 @@ uses
 
 type
   TFormPageMaster = class(TForm)
+    procedure FormCreate(Sender: TObject);
   private
+    FPageName: String;
     function GetMaxWidth: Integer;
     function GetMaxHeight: Integer;
+    function GetPageName: String;
     { Private-Deklarationen }
+  protected
+    procedure InitPage; virtual; abstract;
   public
     { Public-Deklarationen }
     property MaxWidth: Integer
       read   GetMaxWidth;
     property MaxHeight: Integer
       read   GetMaxHeight;
+    property PageName: String
+      read   GetPageName
+      write  FPageName;
 
   end;
 
@@ -33,6 +41,11 @@ implementation
 
 {$R *.dfm}
 { TFormPageMaster }
+
+procedure TFormPageMaster.FormCreate(Sender: TObject);
+begin
+  InitPage;
+end;
 
 function TFormPageMaster.GetMaxHeight: Integer;
 var
@@ -62,6 +75,14 @@ begin
       Result := LWidth;
   end;
   Result := Result + 16;
+end;
+
+function TFormPageMaster.GetPageName: String;
+begin
+  if Length(FPageName) > 0 then
+    Result := FPageName
+  else
+    Result := Caption;
 end;
 
 end.

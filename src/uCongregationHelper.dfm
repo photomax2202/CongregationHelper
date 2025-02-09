@@ -26,8 +26,6 @@ object FormCongregationHelper: TFormCongregationHelper
     Height = 200
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 728
-    ExplicitHeight = 402
   end
   object mpMainMenu: TMainMenu
     Left = 32
