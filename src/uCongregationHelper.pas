@@ -71,11 +71,14 @@ var
   i: Integer;
   LHight, LWidth: Integer;
 begin
+{$IFDEF DEBUG}
   AddFunctionPage(FormPageFunctionSample);
+{$ENDIF}
 
-  for i := 0 to pgcMain.PageCount do
+  for i := 0 to pgcMain.PageCount - 1 do
   begin
-//     pgcMain.ActivePage.
+  {TODO -oMax -cPageControl : Berechnung der Fenstergröße}
+     LHight := pgcMain.Pages[i].Width;
   end;
 end;
 
