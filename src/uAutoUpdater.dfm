@@ -81,19 +81,15 @@ object FormAutoUpdater: TFormAutoUpdater
   object edtAppRunning: TEdit
     Left = 296
     Top = 8
-    Width = 161
+    Width = 217
     Height = 23
     Enabled = False
     TabOrder = 5
     Text = 'edtAppRunning'
   end
-  object btnRefresh: TButton
-    Left = 463
-    Top = 6
-    Width = 50
-    Height = 25
-    Caption = 'Refresh'
-    TabOrder = 6
-    OnClick = btnRefreshClick
+  object TimerRefresh: TTimer
+    OnTimer = TimerRefreshTimer
+    Left = 8
+    Top = 96
   end
 end

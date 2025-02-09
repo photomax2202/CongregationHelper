@@ -15,7 +15,7 @@ type
     idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosSpeakerReader, idCamPosReaderTable, idCamPosTotal,
     idCamPosPark);
 
-  TIdentsMonitor = (idMonNum);
+  TIdentsMonitor = (idMonNumMedia, idMonNumPresentation);
 
   TIdentsApplication = (apName, apCaption);
 
@@ -101,8 +101,12 @@ type
       read   GetStringCamera
       write  SetStringCamera;
 
-    property MonitorNum: String
-      index  idMonNum
+    property MonitorNumMedia: String
+      index  idMonNumMedia
+      read   GetStringMonitor
+      write  SetStringMonitor;
+          property MonitorNumPresentation: String
+      index  idMonNumPresentation
       read   GetStringMonitor
       write  SetStringMonitor;
 
@@ -118,7 +122,7 @@ const
   cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'Speaker', 'SpeakerS', 'SpeakerL',
     'SpeakerXL', 'Reader', 'Table', 'SpeakerReader', 'ReaderTable', 'Total', 'Park');
 
-  cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNum');
+  cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia','MonitorNumPresentation');
 
   cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption');
 

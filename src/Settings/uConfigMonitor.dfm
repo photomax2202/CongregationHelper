@@ -13,12 +13,19 @@ object FormConfigMonitor: TFormConfigMonitor
   Font.Style = []
   OnCreate = FormCreate
   TextHeight = 15
-  object lblMonitorSelection: TLabel
+  object lblMonitorMedia: TLabel
     Left = 8
     Top = 16
-    Width = 89
+    Width = 86
     Height = 15
-    Caption = 'Monitorauswahl:'
+    Caption = 'Medienmonitor:'
+  end
+  object lblMonitorPresentation: TLabel
+    Left = 8
+    Top = 45
+    Width = 117
+    Height = 15
+    Caption = 'Pr'#228'sentationsmonitor:'
   end
   object sgApplications: TStringGrid
     Left = 152
@@ -54,13 +61,31 @@ object FormConfigMonitor: TFormConfigMonitor
     ModalResult = 2
     TabOrder = 2
   end
-  object cbxMonitorList: TComboBox
-    Left = 103
+  object cbxMonitorMedia: TComboBox
+    Left = 143
     Top = 13
     Width = 90
     Height = 23
     Style = csDropDownList
     TabOrder = 3
     OnChange = cbxMonitorListChange
+  end
+  object cbxMonitorPresentation: TComboBox
+    Left = 143
+    Top = 42
+    Width = 90
+    Height = 23
+    Style = csDropDownList
+    TabOrder = 4
+    OnChange = cbxMonitorListChange
+  end
+  object Button1: TButton
+    Left = 456
+    Top = 176
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 5
+    OnClick = Button1Click
   end
 end
