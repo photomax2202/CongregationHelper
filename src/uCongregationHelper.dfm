@@ -2,7 +2,7 @@ object FormCongregationHelper: TFormCongregationHelper
   Left = 0
   Top = 0
   Caption = 'Congregation Helper'
-  ClientHeight = 200
+  ClientHeight = 195
   ClientWidth = 500
   Color = clBtnFace
   Constraints.MaxHeight = 259
@@ -23,21 +23,31 @@ object FormCongregationHelper: TFormCongregationHelper
     Left = 0
     Top = 0
     Width = 500
-    Height = 200
+    Height = 195
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 498
+    ExplicitHeight = 187
   end
   object mpMainMenu: TMainMenu
     Left = 32
     Top = 24
     object mpProgramm: TMenuItem
       Caption = 'Program'
+      object mpHelp: TMenuItem
+        Caption = 'Hilfe'
+        ShortCut = 112
+        OnClick = mpProgramClick
+      end
       object mpInfo: TMenuItem
         Caption = 'Info'
+        ShortCut = 36937
+        OnClick = mpProgramClick
       end
-      object mpBeenden: TMenuItem
+      object mpExit: TMenuItem
         Caption = 'Beenden'
-        OnClick = mpBeendenClick
+        ShortCut = 16499
+        OnClick = mpProgramClick
       end
     end
     object mpSettings: TMenuItem
@@ -48,11 +58,11 @@ object FormCongregationHelper: TFormCongregationHelper
       end
       object mpSettingsCamera: TMenuItem
         Caption = 'Kameraeinstellungen'
-        OnClick = mpSettingsCameraClick
+        OnClick = mpSettingsClick
       end
-      object mpMonitorSettings: TMenuItem
+      object mpSettingsMonitor: TMenuItem
         Caption = 'Monitoreinstellungen'
-        OnClick = mpMonitorSettingsClick
+        OnClick = mpSettingsClick
       end
     end
   end

@@ -14,7 +14,9 @@ uses
   Vcl.Dialogs,
   Vcl.Menus,
   uConfig,
-  Vcl.ComCtrls;
+  Vcl.ComCtrls,
+  uPageMaster,
+  uGitHub;
 
 type
   TFormCongregationHelper = class(TForm)
@@ -23,30 +25,48 @@ type
     mpAlwaysOnTop: TMenuItem;
     mpSettingsCamera: TMenuItem;
     mpProgramm: TMenuItem;
-    mpBeenden: TMenuItem;
+    mpExit: TMenuItem;
     mpInfo: TMenuItem;
-    mpMonitorSettings: TMenuItem;
+    mpSettingsMonitor: TMenuItem;
     pgcMain: TPageControl;
+    mpHelp: TMenuItem;
     procedure mpAlwaysOnTopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure mpSettingsCameraClick(Sender: TObject);
-    procedure mpBeendenClick(Sender: TObject);
-    procedure mpMonitorSettingsClick(Sender: TObject);
+    procedure mpSettingsClick(Sender: TObject);
+    procedure mpProgramClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FConfig: TConfig;
+    FConfig      : TConfig;
+    FUpdateApp   : String;
+    FFilePath    : String;
+    FUpdateAppUrl: String;
     { Private-Deklarationen }
     procedure AddFunctionPages;
+    function GetFunctionPages(i: Integer): TFormPageMaster;
+    function GetFunctionPage: TFormPageMaster;
+    procedure GetUpdateApp;
   public
     { Public-Deklarationen }
     property Config: TConfig
       read   FConfig
       write  FConfig;
+    property UpdateApp: String
+      read   FUpdateApp;
+    property UpdateAppUrl: String
+      read   FUpdateAppUrl;
+    property FilePath: String
+      read   FFilePath;
+    property FunctionPages[i: Integer]: TFormPageMaster
+      read   GetFunctionPages;
+    property FunctionPage: TFormPageMaster
+      read   GetFunctionPage;
   end;
 
 const
   cVersion = 'v0.0.1_alpha';
+  cRepoName= 'CongregationHelper';
+  cUpdateAppName = 'AutoUpdater.exe';
 
 var
   FormCongregationHelper: TFormCongregationHelper;
@@ -62,31 +82,55 @@ uses
 {$R *.dfm}
 
 procedure TFormCongregationHelper.AddFunctionPages;
+
   procedure AddFunctionPage(AForm: TForm);
   begin
     AForm.ManualDock(pgcMain);
+    AForm.Show;
   end;
 
 var
-  i: Integer;
+  i             : Integer;
   LHight, LWidth: Integer;
 begin
 {$IFDEF DEBUG}
   AddFunctionPage(FormPageFunctionSample);
 {$ENDIF}
-
-  for i := 0 to pgcMain.PageCount - 1 do
+  LWidth := 0;
+  LHight := 0;
+  for i  := 0 to pgcMain.PageCount - 1 do
   begin
-  {TODO -oMax -cPageControl : Berechnung der Fenstergröße}
-     LHight := pgcMain.Pages[i].Width;
+    if FunctionPages[i].MaxWidth > LWidth then
+      LWidth := FunctionPages[i].MaxWidth;
+    if FunctionPages[i].MaxHeight > LHight then
+      LHight := FunctionPages[i].MaxHeight;
   end;
+  Constraints.MinWidth  := 0;
+  Constraints.MaxWidth  := 0;
+  Constraints.MinHeight := 0;
+  Constraints.MaxHeight := 0;
+  Width                 := Width - pgcMain.Width + LWidth;
+//   Constraints.MinWidth  := Width;
+//   Constraints.MaxWidth  := Width;
+  Height := Height - pgcMain.Height + LHight;
+//   Constraints.MinHeight := Height;
+//   Constraints.MaxHeight := Height;
 end;
 
 procedure TFormCongregationHelper.FormCreate(Sender: TObject);
+var
+  LReleasesText: string;
+  LRespose     : string;
 begin
 
 {$IFNDEF DEBUG}
-  // Update aufruf implementieren
+  FFilePath  := ParamStr(0);
+  FUpdateApp := StringReplace(FFilePath, ExtractFileName(ParamStr(0)), cUpdateAppName, [rfReplaceAll]);
+  if not FileExists(FUpdateApp) then
+  begin
+    GetUpdateApp;
+  end;
+  StartNewProcess(UpdateApp,Format('%s %s %s %s',[UpdateApp, cRepoName,  ExtractFileName(FFilePath), cVersion]),True);
 {$ENDIF}
   Config                := TConfig.Create;
   Application.Name      := StringReplace(Caption, ' ', '', [rfReplaceAll]);
@@ -103,6 +147,31 @@ begin
   AddFunctionPages;
 end;
 
+function TFormCongregationHelper.GetFunctionPage: TFormPageMaster;
+begin
+  Result := TFormPageMaster(pgcMain.ActivePage);
+end;
+
+function TFormCongregationHelper.GetFunctionPages(i: Integer): TFormPageMaster;
+begin
+  Result := TFormPageMaster(pgcMain.Pages[i]);
+end;
+
+procedure TFormCongregationHelper.GetUpdateApp;
+var
+  LResponse     : String;
+  LReleaseResult: Boolean;
+begin
+  if not GetGithubReleases('photomax2202', 'CongregationHelper', LResponse) then
+    Exit;
+  GetLastRelease(LResponse, ExtractFileName(UpdateApp), FUpdateAppUrl, LReleaseResult);
+  if LReleaseResult then
+  begin
+    if not DownloadRelease(UpdateAppUrl) then
+      Exit;
+  end;
+end;
+
 procedure TFormCongregationHelper.mpAlwaysOnTopClick(Sender: TObject);
 begin
   mpAlwaysOnTop.Checked := not mpAlwaysOnTop.Checked;
@@ -113,19 +182,33 @@ begin
     FormStyle := fsNormal;
 end;
 
-procedure TFormCongregationHelper.mpBeendenClick(Sender: TObject);
+procedure TFormCongregationHelper.mpProgramClick(Sender: TObject);
 begin
-  Application.Terminate;
+if (Sender as TMenuItem).Name = mpHelp.Name then
+begin
+  OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper/wiki');
+end
+else if (Sender as TMenuItem).Name = mpInfo.Name then
+begin
+  OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper');
+end
+else if (Sender as TMenuItem).Name = mpExit.Name then
+begin
+   Application.Terminate;
+end;
 end;
 
-procedure TFormCongregationHelper.mpMonitorSettingsClick(Sender: TObject);
+procedure TFormCongregationHelper.mpSettingsClick(Sender: TObject);
 begin
-  FormConfigMonitor.ShowModal;
-end;
+  if (Sender as TMenuItem).Name = mpSettingsCamera.Name then
+  begin
+    FormConfigCamera.ShowModal
+  end
+  else if (Sender as TMenuItem).Name = mpSettingsMonitor.Name then
+  begin
+    FormConfigMonitor.ShowModal;
+  end;
 
-procedure TFormCongregationHelper.mpSettingsCameraClick(Sender: TObject);
-begin
-  FormConfigCamera.ShowModal;
 end;
 
 end.

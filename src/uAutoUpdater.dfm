@@ -3,10 +3,10 @@ object FormAutoUpdater: TFormAutoUpdater
   Top = 0
   Caption = 'Auto Updater'
   ClientHeight = 130
-  ClientWidth = 525
+  ClientWidth = 535
   Color = clBtnFace
   Constraints.MaxHeight = 169
-  Constraints.MaxWidth = 541
+  Constraints.MaxWidth = 551
   Constraints.MinHeight = 169
   Constraints.MinWidth = 541
   Font.Charset = DEFAULT_CHARSET
@@ -59,7 +59,7 @@ object FormAutoUpdater: TFormAutoUpdater
   object lbledtUrl: TLabeledEdit
     Left = 80
     Top = 95
-    Width = 433
+    Width = 447
     Height = 23
     EditLabel.Width = 21
     EditLabel.Height = 23
@@ -72,7 +72,7 @@ object FormAutoUpdater: TFormAutoUpdater
   object btnUpdate: TButton
     Left = 296
     Top = 37
-    Width = 217
+    Width = 113
     Height = 52
     Caption = 'App beenden und neustes Release herunterladen.'
     TabOrder = 4
@@ -81,11 +81,21 @@ object FormAutoUpdater: TFormAutoUpdater
   object edtAppRunning: TEdit
     Left = 296
     Top = 8
-    Width = 217
+    Width = 231
     Height = 23
     Enabled = False
     TabOrder = 5
     Text = 'edtAppRunning'
+  end
+  object btnAbortUpdate: TButton
+    Left = 415
+    Top = 37
+    Width = 113
+    Height = 52
+    Caption = 'Updater beenden und Update sp'#228'ter durchf'#252'hren.'
+    TabOrder = 6
+    WordWrap = True
+    OnClick = btnAbortUpdateClick
   end
   object TimerRefresh: TTimer
     OnTimer = TimerRefreshTimer

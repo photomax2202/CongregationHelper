@@ -2,8 +2,8 @@ object FormPageMaster: TFormPageMaster
   Left = 0
   Top = 0
   Caption = 'FormPageMaster'
-  ClientHeight = 441
-  ClientWidth = 624
+  ClientHeight = 342
+  ClientWidth = 740
   Color = clBtnFace
   DragKind = dkDock
   Font.Charset = DEFAULT_CHARSET

@@ -1,65 +1,52 @@
-object FormConfigMonitor: TFormConfigMonitor
-  Left = 0
-  Top = 0
+inherited FormConfigMonitor: TFormConfigMonitor
   BorderIcons = []
   Caption = 'Monitorkonfiguration'
-  ClientHeight = 441
-  ClientWidth = 624
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Segoe UI'
-  Font.Style = []
-  OnCreate = FormCreate
+  ClientHeight = 337
+  ClientWidth = 534
+  Constraints.MaxHeight = 376
+  Constraints.MaxWidth = 550
+  Constraints.MinHeight = 376
+  Constraints.MinWidth = 550
+  StyleElements = [seFont, seClient, seBorder]
+  ExplicitWidth = 550
+  ExplicitHeight = 376
   TextHeight = 15
-  object lblMonitorMedia: TLabel
+  object lblMonitorMedia: TLabel [0]
     Left = 8
     Top = 16
     Width = 86
     Height = 15
     Caption = 'Medienmonitor:'
   end
-  object lblMonitorPresentation: TLabel
+  object lblMonitorPresentation: TLabel [1]
     Left = 8
     Top = 45
     Width = 117
     Height = 15
     Caption = 'Pr'#228'sentationsmonitor:'
   end
-  object sgApplications: TStringGrid
-    Left = 152
-    Top = 253
-    Width = 320
-    Height = 120
-    RowCount = 2
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 0
+  object lblPrograms: TLabel [2]
+    Left = 8
+    Top = 80
+    Width = 66
+    Height = 15
+    Caption = 'Programme:'
   end
-  object btnOk: TButton
-    Left = 326
-    Top = 384
-    Width = 75
-    Height = 25
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
-  end
-  object btnCancel: TButton
-    Left = 229
-    Top = 384
-    Width = 75
-    Height = 25
-    Cancel = True
-    Caption = 'Abbrechen'
-    ModalResult = 2
+  inherited pnlButtons: TPanel
+    Top = 296
+    Width = 534
     TabOrder = 2
+    StyleElements = [seFont, seClient, seBorder]
+    ExplicitTop = 288
+    ExplicitWidth = 532
+    inherited btnOk: TButton
+      Left = 291
+      ExplicitLeft = 290
+    end
+    inherited btnCancel: TButton
+      Left = 199
+      ExplicitLeft = 198
+    end
   end
   object cbxMonitorMedia: TComboBox
     Left = 143
@@ -67,7 +54,7 @@ object FormConfigMonitor: TFormConfigMonitor
     Width = 90
     Height = 23
     Style = csDropDownList
-    TabOrder = 3
+    TabOrder = 0
     OnChange = cbxMonitorListChange
   end
   object cbxMonitorPresentation: TComboBox
@@ -76,16 +63,87 @@ object FormConfigMonitor: TFormConfigMonitor
     Width = 90
     Height = 23
     Style = csDropDownList
-    TabOrder = 4
+    TabOrder = 1
     OnChange = cbxMonitorListChange
   end
-  object Button1: TButton
-    Left = 456
-    Top = 176
+  object edtMonitorNameMedia: TEdit
+    Left = 239
+    Top = 13
+    Width = 282
+    Height = 23
+    ReadOnly = True
+    TabOrder = 3
+    Text = 'edtMonitorNameMedia'
+  end
+  object edtMonitorNamePresentation: TEdit
+    Left = 239
+    Top = 42
+    Width = 282
+    Height = 23
+    ReadOnly = True
+    TabOrder = 4
+    Text = 'edtMonitorNameMedia'
+  end
+  object lbPrograms: TListBox
+    Left = 8
+    Top = 101
+    Width = 432
+    Height = 180
+    ItemHeight = 15
+    TabOrder = 5
+  end
+  object btnProgramUp: TButton
+    Left = 446
+    Top = 132
     Width = 75
     Height = 25
-    Caption = 'Button1'
-    TabOrder = 5
-    OnClick = Button1Click
+    Caption = 'hoch'
+    TabOrder = 6
+    OnClick = btnProgramUpClick
+  end
+  object btnProgramTop: TButton
+    Left = 446
+    Top = 101
+    Width = 75
+    Height = 25
+    Caption = 'ganz hoch'
+    TabOrder = 7
+    OnClick = btnProgramTopClick
+  end
+  object btnProgramAdd: TButton
+    Left = 446
+    Top = 163
+    Width = 75
+    Height = 25
+    Caption = 'hinzuf'#252'gen'
+    TabOrder = 8
+    OnClick = btnProgramAddClick
+  end
+  object btnProgramDelete: TButton
+    Left = 446
+    Top = 194
+    Width = 75
+    Height = 25
+    Caption = 'entfernen'
+    TabOrder = 9
+    OnClick = btnProgramDeleteClick
+  end
+  object btnProgramDown: TButton
+    Left = 446
+    Top = 225
+    Width = 75
+    Height = 25
+    Caption = 'runter'
+    TabOrder = 10
+    OnClick = btnProgramDownClick
+  end
+  object btnProgramBottom: TButton
+    Left = 446
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'ganz runter'
+    TabOrder = 11
+    OnClick = btnProgramBottomClick
   end
 end
