@@ -12,8 +12,8 @@ type
   TIdentsGeneral = (idAlwaysOnTop);
 
   TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
-    idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosSpeakerReader, idCamPosReaderTable, idCamPosTotal,
-    idCamPosPark);
+    idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosLeftSpace, idCamPosRightSpace, idCamPosTotal,
+    idCamPosPark, idCamPosSpeakerIndex, idCamPosReaderIndex, idCamPosTableIndex);
 
   TIdentsMonitor = (idMonNumMedia, idMonNumPresentation);
 
@@ -84,12 +84,12 @@ type
       index  idCamPosTable
       read   GetStringCamera
       write  SetStringCamera;
-    property CameraPosSpeakerReader: String
-      index  idCamPosSpeakerReader
+    property CameraPosLeftSpace: String
+      index  idCamPosLeftSpace
       read   GetStringCamera
       write  SetStringCamera;
-    property CameraPosReaderTable: String
-      index  idCamPosReaderTable
+    property CameraPosRightSpace: String
+      index  idCamPosRightSpace
       read   GetStringCamera
       write  SetStringCamera;
     property CameraPosTotal: String
@@ -100,12 +100,24 @@ type
       index  idCamPosPark
       read   GetStringCamera
       write  SetStringCamera;
+    property CameraPosSpeakerIndex: String
+      index  idCamPosSpeakerIndex
+      read   GetStringCamera
+      write  SetStringCamera;
+    property CameraPosReaderIndex: String
+      index  idCamPosReaderIndex
+      read   GetStringCamera
+      write  SetStringCamera;
+    property CameraPosTableIndex: String
+      index  idCamPosTableIndex
+      read   GetStringCamera
+      write  SetStringCamera;
 
     property MonitorNumMedia: String
       index  idMonNumMedia
       read   GetStringMonitor
       write  SetStringMonitor;
-          property MonitorNumPresentation: String
+    property MonitorNumPresentation: String
       index  idMonNumPresentation
       read   GetStringMonitor
       write  SetStringMonitor;
@@ -120,9 +132,10 @@ const
   cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop');
 
   cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'Speaker', 'SpeakerS', 'SpeakerL',
-    'SpeakerXL', 'Reader', 'Table', 'SpeakerReader', 'ReaderTable', 'Total', 'Park');
+    'SpeakerXL', 'Reader', 'Table', 'LeftSpace', 'RightSpace', 'Total', 'Park', 'SpeakerIndex', 'ReadeIndex',
+    'TableIndex');
 
-  cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia','MonitorNumPresentation');
+  cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia', 'MonitorNumPresentation');
 
   cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption');
 

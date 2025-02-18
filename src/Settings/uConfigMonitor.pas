@@ -14,25 +14,42 @@ uses
   Vcl.Dialogs,
   uConfig,
   Vcl.Grids,
-  Vcl.StdCtrls;
+  Vcl.StdCtrls,
+  uConfigFormMaster,
+  Vcl.ExtCtrls,
+  uProgramList;
 
 type
-  TFormConfigMonitor = class(TForm)
-    sgApplications: TStringGrid;
-    btnOk: TButton;
-    btnCancel: TButton;
+  TFormConfigMonitor = class(TForrmConfigMaster)
     cbxMonitorMedia: TComboBox;
     lblMonitorMedia: TLabel;
     lblMonitorPresentation: TLabel;
     cbxMonitorPresentation: TComboBox;
-    Button1: TButton;
-    procedure FormCreate(Sender: TObject);
-    procedure FillMonitorList;
+    edtMonitorNameMedia: TEdit;
+    edtMonitorNamePresentation: TEdit;
+    lbPrograms: TListBox;
+    lblPrograms: TLabel;
+    btnProgramUp: TButton;
+    btnProgramTop: TButton;
+    btnProgramAdd: TButton;
+    btnProgramDelete: TButton;
+    btnProgramDown: TButton;
+    btnProgramBottom: TButton;
     procedure cbxMonitorListChange(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btnProgramTopClick(Sender: TObject);
+    procedure btnProgramUpClick(Sender: TObject);
+    procedure btnProgramBottomClick(Sender: TObject);
+    procedure btnProgramDownClick(Sender: TObject);
+    procedure btnProgramAddClick(Sender: TObject);
+    procedure btnProgramDeleteClick(Sender: TObject);
   private
     { Private-Deklarationen }
-    FConfig: TConfig;
+    procedure DoFormLoad; override;
+    procedure DoFormShow; override;
+    procedure DoFormSave; override;
+
+    procedure FillMonitorList;
+    function GetMonitorName(LMonitoNum: Integer): String;
   public
     { Public-Deklarationen }
   end;
@@ -42,51 +59,122 @@ var
 
 implementation
 
-uses
-  uCongregationHelper;
-
 {$R *.dfm}
 
-procedure TFormConfigMonitor.Button1Click(Sender: TObject);
+procedure TFormConfigMonitor.btnProgramAddClick(Sender: TObject);
 var
-  Device: TDisplayDevice;
-  DeviceIndex: DWORD;
-  MonitorNames: TStringList;
-  AdapterName : PChar;
+  LName, LCaption: String;
 begin
-  MonitorNames := TStringList.Create;
-  try
-    Device.cb := SizeOf(TDisplayDevice);
-    DeviceIndex := 0;
-    EnumDisplayDevices(nil, 0, Device, 0);
-//    while EnumDisplayDevices(nil, 0, Device, 0) do
-//    begin
-//    MonitorNames.Add('MonitorIndex: ' + DeviceIndex.ToString);
-//        MonitorNames.Add(string(Device.StateFlags.ToString));
-//        MonitorNames.Add(string(Device.DeviceName));
-//        MonitorNames.Add(string(Device.DeviceString));
-//        MonitorNames.Add(string(Device.DeviceID));
-//        MonitorNames.Add(string(Device.DeviceKey));
-//        Inc(DeviceIndex);
-//    end;
-AdapterName := StrAlloc(SizeOf(Device.DeviceName));
-EnumDisplayDevices(AdapterName, 0, Device, 0);
-    ShowMessage('Monitor Names:' + sLineBreak + MonitorNames.Text);
-  finally
-    MonitorNames.Free;
+  if GetWindowEntry(LName, LCaption) <> mrOk then
+    Exit;
+  lbPrograms.Items.Add(Format('Name=%s;Caption=%s',[LName,LCaption]));
+end;
+
+procedure TFormConfigMonitor.btnProgramBottomClick(Sender: TObject);
+var
+  SelectedIndex: Integer;
+  SelectedText : string;
+begin
+  inherited;
+  SelectedIndex := lbPrograms.ItemIndex;
+  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  begin
+    SelectedText := lbPrograms.Items[SelectedIndex];
+    lbPrograms.Items.Delete(SelectedIndex);
+    lbPrograms.Items.Insert(lbPrograms.Items.Count-1, SelectedText);
+    lbPrograms.ItemIndex := lbPrograms.Items.Count-1;
+  end;
+end;
+
+procedure TFormConfigMonitor.btnProgramDeleteClick(Sender: TObject);
+begin
+  inherited;
+  lbPrograms.Items.Delete(lbPrograms.ItemIndex);
+end;
+
+procedure TFormConfigMonitor.btnProgramDownClick(Sender: TObject);
+var
+  SelectedIndex: Integer;
+  SelectedText : string;
+begin
+  inherited;
+  SelectedIndex := lbPrograms.ItemIndex;
+  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  begin
+    SelectedText := lbPrograms.Items[SelectedIndex];
+    lbPrograms.Items.Delete(SelectedIndex);
+    lbPrograms.Items.Insert(SelectedIndex+1, SelectedText);
+    lbPrograms.ItemIndex := SelectedIndex+1;
+  end;
+end;
+
+procedure TFormConfigMonitor.btnProgramTopClick(Sender: TObject);
+var
+  SelectedIndex: Integer;
+  SelectedText : string;
+begin
+  inherited;
+  SelectedIndex := lbPrograms.ItemIndex;
+  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  begin
+    SelectedText := lbPrograms.Items[SelectedIndex];
+    lbPrograms.Items.Delete(SelectedIndex);
+    lbPrograms.Items.Insert(0, SelectedText);
+    lbPrograms.ItemIndex := 0;
+  end;
+end;
+
+procedure TFormConfigMonitor.btnProgramUpClick(Sender: TObject);
+var
+  SelectedIndex: Integer;
+  SelectedText : string;
+begin
+  inherited;
+  SelectedIndex := lbPrograms.ItemIndex;
+  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  begin
+    SelectedText := lbPrograms.Items[SelectedIndex];
+    lbPrograms.Items.Delete(SelectedIndex);
+    lbPrograms.Items.Insert(SelectedIndex-1, SelectedText);
+    lbPrograms.ItemIndex := SelectedIndex-1;
   end;
 end;
 
 procedure TFormConfigMonitor.cbxMonitorListChange(Sender: TObject);
 var
-LDevice: TDisplayDevice;
-LDeviceIndex: DWORD;
+  LDevice     : TDisplayDevice;
+  LDeviceIndex: DWORD;
 begin
-if not (Sender is TComboBox) then Exit;
-LDeviceIndex := Strtoint((Sender as TComboBox).Text   );
-LDeviceIndex := LDeviceIndex-1;
-EnumDisplayDevices(nil,LDeviceIndex,LDevice,0);
-  // Screen.Monitors[0].
+  if not(Sender is TComboBox) then
+    Exit;
+  if (Sender as TComboBox).Name = cbxMonitorMedia.Name then
+  begin
+    edtMonitorNameMedia.Text := GetMonitorName(cbxMonitorMedia.ItemIndex);
+  end
+  else if (Sender as TComboBox).Name = cbxMonitorPresentation.Name then
+  begin
+    edtMonitorNamePresentation.Text := GetMonitorName(cbxMonitorPresentation.ItemIndex);
+  end;
+
+end;
+
+procedure TFormConfigMonitor.DoFormLoad;
+begin
+  inherited;
+  FillMonitorList;
+end;
+
+procedure TFormConfigMonitor.DoFormSave;
+begin
+  inherited;
+
+end;
+
+procedure TFormConfigMonitor.DoFormShow;
+begin
+  inherited;
+  cbxMonitorMedia.OnChange(cbxMonitorMedia);
+  cbxMonitorPresentation.OnChange(cbxMonitorPresentation);
 end;
 
 procedure TFormConfigMonitor.FillMonitorList;
@@ -116,14 +204,32 @@ begin
     cbxMonitorMedia.Items.Add(i.ToString);
     cbxMonitorPresentation.Items.Add(i.ToString);
   end;
-  LoadMonitorNum(FConfig.MonitorNumMedia, cbxMonitorMedia);
-  LoadMonitorNum(FConfig.MonitorNumPresentation, cbxMonitorPresentation);
+  LoadMonitorNum(Config.MonitorNumMedia, cbxMonitorMedia);
+  LoadMonitorNum(Config.MonitorNumPresentation, cbxMonitorPresentation);
 end;
 
-procedure TFormConfigMonitor.FormCreate(Sender: TObject);
+function TFormConfigMonitor.GetMonitorName(LMonitoNum: Integer): String;
+var
+  dd, md: TDisplayDevice;
 begin
-  FConfig := FormCongregationHelper.Config;
-  FillMonitorList;
+  Result := EmptyStr;
+  FillChar(dd, SizeOf(dd), 0);
+  dd.cb := SizeOf(dd);
+  FillChar(md, SizeOf(md), 0);
+  md.cb := SizeOf(md);
+  var
+  i := LMonitoNum;
+  while EnumDisplayDevices(nil, i, dd, 0) do
+  begin
+    var
+    j := 0;
+    while EnumDisplayDevices(@dd.DeviceName[0], j, md, 0) do
+    begin
+      Result := md.DeviceString;
+      Inc(j);
+    end;
+    Inc(i);
+  end;
 end;
 
 end.

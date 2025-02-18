@@ -10,6 +10,7 @@ uses
 begin
 {$IFDEF DEBUG}
   ReportMemoryLeaksOnShutdown := True;
+  Application.Title := Application.Title + ' (DEBUG)';
 {$ENDIF}
   Application.Initialize;
   Application.MainFormOnTaskbar := True;

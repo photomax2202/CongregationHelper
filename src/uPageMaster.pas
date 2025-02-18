@@ -25,6 +25,7 @@ type
     { Private-Deklarationen }
   protected
     procedure InitPage; virtual; abstract;
+
   public
     { Public-Deklarationen }
     property MaxWidth: Integer

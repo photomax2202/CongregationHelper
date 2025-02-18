@@ -15,6 +15,8 @@ function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLi
   out AResult: Boolean): String;
 function DownloadRelease(AUrl: String): Boolean;
 function IsProcessRunning(const AProcessName: string): Boolean;
+procedure StartNewProcess(const ApplicationName, CommandLine: string; AWaitForFinish: Boolean = False);
+procedure OpenURLInDefaultBrowser(const URL: string);
 
 implementation
 
@@ -30,7 +32,9 @@ uses
   URLMon,
   Windows,
   psapi,
-  TlHelp32;
+  TlHelp32,
+  Vcl.Dialogs,
+  Winapi.ShellAPI;
 
 function Rfc3339ToDatetime(rfc: string): TDateTime;
 var
@@ -108,7 +112,7 @@ begin
       LAssetsJSON  := LReleaseJSON.GetValue<TJSONArray>('assets');
       for j        := 0 to LAssetsJSON.Count - 1 do
       begin
-        LAssetJSON       := LAssetsJSON.Items[i] as TJSONObject;
+        LAssetJSON       := LAssetsJSON.Items[j] as TJSONObject;
         LRelease.Name    := LAssetJSON.GetValue('name').Value;
         LRelease.Version := LReleaseJSON.GetValue('tag_name').Value;
         LRelease.Datum   := Rfc3339ToDatetime(LReleaseJSON.GetValue('published_at').Value);
@@ -177,6 +181,38 @@ begin
     until not Process32Next(Snapshot, ProcessEntry);
   end;
   CloseHandle(Snapshot);
+end;
+
+procedure StartNewProcess(const ApplicationName, CommandLine: string; AWaitForFinish: Boolean = False);
+var
+  StartupInfo: TStartupInfo;
+  ProcessInfo: TProcessInformation;
+  WaitResult : DWORD;
+begin
+  ZeroMemory(@StartupInfo, SizeOf(StartupInfo));
+  StartupInfo.cb := SizeOf(TStartupInfo);
+  ZeroMemory(@ProcessInfo, SizeOf(ProcessInfo));
+
+  if CreateProcess(PChar(ApplicationName), PChar(CommandLine), nil, nil, False, 0, nil, nil, StartupInfo, ProcessInfo)
+  then
+  begin
+    // Auf die Beendigung des Prozesses warten
+    if AWaitForFinish then
+      WaitResult := WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+    // Der Prozess wurde erfolgreich gestartet
+    CloseHandle(ProcessInfo.hProcess);
+    CloseHandle(ProcessInfo.hThread);
+  end
+  else
+  begin
+    // Fehler beim Starten des Prozesses
+    ShowMessage('Fehler beim Starten des Prozesses: ' + SysErrorMessage(GetLastError));
+  end;
+end;
+
+procedure OpenURLInDefaultBrowser(const URL: string);
+begin
+  ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
 end;
 
 end.

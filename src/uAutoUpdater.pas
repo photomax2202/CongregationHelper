@@ -26,9 +26,11 @@ type
     btnUpdate: TButton;
     edtAppRunning: TEdit;
     TimerRefresh: TTimer;
+    btnAbortUpdate: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TimerRefreshTimer(Sender: TObject);
+    procedure btnAbortUpdateClick(Sender: TObject);
   private
     FAppRepo         : String;
     FAppName         : String;
@@ -62,6 +64,11 @@ uses
 
 {$R *.dfm}
 
+procedure TFormAutoUpdater.btnAbortUpdateClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
 procedure TFormAutoUpdater.ButtonEnable;
 var
   LEnable: Boolean;
@@ -86,7 +93,7 @@ begin
   // Überprüfe, ob Startparameter vorhanden sind
   if ParamCount <> 3 then
   begin
-    ShowMessage('Keine Startparameter übergeben. Die Applikation wird wieder beendet.' + #10#13 +
+    ShowMessage('Startparameter fehlerhaft. Die Applikation wird wieder beendet.' + #10#13 +
       'Die folgenden Parameter werden unterstützt.' + #10#13 + 'Parameter:' + #10#13 + '1 --> GitHub-Repo' + #10#13 +
       '2 --> Updating Application' + #10#13 + '3 --> Actual Release Tag');
     Application.Terminate;
@@ -98,7 +105,7 @@ begin
   if not GetGithubRelease then
   begin
     ShowMessage('GitHub Releases von ' + AppRepo +
-      'konnten nicht abgerufen werden oder es ist kein passendes Release vorhanden. ' +
+      ' konnten nicht abgerufen werden oder es ist kein passendes Release vorhanden. ' +
       'Die Applikation wird wieder beendet.');
     Application.Terminate;
   end;
@@ -119,14 +126,14 @@ end;
 
 function TFormAutoUpdater.GetGithubRelease: Boolean;
 var
-  LRespose      : string;
+  LResponse      : string;
   i             : Integer;
   LReleaseResult: Boolean;
 begin
   Result := False;
-  if not GetGithubReleases('photomax2202', AppRepo, LRespose) then
+  if not GetGithubReleases('photomax2202', AppRepo, LResponse) then
     Exit;
-  FAppVersionGitHub := GetLastRelease(LRespose, AppName, FAppUrl, LReleaseResult);
+  FAppVersionGitHub := GetLastRelease(LResponse, AppName, FAppUrl, LReleaseResult);
   if not LReleaseResult then
     Exit;
   Result := True;

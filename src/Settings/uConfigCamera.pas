@@ -3,11 +3,23 @@ unit uConfigCamera;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, uConfig;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.Mask,
+  Vcl.ExtCtrls,
+  uConfig,
+  uConfigFormMaster;
 
 type
-  TFormConfigCamera = class(TForm)
+  TFormConfigCamera = class(TForrmConfigMaster)
     ledUsername: TLabeledEdit;
     ledPassword: TLabeledEdit;
     ledToken: TLabeledEdit;
@@ -17,23 +29,25 @@ type
     lblPositions: TLabel;
     ledPosReader: TLabeledEdit;
     ledPosTable: TLabeledEdit;
-    ledPosSpeakerReader: TLabeledEdit;
-    ledPosReaderTable: TLabeledEdit;
+    ledPosLeftSpace: TLabeledEdit;
+    ledPosRightSpace: TLabeledEdit;
     ledPosSpeakerS: TLabeledEdit;
     ledPosSpeakerL: TLabeledEdit;
     ledPosSpeakerXL: TLabeledEdit;
     ledPosTotal: TLabeledEdit;
-    btnOk: TButton;
-    btnCancel: TButton;
     ledPosPark: TLabeledEdit;
+    lblPositionsOverwiew: TLabel;
+    cbxPosSpeaker: TComboBox;
+    cbxPosReader: TComboBox;
+    cbxPosTable: TComboBox;
     procedure ledCredentialsChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure btnOkClick(Sender: TObject);
     procedure ledFieldValidation(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure cbxPosIndexChange(Sender: TObject);
   private
     { Private-Deklarationen }
-    FConfig: TConfig;
+    procedure DoFormLoad; override;
+    procedure DoFormShow; override;
+    procedure DoFormSave; override;
   public
     { Public-Deklarationen }
   end;
@@ -45,15 +59,86 @@ implementation
 
 uses
   uCongregationHelper,
-  uValidation,
+  uValidationAndHelper,
   System.NetEncoding;
 
 {$R *.dfm}
 
-procedure TFormConfigCamera.btnOkClick(Sender: TObject);
+procedure TFormConfigCamera.cbxPosIndexChange(Sender: TObject);
+
+  function GetIndexValues(var AChangedValue: string; var AFirst: string; var ASecond: string): Boolean;
+  var
+    sl: TStringList;
+  begin
+    Result := False;
+    sl     := TStringList.Create;
+    try
+      sl.Add('0');
+      sl.Add('1');
+      sl.Add('2');
+      if AChangedValue = AFirst then
+      begin
+        sl.Delete(sl.IndexOf(AChangedValue));
+        sl.Delete(sl.IndexOf(ASecond));
+        AFirst := sl.Strings[0];
+      end
+      else if AChangedValue = ASecond then
+      begin
+        sl.Delete(sl.IndexOf(AChangedValue));
+        sl.Delete(sl.IndexOf(AFirst));
+        ASecond := sl.Strings[0];
+      end;
+      Result := True;
+    finally
+      sl.Free
+    end;
+
+  end;
+
+var
+  LSpeakerIndex, LReaderIndex, LTableIndex: String;
+begin
+  inherited;
+  LSpeakerIndex := cbxPosSpeaker.ItemIndex.ToString;
+  LReaderIndex  := cbxPosReader.ItemIndex.ToString;
+  LTableIndex   := cbxPosTable.ItemIndex.ToString;
+  if (Sender as TComboBox).Name = cbxPosSpeaker.Name then
+  begin
+    if not GetIndexValues(LSpeakerIndex, LReaderIndex, LTableIndex) then
+      Exit;
+  end
+  else if (Sender as TComboBox).Name = cbxPosReader.Name then
+  begin
+
+    if not GetIndexValues(LReaderIndex, LSpeakerIndex, LTableIndex) then
+      Exit;
+  end
+  else if (Sender as TComboBox).Name = cbxPosTable.Name then
+  begin
+    if not GetIndexValues(LTableIndex, LSpeakerIndex, LReaderIndex) then
+      Exit;
+  end
+  else
+    Exit;
+  cbxPosSpeaker.ItemIndex := LSpeakerIndex.ToInteger;
+  cbxPosReader.ItemIndex  := LReaderIndex.ToInteger;
+  cbxPosTable.ItemIndex   := LTableIndex.ToInteger;
+end;
+
+procedure TFormConfigCamera.DoFormLoad;
+begin
+  inherited;
+  if Config.CameraIp = EmptyStr then
+    Config.CameraIp := '0.0.0.0';
+  if Config.CameraURL = EmptyStr then
+    Config.CameraURL := '';
+end;
+
+procedure TFormConfigCamera.DoFormSave;
 var
   LValid: Boolean;
 begin
+  inherited;
   LValid := False;
   try
     if not ValidateToken(ledToken.Text) then
@@ -74,9 +159,9 @@ begin
       Exit;
     if not ValidatePosition(ledPosTable.Text) then
       Exit;
-    if not ValidatePosition(ledPosSpeakerReader.Text) then
+    if not ValidatePosition(ledPosLeftSpace.Text) then
       Exit;
-    if not ValidatePosition(ledPosReaderTable.Text) then
+    if not ValidatePosition(ledPosRightSpace.Text) then
       Exit;
     if not ValidatePosition(ledPosTotal.Text) then
       Exit;
@@ -84,50 +169,58 @@ begin
       Exit;
     LValid := True;
 
-    FConfig.CameraToken            := ledToken.Text;
-    FConfig.CameraIp               := ledIP.Text;
-    FConfig.CameraURL              := ledMidURL.Text;
-    FConfig.CameraPosSpeaker       := ledPosSpeaker.Text;
-    FConfig.CameraPosSpeakerS      := ledPosSpeakerS.Text;
-    FConfig.CameraPosSpeakerL      := ledPosSpeakerL.Text;
-    FConfig.CameraPosSpeakerXL     := ledPosSpeakerXL.Text;
-    FConfig.CameraPosReader        := ledPosReader.Text;
-    FConfig.CameraPosTable         := ledPosTable.Text;
-    FConfig.CameraPosSpeakerReader := ledPosSpeakerReader.Text;
-    FConfig.CameraPosReaderTable   := ledPosReaderTable.Text;
-    FConfig.CameraPosTotal         := ledPosTotal.Text;
-    FConfig.CameraPosPark          := ledPosPark.Text;
+    Config.CameraToken         := ledToken.Text;
+    Config.CameraIp            := ledIP.Text;
+    Config.CameraURL           := ledMidURL.Text;
+    Config.CameraPosSpeaker    := ledPosSpeaker.Text;
+    Config.CameraPosSpeakerS   := ledPosSpeakerS.Text;
+    Config.CameraPosSpeakerL   := ledPosSpeakerL.Text;
+    Config.CameraPosSpeakerXL  := ledPosSpeakerXL.Text;
+    Config.CameraPosReader     := ledPosReader.Text;
+    Config.CameraPosTable      := ledPosTable.Text;
+    Config.CameraPosLeftSpace  := ledPosLeftSpace.Text;
+    Config.CameraPosRightSpace := ledPosRightSpace.Text;
+    Config.CameraPosTotal      := ledPosTotal.Text;
+    Config.CameraPosPark       := ledPosPark.Text;
+
+    Config.CameraPosSpeakerIndex := cbxPosSpeaker.Items[cbxPosSpeaker.ItemIndex];
+    Config.CameraPosReaderIndex := cbxPosReader.Items[cbxPosSpeaker.ItemIndex];
+    Config.CameraPosTableIndex := cbxPosTable.Items[cbxPosSpeaker.ItemIndex];
   finally
     if not LValid then
       ShowMessage('Markiertes Feld hat nicht das richtige Format.');
   end;
 end;
 
-procedure TFormConfigCamera.FormCreate(Sender: TObject);
-begin
-  FConfig := FormCongregationHelper.Config;
-  if FConfig.CameraIp = EmptyStr then
-    FConfig.CameraIp := '0.0.0.0';
-  if FConfig.CameraURL = EmptyStr then
-    FConfig.CameraURL := '';
+procedure TFormConfigCamera.DoFormShow;
 
-end;
+  procedure GetItemIndexOfPositionIndex(AComboBox: TComboBox; AIndexString: string; ADefault: Integer);
+  begin
+    if not(AIndexString = EmptyStr) then
+      AComboBox.ItemIndex := AComboBox.Items.IndexOf(AIndexString)
+    else
+      AComboBox.ItemIndex := ADefault;
+  end;
 
-procedure TFormConfigCamera.FormShow(Sender: TObject);
 begin
-  ledToken.Text            := FConfig.CameraToken;
-  ledIP.Text               := FConfig.CameraIp;
-  ledMidURL.Text           := FConfig.CameraURL;
-  ledPosSpeaker.Text       := FConfig.CameraPosSpeaker;
-  ledPosSpeakerS.Text      := FConfig.CameraPosSpeakerS;
-  ledPosSpeakerL.Text      := FConfig.CameraPosSpeakerL;
-  ledPosSpeakerXL.Text     := FConfig.CameraPosSpeakerXL;
-  ledPosReader.Text        := FConfig.CameraPosReader;
-  ledPosTable.Text         := FConfig.CameraPosTable;
-  ledPosSpeakerReader.Text := FConfig.CameraPosSpeakerReader;
-  ledPosReaderTable.Text   := FConfig.CameraPosReaderTable;
-  ledPosTotal.Text         := FConfig.CameraPosTotal;
-  ledPosPark.Text          := FConfig.CameraPosPark;
+  inherited;
+  ledToken.Text         := Config.CameraToken;
+  ledIP.Text            := Config.CameraIp;
+  ledMidURL.Text        := Config.CameraURL;
+  ledPosSpeaker.Text    := Config.CameraPosSpeaker;
+  ledPosSpeakerS.Text   := Config.CameraPosSpeakerS;
+  ledPosSpeakerL.Text   := Config.CameraPosSpeakerL;
+  ledPosSpeakerXL.Text  := Config.CameraPosSpeakerXL;
+  ledPosReader.Text     := Config.CameraPosReader;
+  ledPosTable.Text      := Config.CameraPosTable;
+  ledPosLeftSpace.Text  := Config.CameraPosLeftSpace;
+  ledPosRightSpace.Text := Config.CameraPosRightSpace;
+  ledPosTotal.Text      := Config.CameraPosTotal;
+  ledPosPark.Text       := Config.CameraPosPark;
+
+  GetItemIndexOfPositionIndex(cbxPosSpeaker, Config.CameraPosSpeakerIndex, 0);
+  GetItemIndexOfPositionIndex(cbxPosReader, Config.CameraPosReaderIndex, 1);
+  GetItemIndexOfPositionIndex(cbxPosTable, Config.CameraPosTableIndex, 2);
 end;
 
 procedure TFormConfigCamera.ledCredentialsChange(Sender: TObject);
@@ -170,10 +263,10 @@ begin
     MarkValidation(ledPosReader, ValidatePosition(LText))
   else if LName = ledPosTable.Name then
     MarkValidation(ledPosTable, ValidatePosition(LText))
-  else if LName = ledPosSpeakerReader.Name then
-    MarkValidation(ledPosSpeakerReader, ValidatePosition(LText))
-  else if LName = ledPosReaderTable.Name then
-    MarkValidation(ledPosReaderTable, ValidatePosition(LText))
+  else if LName = ledPosLeftSpace.Name then
+    MarkValidation(ledPosLeftSpace, ValidatePosition(LText))
+  else if LName = ledPosRightSpace.Name then
+    MarkValidation(ledPosRightSpace, ValidatePosition(LText))
   else if LName = ledPosTotal.Name then
     MarkValidation(ledPosTotal, ValidatePosition(LText))
   else if LName = ledPosPark.Name then

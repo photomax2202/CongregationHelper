@@ -17,7 +17,6 @@ uses
 
 type
   TFormPageFunctionSample = class(TFormPageMaster)
-    Button1: TButton;
   private
     { Private-Deklarationen }
   protected
