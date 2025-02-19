@@ -2,25 +2,33 @@ object FormProgrammAdd: TFormProgrammAdd
   Left = 0
   Top = 0
   Caption = 'FormProgrammAdd'
-  ClientHeight = 161
+  ClientHeight = 211
   ClientWidth = 234
   Color = clBtnFace
-  Constraints.MaxHeight = 200
+  Constraints.MaxHeight = 250
   Constraints.MaxWidth = 250
-  Constraints.MinHeight = 200
+  Constraints.MinHeight = 250
   Constraints.MinWidth = 250
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnShow = FormShow
   TextHeight = 15
   object lblProgramCaption: TLabel
     Left = 8
     Top = 61
-    Width = 101
+    Width = 93
     Height = 15
-    Caption = 'lblProgramCaption'
+    Caption = 'Programmfenster'
+  end
+  object lblProgrammMode: TLabel
+    Left = 8
+    Top = 110
+    Width = 94
+    Height = 15
+    Caption = 'Programmmodus'
   end
   object ledProgramName: TLabeledEdit
     Left = 8
@@ -46,7 +54,7 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object btnCancel: TButton
     Left = 8
-    Top = 120
+    Top = 168
     Width = 101
     Height = 25
     Caption = 'Abbrechen'
@@ -55,12 +63,27 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object btnOk: TButton
     Left = 120
-    Top = 120
+    Top = 168
     Width = 97
     Height = 25
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 3
+  end
+  object cbxProgramMode: TComboBox
+    Left = 8
+    Top = 131
+    Width = 209
+    Height = 23
+    Style = csDropDownList
+    ItemIndex = 0
+    TabOrder = 4
+    Text = 'Links Anheften'
+    OnChange = cbxProgramModeChange
+    Items.Strings = (
+      'Links Anheften'
+      'Rechts Anheften'
+      'Pr'#228'sentation')
   end
 end

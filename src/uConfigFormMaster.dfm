@@ -29,7 +29,7 @@ object ForrmConfigMaster: TForrmConfigMaster
       652
       41)
     object btnOk: TButton
-      Left = 342
+      Left = 341
       Top = 8
       Width = 75
       Height = 25
@@ -39,10 +39,10 @@ object ForrmConfigMaster: TForrmConfigMaster
       ModalResult = 1
       TabOrder = 0
       OnClick = btnOkClick
-      ExplicitLeft = 341
+      ExplicitLeft = 340
     end
     object btnCancel: TButton
-      Left = 234
+      Left = 233
       Top = 8
       Width = 75
       Height = 25
@@ -51,7 +51,7 @@ object ForrmConfigMaster: TForrmConfigMaster
       Caption = 'Abbrechen'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 233
+      ExplicitLeft = 232
     end
   end
 end

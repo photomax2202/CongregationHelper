@@ -46,7 +46,7 @@ type
     { Private-Deklarationen }
     procedure DoFormLoad; override;
     procedure DoFormShow; override;
-    procedure DoFormSave; override;
+    procedure DoFormSave(out ACanSave:Boolean); override;
 
     procedure FillMonitorList;
     function GetMonitorName(LMonitoNum: Integer): String;
@@ -63,11 +63,22 @@ implementation
 
 procedure TFormConfigMonitor.btnProgramAddClick(Sender: TObject);
 var
-  LName, LCaption: String;
+  LName, LCaption, LMode: String;
+  sl                    : TStringList;
 begin
-  if GetWindowEntry(LName, LCaption) <> mrOk then
-    Exit;
-  lbPrograms.Items.Add(Format('Name=%s;Caption=%s',[LName,LCaption]));
+  sl := TStringList.Create;
+  try
+    if GetWindowEntry(LName, LCaption, LMode) <> mrOk then
+      Exit;
+    sl.Delimiter       := ';';
+    sl.StrictDelimiter := true;
+    sl.AddPair(cIdentsApplication[apName], LName);
+    sl.AddPair(cIdentsApplication[apCaption], LCaption);
+    sl.AddPair(cIdentsApplication[apMode], LMode);
+    lbPrograms.Items.Add(sl.DelimitedText);
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TFormConfigMonitor.btnProgramBottomClick(Sender: TObject);
@@ -77,19 +88,26 @@ var
 begin
   inherited;
   SelectedIndex := lbPrograms.ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
-    lbPrograms.Items.Insert(lbPrograms.Items.Count-1, SelectedText);
-    lbPrograms.ItemIndex := lbPrograms.Items.Count-1;
+    lbPrograms.Items.Insert(lbPrograms.Items.Count - 1, SelectedText);
+    lbPrograms.ItemIndex := lbPrograms.Items.Count - 1;
   end;
 end;
 
 procedure TFormConfigMonitor.btnProgramDeleteClick(Sender: TObject);
+var
+  SelectedIndex: Integer;
 begin
   inherited;
-  lbPrograms.Items.Delete(lbPrograms.ItemIndex);
+  SelectedIndex := lbPrograms.ItemIndex;
+  if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  begin
+    lbPrograms.Items.Delete(SelectedIndex);
+    lbPrograms.ItemIndex := SelectedIndex - 1;
+  end;
 end;
 
 procedure TFormConfigMonitor.btnProgramDownClick(Sender: TObject);
@@ -99,12 +117,12 @@ var
 begin
   inherited;
   SelectedIndex := lbPrograms.ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
-    lbPrograms.Items.Insert(SelectedIndex+1, SelectedText);
-    lbPrograms.ItemIndex := SelectedIndex+1;
+    lbPrograms.Items.Insert(SelectedIndex + 1, SelectedText);
+    lbPrograms.ItemIndex := SelectedIndex + 1;
   end;
 end;
 
@@ -115,7 +133,7 @@ var
 begin
   inherited;
   SelectedIndex := lbPrograms.ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
@@ -131,12 +149,12 @@ var
 begin
   inherited;
   SelectedIndex := lbPrograms.ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < lbPrograms.Items.Count) then
+  if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
-    lbPrograms.Items.Insert(SelectedIndex-1, SelectedText);
-    lbPrograms.ItemIndex := SelectedIndex-1;
+    lbPrograms.Items.Insert(SelectedIndex - 1, SelectedText);
+    lbPrograms.ItemIndex := SelectedIndex - 1;
   end;
 end;
 
@@ -164,17 +182,76 @@ begin
   FillMonitorList;
 end;
 
-procedure TFormConfigMonitor.DoFormSave;
+procedure TFormConfigMonitor.DoFormSave(out ACanSave:Boolean);
+var
+  i                : Integer;
+  sl               : TStringList;
+  LApplicationEntry: TApplicationEntry;
 begin
   inherited;
-
+  sl := TStringList.Create;
+  try
+    sl.Delimiter                  := ';';
+    sl.StrictDelimiter            := true;
+    Config.MonitorNumMedia        := cbxMonitorMedia.Items[cbxMonitorMedia.ItemIndex];
+    Config.MonitorNumPresentation := cbxMonitorPresentation.Items[cbxMonitorPresentation.ItemIndex];
+    for i                         := 0 to cMaxProgrammCount do
+    begin
+      Config.DeleteApplicationEntry(i);
+    end;
+    for i := 0 to lbPrograms.Count - 1 do
+    begin
+      sl.DelimitedText := lbPrograms.Items[i];
+      if sl.IndexOfName(cIdentsApplication[apName]) = -1 then
+        Break;
+      if sl.IndexOfName(cIdentsApplication[apCaption]) = -1 then
+        Break;
+      if sl.IndexOfName(cIdentsApplication[apMode]) = -1 then
+        Break;
+      LApplicationEntry.Index   := i;
+      LApplicationEntry.Name    := sl.Values[cIdentsApplication[apName]];
+      LApplicationEntry.Caption := sl.Values[cIdentsApplication[apCaption]];
+      LApplicationEntry.Mode    := sl.Values[cIdentsApplication[apMode]];
+      Config.SetApplicationEntry(LApplicationEntry);
+    end;
+    ACanSave := true;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TFormConfigMonitor.DoFormShow;
+var
+  i                : Integer;
+  LApplicationEntry: TApplicationEntry;
+  sl               : TStringList;
 begin
   inherited;
-  cbxMonitorMedia.OnChange(cbxMonitorMedia);
-  cbxMonitorPresentation.OnChange(cbxMonitorPresentation);
+  sl := TStringList.Create;
+  try
+    sl.Delimiter       := ';';
+    sl.StrictDelimiter := true;
+    cbxMonitorMedia.OnChange(cbxMonitorMedia);
+    cbxMonitorPresentation.OnChange(cbxMonitorPresentation);
+    if Config.ApplicationCount > 0 then
+    begin
+      lbPrograms.Clear;
+      for i := 0 to cMaxProgrammCount - 1 do
+      begin
+        if Config.ApplicationExists(i) then
+        begin
+          LApplicationEntry := Config.GetApplicationEntry(i);
+          sl.AddPair(cIdentsApplication[apName], LApplicationEntry.Name);
+          sl.AddPair(cIdentsApplication[apCaption], LApplicationEntry.Caption);
+          sl.AddPair(cIdentsApplication[apMode], LApplicationEntry.Mode);
+          lbPrograms.Items.Add(sl.DelimitedText);
+          sl.Clear;
+        end;
+      end;
+    end;
+  finally
+    sl.Free;
+  end;
 end;
 
 procedure TFormConfigMonitor.FillMonitorList;
