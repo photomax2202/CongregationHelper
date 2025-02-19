@@ -17,17 +17,6 @@ uses
   Vcl.ExtCtrls;
 
 type
-  TProgramList = class(TListBox)
-  private
-  protected
-  public
-    procedure MoveEntryUp;
-    procedure MoveEntryDown;
-    procedure MoveEntryTop;
-    procedure MoveEntryBottom;
-    procedure AddEntry;
-    procedure DeleteEntry;
-  end;
 
   TFormProgrammAdd = class(TForm)
     ledProgramName: TLabeledEdit;
@@ -35,11 +24,16 @@ type
     lblProgramCaption: TLabel;
     btnCancel: TButton;
     btnOk: TButton;
+    lblProgrammMode: TLabel;
+    cbxProgramMode: TComboBox;
     procedure ledProgramNameChange(Sender: TObject);
     procedure cbxProgramCaptionChange(Sender: TObject);
+    procedure cbxProgramModeChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FProgramName   : String;
     FProgramCaption: String;
+    FProgramMode   : String;
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
@@ -50,10 +44,12 @@ type
       read   FProgramName;
     property ProgramCaption: String
       read   FProgramCaption;
+    property ProgramMode: String
+      read   FProgramMode;
   end;
 
 function EnumWindowsProc(Wnd: HWND; lParam: lParam): BOOL; stdcall;
-function GetWindowEntry(out AName: String;out ACaption: string): TModalResult;
+function GetWindowEntry(out AName: String; out ACaption: string; out AMode: String): TModalResult;
 
 var
   FormProgramAdd: TFormProgrammAdd;
@@ -77,7 +73,7 @@ begin
   Result := True;
 end;
 
-function GetWindowEntry(out AName: String;out ACaption: string): TModalResult;
+function GetWindowEntry(out AName: String; out ACaption: string; out AMode: String): TModalResult;
 begin
   FormProgramAdd := TFormProgrammAdd.Create(nil);
   try
@@ -86,84 +82,9 @@ begin
     Result   := FormProgramAdd.ShowModal;
     AName    := FormProgramAdd.ProgramName;
     ACaption := FormProgramAdd.ProgramCaption;
+    AMode    := FormProgramAdd.ProgramMode;
   finally
     FormProgramAdd.Free;
-  end;
-end;
-
-{ TProgramList }
-
-procedure TProgramList.AddEntry;
-var
-  LName, LCaption: String;
-begin
-  if GetWindowEntry(LName, LCaption) <> mrOk then
-    Exit;
-  Items.Add(Format('Name=%s;Caption=%s',[LName,LCaption]));
-end;
-
-procedure TProgramList.DeleteEntry;
-begin
-Items.Delete(ItemIndex);
-end;
-
-procedure TProgramList.MoveEntryBottom;
-var
-  SelectedIndex: Integer;
-  SelectedText : string;
-begin
-  SelectedIndex := ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < Items.Count) then
-  begin
-    SelectedText := Items[SelectedIndex];
-    Items.Delete(SelectedIndex);
-    Items.Insert(Count - 1, SelectedText);
-    ItemIndex := Count - 1;
-  end;
-end;
-
-procedure TProgramList.MoveEntryDown;
-var
-  SelectedIndex: Integer;
-  SelectedText : string;
-begin
-  SelectedIndex := ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < Items.Count) then
-  begin
-    SelectedText := Items[SelectedIndex];
-    Items.Delete(SelectedIndex);
-    Items.Insert(SelectedIndex + 1, SelectedText);
-    ItemIndex := SelectedIndex + 1;
-  end;
-end;
-
-procedure TProgramList.MoveEntryTop;
-var
-  SelectedIndex: Integer;
-  SelectedText : string;
-begin
-  SelectedIndex := ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < Items.Count) then
-  begin
-    SelectedText := Items[SelectedIndex];
-    Items.Delete(SelectedIndex);
-    Items.Insert(0, SelectedText);
-    ItemIndex := 0;
-  end;
-end;
-
-procedure TProgramList.MoveEntryUp;
-var
-  SelectedIndex: Integer;
-  SelectedText : string;
-begin
-  SelectedIndex := ItemIndex;
-  if (SelectedIndex > 0) and (SelectedIndex < Items.Count) then
-  begin
-    SelectedText := Items[SelectedIndex];
-    Items.Delete(SelectedIndex);
-    Items.Insert(SelectedIndex - 1, SelectedText);
-    ItemIndex := SelectedIndex - 1;
   end;
 end;
 
@@ -172,6 +93,16 @@ end;
 procedure TFormProgrammAdd.cbxProgramCaptionChange(Sender: TObject);
 begin
   FProgramCaption := cbxProgramCaption.Items[cbxProgramCaption.ItemIndex];
+end;
+
+procedure TFormProgrammAdd.cbxProgramModeChange(Sender: TObject);
+begin
+  FProgramMode := cbxProgramMode.Items[cbxProgramMode.ItemIndex];
+end;
+
+procedure TFormProgrammAdd.FormShow(Sender: TObject);
+begin
+  cbxProgramMode.OnChange(Self);
 end;
 
 procedure TFormProgrammAdd.ledProgramNameChange(Sender: TObject);

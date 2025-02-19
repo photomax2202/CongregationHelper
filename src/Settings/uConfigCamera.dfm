@@ -14,9 +14,9 @@ inherited FormConfigCamera: TFormConfigCamera
   object lblPositions: TLabel [0]
     Left = 16
     Top = 168
-    Width = 160
+    Width = 164
     Height = 15
-    Caption = 'Positionen (links/mitte/rechts:'
+    Caption = 'Positionen (links/mitte/rechts):'
   end
   object lblPositionsOverwiew: TLabel [1]
     Left = 16
@@ -40,12 +40,12 @@ inherited FormConfigCamera: TFormConfigCamera
     ExplicitTop = 348
     ExplicitWidth = 418
     inherited btnOk: TButton
-      Left = 223
-      ExplicitLeft = 222
+      Left = 224
+      ExplicitLeft = 223
     end
     inherited btnCancel: TButton
-      Left = 120
-      ExplicitLeft = 119
+      Left = 121
+      ExplicitLeft = 120
     end
   end
   object ledUsername: TLabeledEdit
@@ -84,6 +84,7 @@ inherited FormConfigCamera: TFormConfigCamera
     EditLabel.Height = 23
     EditLabel.Caption = 'Bearer Token:'
     LabelPosition = lpLeft
+    ReadOnly = True
     TabOrder = 2
     Text = ''
     OnChange = ledFieldValidation

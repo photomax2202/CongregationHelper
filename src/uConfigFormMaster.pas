@@ -33,7 +33,7 @@ type
   protected
     procedure DoFormLoad; virtual; abstract;
     procedure DoFormShow; virtual; abstract;
-    procedure DoFormSave; virtual; abstract;
+    procedure DoFormSave(out ACanSave: Boolean); virtual; abstract;
     property Config: TConfig
       read   FConfig;
   public
@@ -49,8 +49,12 @@ uses
 {$R *.dfm}
 
 procedure TForrmConfigMaster.btnOkClick(Sender: TObject);
+var
+  LCanSave: Boolean;
 begin
-  DoFormSave;
+  DoFormSave(LCanSave);
+  if not LCanSave then
+    ModalResult := mrNone;
 end;
 
 procedure TForrmConfigMaster.FormCreate(Sender: TObject);
@@ -63,14 +67,18 @@ end;
 procedure TForrmConfigMaster.FormShow(Sender: TObject);
 begin
   DoFormShow;
+  if Config.AlwaysOnTop then
+    FormStyle := fsStayOnTop
+  else
+    FormStyle := fsNormal;
 end;
 
 procedure TForrmConfigMaster.StyleReturnButtons;
 begin
-btnOk.Top := Ceil((pnlButtons.Height - btnOk.Height) / 2  );
-btnOk.Left := Ceil(pnlButtons.Width / 2 + 8);
-btnCancel.Top := Ceil((pnlButtons.Height - btnCancel.Height) / 2  );
-btnCancel.Left := Ceil(pnlButtons.Width / 2 - 8 - btnCancel.Width);
+  btnOk.Top      := Ceil((pnlButtons.Height - btnOk.Height) / 2);
+  btnOk.Left     := Ceil(pnlButtons.Width / 2 + 8);
+  btnCancel.Top  := Ceil((pnlButtons.Height - btnCancel.Height) / 2);
+  btnCancel.Left := Ceil(pnlButtons.Width / 2 - 8 - btnCancel.Width);
 end;
 
 end.

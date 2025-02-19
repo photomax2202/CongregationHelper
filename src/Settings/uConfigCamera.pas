@@ -47,7 +47,7 @@ type
     { Private-Deklarationen }
     procedure DoFormLoad; override;
     procedure DoFormShow; override;
-    procedure DoFormSave; override;
+    procedure DoFormSave(out ACanSave: Boolean); override;
   public
     { Public-Deklarationen }
   end;
@@ -128,18 +128,18 @@ end;
 procedure TFormConfigCamera.DoFormLoad;
 begin
   inherited;
+  ledUsername.Text := EmptyStr;
+  ledPassword.Text := EmptyStr;
   if Config.CameraIp = EmptyStr then
     Config.CameraIp := '0.0.0.0';
   if Config.CameraURL = EmptyStr then
     Config.CameraURL := '';
 end;
 
-procedure TFormConfigCamera.DoFormSave;
-var
-  LValid: Boolean;
+procedure TFormConfigCamera.DoFormSave(out ACanSave: Boolean);
 begin
   inherited;
-  LValid := False;
+  ACanSave := False;
   try
     if not ValidateToken(ledToken.Text) then
       Exit;
@@ -167,7 +167,7 @@ begin
       Exit;
     if not ValidatePosition(ledPosPark.Text) then
       Exit;
-    LValid := True;
+    ACanSave := True;
 
     Config.CameraToken         := ledToken.Text;
     Config.CameraIp            := ledIP.Text;
@@ -184,10 +184,10 @@ begin
     Config.CameraPosPark       := ledPosPark.Text;
 
     Config.CameraPosSpeakerIndex := cbxPosSpeaker.Items[cbxPosSpeaker.ItemIndex];
-    Config.CameraPosReaderIndex := cbxPosReader.Items[cbxPosSpeaker.ItemIndex];
-    Config.CameraPosTableIndex := cbxPosTable.Items[cbxPosSpeaker.ItemIndex];
+    Config.CameraPosReaderIndex  := cbxPosReader.Items[cbxPosSpeaker.ItemIndex];
+    Config.CameraPosTableIndex   := cbxPosTable.Items[cbxPosSpeaker.ItemIndex];
   finally
-    if not LValid then
+    if not ACanSave then
       ShowMessage('Markiertes Feld hat nicht das richtige Format.');
   end;
 end;

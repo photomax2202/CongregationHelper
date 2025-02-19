@@ -17,12 +17,13 @@ type
 
   TIdentsMonitor = (idMonNumMedia, idMonNumPresentation);
 
-  TIdentsApplication = (apName, apCaption);
+  TIdentsApplication = (apName, apCaption, apMode);
 
   TApplicationEntry = record
     Index: Integer;
     Name: String;
     Caption: String;
+    Mode: String;
   end;
 
   TConfig = class(TIniFile)
@@ -34,10 +35,7 @@ type
     function GetStringMonitor(Index: TIdentsMonitor): String;
     procedure SetStringMonitor(Index: TIdentsMonitor; const Value: String);
 
-    function GetApplicationSection(ANum: Integer): string;
     function GetApplicationCount: Integer;
-    procedure SetApplicationEntry(AApplicationEntry: TApplicationEntry);
-    function GetApplicationEntry(ANum: Integer): TApplicationEntry;
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
@@ -124,6 +122,12 @@ type
 
     property ApplicationCount: Integer
       read   GetApplicationCount;
+
+    procedure SetApplicationEntry(AApplicationEntry: TApplicationEntry);
+    procedure DeleteApplicationEntry(ANum: Integer);
+    function GetApplicationEntry(ANum: Integer): TApplicationEntry;
+    function GetApplicationSection(ANum: Integer): string;
+    function ApplicationExists(ANum: Integer): Boolean;
   end;
 
 const
@@ -137,7 +141,9 @@ const
 
   cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia', 'MonitorNumPresentation');
 
-  cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption');
+  cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption', 'Mode');
+
+  cMaxProgrammCount = 99;
 
 implementation
 
@@ -145,6 +151,11 @@ uses
   Classes;
 
 { TConfig }
+
+function TConfig.ApplicationExists(ANum: Integer): Boolean;
+begin
+  Result := SectionExists(GetApplicationSection(ANum));
+end;
 
 constructor TConfig.Create;
 var
@@ -154,17 +165,21 @@ begin
   inherited Create(LIniPath);
 end;
 
+procedure TConfig.DeleteApplicationEntry(ANum: Integer);
+begin
+  if SectionExists(GetApplicationSection(ANum)) then
+    EraseSection(GetApplicationSection(ANum));
+end;
+
 function TConfig.GetApplicationCount: Integer;
 var
   i: Integer;
 begin
-  for i := 1 to 99 do
+  Result := 0;
+  for i  := 0 to cMaxProgrammCount do
   begin
-    Result := 0;
     if SectionExists(GetApplicationSection(i)) then
-      Result := i
-    else
-      Exit;
+      Result := Result + 1;
   end;
 end;
 
@@ -173,6 +188,7 @@ begin
   Result.Index   := ANum;
   Result.Name    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apName], EmptyStr);
   Result.Caption := ReadString(GetApplicationSection(ANum), cIdentsApplication[apCaption], EmptyStr);
+  Result.Mode := ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr);
 end;
 
 function TConfig.GetApplicationSection(ANum: Integer): string;
@@ -199,6 +215,7 @@ procedure TConfig.SetApplicationEntry(AApplicationEntry: TApplicationEntry);
 begin
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apName], AApplicationEntry.Name);
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apCaption], AApplicationEntry.Caption);
+  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apMode], AApplicationEntry.Mode);
 end;
 
 procedure TConfig.SetBoolGeneral(Index: TIdentsGeneral; const Value: Boolean);
