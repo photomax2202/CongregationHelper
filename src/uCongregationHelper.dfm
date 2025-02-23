@@ -28,7 +28,7 @@ object FormCongregationHelper: TFormCongregationHelper
     TabOrder = 0
     OnChange = pgcMainChange
     ExplicitWidth = 498
-    ExplicitHeight = 187
+    ExplicitHeight = 162
   end
   object pnlBottom: TPanel
     Left = 0
@@ -40,13 +40,15 @@ object FormCongregationHelper: TFormCongregationHelper
     Caption = 'pnlBottom'
     ShowCaption = False
     TabOrder = 1
+    ExplicitTop = 162
+    ExplicitWidth = 498
     DesignSize = (
       500
       25)
     object cbxZoomUsers: TCheckBox
-      Left = 0
+      Left = 10
       Top = 0
-      Width = 100
+      Width = 90
       Height = 25
       Anchors = [akLeft]
       Caption = #220'berwachen'
