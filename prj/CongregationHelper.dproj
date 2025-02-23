@@ -171,6 +171,10 @@
             <Form>FormProgrammAdd</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\src\FunctionPage\uPageApplication.pas">
+            <Form>FormPageApplication</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

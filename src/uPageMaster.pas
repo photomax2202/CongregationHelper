@@ -12,22 +12,26 @@ uses
   Vcl.Controls,
   Vcl.Forms,
   Vcl.Dialogs,
-  Vcl.StdCtrls;
+  Vcl.StdCtrls,
+  uConfig;
 
 type
   TFormPageMaster = class(TForm)
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FPageName: String;
+    FConfig  : TConfig;
     function GetMaxWidth: Integer;
     function GetMaxHeight: Integer;
     function GetPageName: String;
-    { Private-Deklarationen }
   protected
-    procedure InitPage; virtual; abstract;
-
+    procedure DoPageCreate; virtual; abstract;
+    procedure DoPageShow; virtual; abstract;
+    procedure DoPageClose; virtual; abstract;
+    procedure TestProcedure; virtual; abstract;
   public
-    { Public-Deklarationen }
     property MaxWidth: Integer
       read   GetMaxWidth;
     property MaxHeight: Integer
@@ -35,17 +39,33 @@ type
     property PageName: String
       read   GetPageName
       write  FPageName;
-
+    property Config: TConfig
+      read   FConfig;
   end;
 
 implementation
+
+uses
+  uCongregationHelper;
 
 {$R *.dfm}
 { TFormPageMaster }
 
 procedure TFormPageMaster.FormCreate(Sender: TObject);
 begin
-  InitPage;
+  FConfig := FormCongregationHelper.Config;
+  DoPageCreate;
+  Caption := PageName;
+end;
+
+procedure TFormPageMaster.FormDestroy(Sender: TObject);
+begin
+  DoPageClose;
+end;
+
+procedure TFormPageMaster.FormShow(Sender: TObject);
+begin
+  DoPageShow;
 end;
 
 function TFormPageMaster.GetMaxHeight: Integer;

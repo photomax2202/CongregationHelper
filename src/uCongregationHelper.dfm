@@ -23,11 +23,58 @@ object FormCongregationHelper: TFormCongregationHelper
     Left = 0
     Top = 0
     Width = 500
-    Height = 195
+    Height = 170
     Align = alClient
     TabOrder = 0
+    OnChange = pgcMainChange
     ExplicitWidth = 498
     ExplicitHeight = 187
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Top = 170
+    Width = 500
+    Height = 25
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'pnlBottom'
+    ShowCaption = False
+    TabOrder = 1
+    DesignSize = (
+      500
+      25)
+    object cbxZoomUsers: TCheckBox
+      Left = 0
+      Top = 0
+      Width = 100
+      Height = 25
+      Anchors = [akLeft]
+      Caption = #220'berwachen'
+      TabOrder = 0
+      OnClick = cbxZoomUsersClick
+    end
+    object pnlZoomUserStage: TPanel
+      Left = 100
+      Top = 0
+      Width = 100
+      Height = 25
+      BevelOuter = bvSpace
+      Caption = 'B'#252'hne'
+      Color = clGray
+      ParentBackground = False
+      TabOrder = 1
+    end
+    object pnlZoomUserConference: TPanel
+      Left = 200
+      Top = 0
+      Width = 100
+      Height = 25
+      BevelOuter = bvSpace
+      Caption = 'JW-Conf'
+      Color = clGray
+      ParentBackground = False
+      TabOrder = 2
+    end
   end
   object mpMainMenu: TMainMenu
     Left = 32
@@ -65,5 +112,12 @@ object FormCongregationHelper: TFormCongregationHelper
         OnClick = mpSettingsClick
       end
     end
+  end
+  object tmrZoomUser: TTimer
+    Enabled = False
+    Interval = 30000
+    OnTimer = tmrZoomUserTimer
+    Left = 32
+    Top = 87
   end
 end

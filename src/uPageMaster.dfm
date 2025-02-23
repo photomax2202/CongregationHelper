@@ -2,8 +2,8 @@ object FormPageMaster: TFormPageMaster
   Left = 0
   Top = 0
   Caption = 'FormPageMaster'
-  ClientHeight = 342
-  ClientWidth = 740
+  ClientHeight = 187
+  ClientWidth = 418
   Color = clBtnFace
   DragKind = dkDock
   Font.Charset = DEFAULT_CHARSET
@@ -12,5 +12,7 @@ object FormPageMaster: TFormPageMaster
   Font.Name = 'Segoe UI'
   Font.Style = []
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   TextHeight = 15
 end

@@ -31,6 +31,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure TimerRefreshTimer(Sender: TObject);
     procedure btnAbortUpdateClick(Sender: TObject);
+    procedure btnUpdateClick(Sender: TObject);
   private
     FAppRepo         : String;
     FAppName         : String;
@@ -67,6 +68,18 @@ uses
 procedure TFormAutoUpdater.btnAbortUpdateClick(Sender: TObject);
 begin
   Application.Terminate;
+end;
+
+procedure TFormAutoUpdater.btnUpdateClick(Sender: TObject);
+var
+LAppPath: string;
+begin
+KillProcess(AppName);
+Sleep(1000);
+DownloadRelease(AppUrl);
+LAppPath := ExtractFilePath(ParamStr(0))  + AppName;
+StartNewProcess(LAppPath,'');
+Application.Terminate;
 end;
 
 procedure TFormAutoUpdater.ButtonEnable;

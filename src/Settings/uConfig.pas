@@ -9,7 +9,7 @@ uses
 type
   TSections = (scGeneral, scCamera, scMonitor);
 
-  TIdentsGeneral = (idAlwaysOnTop);
+  TIdentsGeneral = (idAlwaysOnTop, idCheckZoomUsers);
 
   TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
     idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosLeftSpace, idCamPosRightSpace, idCamPosTotal,
@@ -43,6 +43,10 @@ type
 
     property AlwaysOnTop: Boolean
       index  idAlwaysOnTop
+      read   GetBoolGeneral
+      write  SetBoolGeneral;
+    property CheckZoomUsers: Boolean
+      index  idCheckZoomUsers
       read   GetBoolGeneral
       write  SetBoolGeneral;
 
@@ -133,7 +137,7 @@ type
 const
   cSections: array [TSections] of string = ('General', 'Camera', 'Monitor');
 
-  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop');
+  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'CheckZoomUsers');
 
   cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'Speaker', 'SpeakerS', 'SpeakerL',
     'SpeakerXL', 'Reader', 'Table', 'LeftSpace', 'RightSpace', 'Total', 'Park', 'SpeakerIndex', 'ReadeIndex',
@@ -188,7 +192,7 @@ begin
   Result.Index   := ANum;
   Result.Name    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apName], EmptyStr);
   Result.Caption := ReadString(GetApplicationSection(ANum), cIdentsApplication[apCaption], EmptyStr);
-  Result.Mode := ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr);
+  Result.Mode    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr);
 end;
 
 function TConfig.GetApplicationSection(ANum: Integer): string;

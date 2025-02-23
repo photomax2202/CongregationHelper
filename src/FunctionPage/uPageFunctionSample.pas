@@ -18,11 +18,12 @@ uses
 type
   TFormPageFunctionSample = class(TFormPageMaster)
   private
-    { Private-Deklarationen }
+    procedure DoPageCreate; override;
+    procedure DoPageShow; override;
+    procedure DoPageClose; override;
   protected
-    procedure InitPage; override;
   public
-    { Public-Deklarationen }
+    procedure TestProcedure; override;
 
   end;
 
@@ -34,10 +35,28 @@ implementation
 {$R *.dfm}
 { TFormPageFunctionSample }
 
-procedure TFormPageFunctionSample.InitPage;
+procedure TFormPageFunctionSample.DoPageClose;
+begin
+  inherited;
+  //
+end;
+
+procedure TFormPageFunctionSample.DoPageCreate;
 begin
   inherited;
   PageName := 'Sample';
+end;
+
+procedure TFormPageFunctionSample.DoPageShow;
+begin
+  inherited;
+  //
+end;
+
+procedure TFormPageFunctionSample.TestProcedure;
+begin
+  inherited;
+  ShowMessage('Testnachicht: ' + Caption);
 end;
 
 end.

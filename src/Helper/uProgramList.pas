@@ -79,6 +79,8 @@ begin
   try
     FormProgramAdd.WindowList.Items.Clear;
     EnumWindows(@EnumWindowsProc, 0);
+    FormProgramAdd.BringToFront;
+    FormProgramAdd.FormStyle := fsStayOnTop;
     Result   := FormProgramAdd.ShowModal;
     AName    := FormProgramAdd.ProgramName;
     ACaption := FormProgramAdd.ProgramCaption;

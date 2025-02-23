@@ -66,6 +66,7 @@ end;
 
 procedure TForrmConfigMaster.FormShow(Sender: TObject);
 begin
+  BringToFront;
   DoFormShow;
   if Config.AlwaysOnTop then
     FormStyle := fsStayOnTop
