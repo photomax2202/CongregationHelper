@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">CongregationHelper</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -121,6 +121,7 @@
         <DCC_ExeOutput>..\bin</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <Icon_MainIcon>$(ProjectName).Artwork\Windows\AppIcon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -143,7 +144,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="..\src\uCongregationHelper.pas">
-            <Form>Form1</Form>
+            <Form>FormCongregationHelper</Form>
         </DCCReference>
         <DCCReference Include="..\src\Settings\uConfig.pas"/>
         <DCCReference Include="..\src\Settings\uConfigCamera.pas">
@@ -175,6 +176,7 @@
             <Form>FormPageApplication</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\src\Helper\uMonitorHandler.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -207,9 +209,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\bin\CongregationHelper.rsm" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile LocalName="..\bin\CongregationHelper.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>CongregationHelper.rsm</RemoteName>
+                        <RemoteName>CongregationHelper.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

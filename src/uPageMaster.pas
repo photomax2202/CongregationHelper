@@ -30,7 +30,6 @@ type
     procedure DoPageCreate; virtual; abstract;
     procedure DoPageShow; virtual; abstract;
     procedure DoPageClose; virtual; abstract;
-    procedure TestProcedure; virtual; abstract;
   public
     property MaxWidth: Integer
       read   GetMaxWidth;

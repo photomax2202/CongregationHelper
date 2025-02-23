@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.Generics.Collections,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -51,16 +52,18 @@ type
     procedure tmrZoomUserTimer(Sender: TObject);
     procedure CheckZoomUsers;
   private
-    FConfig      : TConfig;
-    FUpdateApp   : String;
-    FFilePath    : String;
-    FUpdateAppUrl: String;
+    FConfig       : TConfig;
+    FFunctionPages: TObjectList<TFormPageMaster>;
+    FUpdateApp    : String;
+    FFilePath     : String;
+    FUpdateAppUrl : String;
     { Private-Deklarationen }
-    procedure AddFunctionPages;
+    // procedure AddFunctionPages;
     function GetFunctionPages(i: Integer): TFormPageMaster;
     function GetFunctionPage: TFormPageMaster;
     procedure GetUpdateApp;
     procedure SetZoomUserState(Sender: TObject; AState: TZoomUserState);
+    function CreatePages: TArray<TFormPageMaster>;
   public
     { Public-Deklarationen }
     property Config: TConfig
@@ -98,25 +101,24 @@ uses
   uPageApplication;
 
 {$R *.dfm}
-
-procedure TFormCongregationHelper.AddFunctionPages;
-
-  procedure AddFunctionPage(AForm: TForm);
-  var
-  LComponent: TComponent;
-  begin
-    AForm.ManualDock(pgcMain);
-    pgcMain.Pages[pgcMain.PageCount - 1].Name := AForm.Name;
-    AForm.Show;
-  end;
-
-begin
-{$IFDEF DEBUG}
-  AddFunctionPage(FormPageFunctionSample);
-{$ENDIF}
-  AddFunctionPage(FormPageApplication);
-  DoResize;
-end;
+// procedure TFormCongregationHelper.AddFunctionPages;
+//
+// procedure AddFunctionPage(AForm: TForm);
+// begin
+// AForm.ManualDock(pgcMain);
+// pgcMain.Pages[pgcMain.PageCount - 1].Name := AForm.Name;
+// AForm.Show;
+// end;
+//
+// begin
+// {$IFDEF DEBUG}
+// FormPageFunctionSample := TFormPageFunctionSample.Create(pgcMain);
+// AddFunctionPage(FormPageFunctionSample);
+// {$ENDIF}
+// FormPageApplication := TFormPageApplication.Create(pgcMain);
+// AddFunctionPage(FormPageApplication);
+// DoResize;
+// end;
 
 procedure TFormCongregationHelper.cbxZoomUsersClick(Sender: TObject);
 begin
@@ -130,9 +132,27 @@ begin
   { TODO -oMax -cZoomUsers : Implementation of Checking Zoom user avalibility }
 end;
 
+function TFormCongregationHelper.CreatePages: TArray<TFormPageMaster>;
+var
+  LPages: TObjectList<TFormPageMaster>;
+begin
+  LPages := TObjectList<TFormPageMaster>.Create(False);
+  try
+    // TODO: für jede Funktion eine EditPage in eigener Unit erstellen und der Liste hinzufügen
+{$IFDEF DEBUG}
+    LPages.Add(TFormPageFunctionSample.Create(Self));
+{$ENDIF}
+    LPages.Add(TFormPageApplication.Create(Self));
+
+    Result := LPages.ToArray;
+  finally
+    LPages.Free;
+  end;
+
+end;
+
 procedure TFormCongregationHelper.DoResize;
 var
-
   i             : Integer;
   LHight, LWidth: Integer;
 begin
@@ -149,12 +169,10 @@ begin
   Constraints.MaxWidth  := 0;
   Constraints.MinHeight := 0;
   Constraints.MaxHeight := 0;
-  LWidth := 600;
-  LHight := 300;
   Width                 := Width - pgcMain.Width + LWidth;
   Constraints.MinWidth  := Width;
   Constraints.MaxWidth  := Width;
-  Height                := Height - pgcMain.Height + LHight;
+  Height                := Height - pgcMain.Height + LHight + 16;
   Constraints.MinHeight := Height;
   Constraints.MaxHeight := Height;
 end;
@@ -163,6 +181,7 @@ procedure TFormCongregationHelper.FormCreate(Sender: TObject);
 var
   LReleasesText: string;
   LRespose     : string;
+  i            : Integer;
 begin
 
 {$IFNDEF DEBUG}
@@ -174,7 +193,16 @@ begin
   end;
   StartNewProcess(UpdateApp, Format('%s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion]), True);
 {$ENDIF}
-  Config                := TConfig.Create;
+  Config := TConfig.Create;
+
+  FFunctionPages := TObjectList<TFormPageMaster>.Create(True);
+  FFunctionPages.AddRange(CreatePages);
+  for i := 0 to FFunctionPages.Count - 1 do
+  begin
+    FFunctionPages[i].ManualDock(pgcMain);
+    FFunctionPages[i].Show;
+  end;
+  DoResize;
   Application.Name      := StringReplace(Caption, ' ', '', [rfReplaceAll]);
   mpAlwaysOnTop.Checked := Config.AlwaysOnTop;
   cbxZoomUsers.Checked  := Config.CheckZoomUsers;
@@ -183,21 +211,29 @@ end;
 procedure TFormCongregationHelper.FormDestroy(Sender: TObject);
 begin
   Config.Free;
+  FFunctionPages.Free;
 end;
 
 procedure TFormCongregationHelper.FormShow(Sender: TObject);
 begin
-  AddFunctionPages;
+  DoResize;
+  // AddFunctionPages;
 end;
 
 function TFormCongregationHelper.GetFunctionPage: TFormPageMaster;
 begin
-  Result := TFormPageMaster(pgcMain.ActivePage);
+  if (pgcMain.ActivePageIndex < 0) and (pgcMain.ActivePageIndex <= FFunctionPages.Count) then
+   Result := nil
+  else
+  Result := FFunctionPages[pgcMain.ActivePageIndex];
 end;
 
 function TFormCongregationHelper.GetFunctionPages(i: Integer): TFormPageMaster;
 begin
-  Result := TFormPageMaster(pgcMain.Pages[i]);
+  if (i < 0) and (i <= FFunctionPages.Count) then
+   Result := nil
+  else
+  Result := FFunctionPages[i];
 end;
 
 procedure TFormCongregationHelper.GetUpdateApp;
@@ -245,11 +281,21 @@ procedure TFormCongregationHelper.mpSettingsClick(Sender: TObject);
 begin
   if (Sender as TMenuItem).Name = mpSettingsCamera.Name then
   begin
-    FormConfigCamera.ShowModal;
+    FormConfigCamera := TFormConfigCamera.Create(FormCongregationHelper);
+    try
+      FormConfigCamera.ShowModal;
+    finally
+      FormConfigCamera.Free;
+    end;
   end
   else if (Sender as TMenuItem).Name = mpSettingsMonitor.Name then
   begin
-    FormConfigMonitor.ShowModal;
+    FormConfigMonitor := TFormConfigMonitor.Create(FormCongregationHelper);
+    try
+      FormConfigMonitor.ShowModal;
+    finally
+      FormConfigMonitor.Free;
+    end;
   end;
   pgcMain.OnChange(Self);
   DoResize;
@@ -259,7 +305,7 @@ procedure TFormCongregationHelper.pgcMainChange(Sender: TObject);
 begin
   if Assigned(FunctionPage) then
   begin
-    FunctionPage.FormShow(FunctionPage)
+    FunctionPage.FormShow(FunctionPage);
   end;
 end;
 

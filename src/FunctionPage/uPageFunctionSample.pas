@@ -23,7 +23,6 @@ type
     procedure DoPageClose; override;
   protected
   public
-    procedure TestProcedure; override;
 
   end;
 
@@ -51,12 +50,6 @@ procedure TFormPageFunctionSample.DoPageShow;
 begin
   inherited;
   //
-end;
-
-procedure TFormPageFunctionSample.TestProcedure;
-begin
-  inherited;
-  ShowMessage('Testnachicht: ' + Caption);
 end;
 
 end.
