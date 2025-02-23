@@ -11,7 +11,8 @@ uses
   uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample},
   uConfigFormMaster in '..\src\uConfigFormMaster.pas' {ForrmConfigMaster},
   uGitHub in '..\src\uGitHub.pas',
-  uProgramList in '..\src\Helper\uProgramList.pas' {FormProgrammAdd};
+  uProgramList in '..\src\Helper\uProgramList.pas' {FormProgrammAdd},
+  uPageApplication in '..\src\FunctionPage\uPageApplication.pas' {FormPageApplication};
 
 {$R *.res}
 
@@ -26,5 +27,6 @@ begin
   Application.CreateForm(TFormConfigCamera, FormConfigCamera);
   Application.CreateForm(TFormConfigMonitor, FormConfigMonitor);
   Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
+  Application.CreateForm(TFormPageApplication, FormPageApplication);
   Application.Run;
 end.

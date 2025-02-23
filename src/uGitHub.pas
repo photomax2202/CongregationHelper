@@ -2,6 +2,9 @@ unit uGitHub;
 
 interface
 
+uses
+Windows;
+
 type
   TRelease = record
     Name: string;
@@ -16,6 +19,8 @@ function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLi
 function DownloadRelease(AUrl: String): Boolean;
 function IsProcessRunning(const AProcessName: string): Boolean;
 procedure StartNewProcess(const ApplicationName, CommandLine: string; AWaitForFinish: Boolean = False);
+function GetProcessID(const ProcessName: string): DWORD;
+procedure KillProcess(const ProcessName: string);
 procedure OpenURLInDefaultBrowser(const URL: string);
 
 implementation
@@ -24,13 +29,12 @@ uses
   System.Net.HttpClient,
   System.Net.HttpClientComponent,
   System.Net.URLClient,
-  SysUtils,
   Classes,
   DateUtils,
   Generics.Collections,
   JSON,
   URLMon,
-  Windows,
+  SysUtils,
   psapi,
   TlHelp32,
   Vcl.Dialogs,
@@ -152,6 +156,7 @@ begin
     LProgramPath := ExtractFilePath(ParamStr(0)) + ExtractAppFromUrl(AUrl);
     if FileExists(LProgramPath) then
       DeleteFile(PChar(LProgramPath));
+    ShowMessage('Eine Applikation wird nachgeladen:' + #10 + #13 + 'URL: ' + AUrl);
     UrlDownloadToFile(nil, PChar(AUrl), PChar(LProgramPath), 0, nil);
     result := True;
   except
@@ -208,6 +213,52 @@ begin
     // Fehler beim Starten des Prozesses
     ShowMessage('Fehler beim Starten des Prozesses: ' + SysErrorMessage(GetLastError));
   end;
+end;
+
+function GetProcessID(const ProcessName: string): DWORD;
+var
+  Snapshot    : THandle;
+  ProcessEntry: TProcessEntry32;
+begin
+  result   := 0;
+  Snapshot := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if Snapshot <> INVALID_HANDLE_VALUE then
+    try
+      ProcessEntry.dwSize := SizeOf(ProcessEntry);
+      if Process32First(Snapshot, ProcessEntry) then
+      begin
+        repeat
+          if SameText(ProcessEntry.szExeFile, ProcessName) then
+          begin
+            result := ProcessEntry.th32ProcessID;
+            Break;
+          end;
+        until not Process32Next(Snapshot, ProcessEntry);
+      end;
+    finally
+      CloseHandle(Snapshot);
+    end;
+end;
+
+procedure KillProcess(const ProcessName: string);
+var
+  ProcessID    : DWORD;
+  ProcessHandle: THandle;
+begin
+  ProcessID := GetProcessID(ProcessName);
+  if ProcessID <> 0 then
+  begin
+    ProcessHandle := OpenProcess(PROCESS_TERMINATE, False, ProcessID);
+    if ProcessHandle <> 0 then
+      try
+        if not TerminateProcess(ProcessHandle, 0) then
+          raise Exception.Create('Failed to terminate process');
+      finally
+        CloseHandle(ProcessHandle);
+      end;
+  end
+  else
+    raise Exception.Create('Process not found');
 end;
 
 procedure OpenURLInDefaultBrowser(const URL: string);

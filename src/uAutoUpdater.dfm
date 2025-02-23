@@ -77,6 +77,7 @@ object FormAutoUpdater: TFormAutoUpdater
     Caption = 'App beenden und neustes Release herunterladen.'
     TabOrder = 4
     WordWrap = True
+    OnClick = btnUpdateClick
   end
   object edtAppRunning: TEdit
     Left = 296

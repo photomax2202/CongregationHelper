@@ -16,9 +16,14 @@ uses
   uConfig,
   Vcl.ComCtrls,
   uPageMaster,
-  uGitHub;
+  uGitHub,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls;
 
 type
+
+  TZoomUserState = (stInactive, stOnline, stOffline);
+
   TFormCongregationHelper = class(TForm)
     mpMainMenu: TMainMenu;
     mpSettings: TMenuItem;
@@ -30,12 +35,21 @@ type
     mpSettingsMonitor: TMenuItem;
     pgcMain: TPageControl;
     mpHelp: TMenuItem;
+    pnlBottom: TPanel;
+    cbxZoomUsers: TCheckBox;
+    pnlZoomUserStage: TPanel;
+    pnlZoomUserConference: TPanel;
+    tmrZoomUser: TTimer;
     procedure mpAlwaysOnTopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mpSettingsClick(Sender: TObject);
     procedure mpProgramClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure pgcMainChange(Sender: TObject);
+    procedure cbxZoomUsersClick(Sender: TObject);
+    procedure tmrZoomUserTimer(Sender: TObject);
+    procedure CheckZoomUsers;
   private
     FConfig      : TConfig;
     FUpdateApp   : String;
@@ -46,6 +60,7 @@ type
     function GetFunctionPages(i: Integer): TFormPageMaster;
     function GetFunctionPage: TFormPageMaster;
     procedure GetUpdateApp;
+    procedure SetZoomUserState(Sender: TObject; AState: TZoomUserState);
   public
     { Public-Deklarationen }
     property Config: TConfig
@@ -61,11 +76,13 @@ type
       read   GetFunctionPages;
     property FunctionPage: TFormPageMaster
       read   GetFunctionPage;
+
+    procedure DoResize;
   end;
 
 const
-  cVersion = 'v0.0.1_alpha';
-  cRepoName= 'CongregationHelper';
+  cVersion       = 'v0.0.1_alpha';
+  cRepoName      = 'CongregationHelper';
   cUpdateAppName = 'AutoUpdater.exe';
 
 var
@@ -77,25 +94,48 @@ uses
   StrUtils,
   uConfigCamera,
   uConfigMonitor,
-  uPageFunctionSample;
+  uPageFunctionSample,
+  uPageApplication;
 
 {$R *.dfm}
 
 procedure TFormCongregationHelper.AddFunctionPages;
 
   procedure AddFunctionPage(AForm: TForm);
+  var
+  LComponent: TComponent;
   begin
     AForm.ManualDock(pgcMain);
+    pgcMain.Pages[pgcMain.PageCount - 1].Name := AForm.Name;
     AForm.Show;
   end;
 
-var
-  i             : Integer;
-  LHight, LWidth: Integer;
 begin
 {$IFDEF DEBUG}
   AddFunctionPage(FormPageFunctionSample);
 {$ENDIF}
+  AddFunctionPage(FormPageApplication);
+  DoResize;
+end;
+
+procedure TFormCongregationHelper.cbxZoomUsersClick(Sender: TObject);
+begin
+  Config.CheckZoomUsers := cbxZoomUsers.Checked;
+  if cbxZoomUsers.Checked then
+    tmrZoomUser.Enabled := True;
+end;
+
+procedure TFormCongregationHelper.CheckZoomUsers;
+begin
+  { TODO -oMax -cZoomUsers : Implementation of Checking Zoom user avalibility }
+end;
+
+procedure TFormCongregationHelper.DoResize;
+var
+
+  i             : Integer;
+  LHight, LWidth: Integer;
+begin
   LWidth := 0;
   LHight := 0;
   for i  := 0 to pgcMain.PageCount - 1 do
@@ -109,12 +149,14 @@ begin
   Constraints.MaxWidth  := 0;
   Constraints.MinHeight := 0;
   Constraints.MaxHeight := 0;
+  LWidth := 600;
+  LHight := 300;
   Width                 := Width - pgcMain.Width + LWidth;
-//   Constraints.MinWidth  := Width;
-//   Constraints.MaxWidth  := Width;
-  Height := Height - pgcMain.Height + LHight;
-//   Constraints.MinHeight := Height;
-//   Constraints.MaxHeight := Height;
+  Constraints.MinWidth  := Width;
+  Constraints.MaxWidth  := Width;
+  Height                := Height - pgcMain.Height + LHight;
+  Constraints.MinHeight := Height;
+  Constraints.MaxHeight := Height;
 end;
 
 procedure TFormCongregationHelper.FormCreate(Sender: TObject);
@@ -130,11 +172,12 @@ begin
   begin
     GetUpdateApp;
   end;
-  StartNewProcess(UpdateApp,Format('%s %s %s %s',[UpdateApp, cRepoName,  ExtractFileName(FFilePath), cVersion]),True);
+  StartNewProcess(UpdateApp, Format('%s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion]), True);
 {$ENDIF}
   Config                := TConfig.Create;
   Application.Name      := StringReplace(Caption, ' ', '', [rfReplaceAll]);
   mpAlwaysOnTop.Checked := Config.AlwaysOnTop;
+  cbxZoomUsers.Checked  := Config.CheckZoomUsers;
 end;
 
 procedure TFormCongregationHelper.FormDestroy(Sender: TObject);
@@ -184,31 +227,64 @@ end;
 
 procedure TFormCongregationHelper.mpProgramClick(Sender: TObject);
 begin
-if (Sender as TMenuItem).Name = mpHelp.Name then
-begin
-  OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper/wiki');
-end
-else if (Sender as TMenuItem).Name = mpInfo.Name then
-begin
-  OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper');
-end
-else if (Sender as TMenuItem).Name = mpExit.Name then
-begin
-   Application.Terminate;
-end;
+  if (Sender as TMenuItem).Name = mpHelp.Name then
+  begin
+    OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper/wiki');
+  end
+  else if (Sender as TMenuItem).Name = mpInfo.Name then
+  begin
+    ShowMessage(Caption + #10#13 + 'Version ' + cVersion + #10#13 + 'GitHub-Repo: ' + cRepoName);
+  end
+  else if (Sender as TMenuItem).Name = mpExit.Name then
+  begin
+    Application.Terminate;
+  end;
 end;
 
 procedure TFormCongregationHelper.mpSettingsClick(Sender: TObject);
 begin
   if (Sender as TMenuItem).Name = mpSettingsCamera.Name then
   begin
-    FormConfigCamera.ShowModal
+    FormConfigCamera.ShowModal;
   end
   else if (Sender as TMenuItem).Name = mpSettingsMonitor.Name then
   begin
     FormConfigMonitor.ShowModal;
   end;
+  pgcMain.OnChange(Self);
+  DoResize;
+end;
 
+procedure TFormCongregationHelper.pgcMainChange(Sender: TObject);
+begin
+  if Assigned(FunctionPage) then
+  begin
+    FunctionPage.FormShow(FunctionPage)
+  end;
+end;
+
+procedure TFormCongregationHelper.SetZoomUserState(Sender: TObject; AState: TZoomUserState);
+begin
+  if not(Sender is TPanel) then
+    Exit;
+  if AState = stInactive then
+    (Sender as TPanel).Color := clGrayText
+  else if AState = stOnline then
+    (Sender as TPanel).Color := clLime
+  else if AState = stOffline then
+    (Sender as TPanel).Color := clRed;
+end;
+
+procedure TFormCongregationHelper.tmrZoomUserTimer(Sender: TObject);
+begin
+  if not cbxZoomUsers.Checked then
+  begin
+    tmrZoomUser.Enabled := False;
+    SetZoomUserState(pnlZoomUserStage, stInactive);
+    SetZoomUserState(pnlZoomUserConference, stInactive);
+    Exit;
+  end;
+  CheckZoomUsers;
 end;
 
 end.
