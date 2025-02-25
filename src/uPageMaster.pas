@@ -75,7 +75,7 @@ begin
   Result := 0;
   for i  := 0 to ControlCount - 1 do
   begin
-    LHeight := Controls[i].Top + Controls[i].Height;
+    LHeight := Controls[i].Height + Controls[i].Height;
     if LHeight > Result then
       Result := LHeight;
   end;
