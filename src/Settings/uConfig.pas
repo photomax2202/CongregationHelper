@@ -19,11 +19,13 @@ type
 
   TIdentsApplication = (apName, apCaption, apMode);
 
+  TApplicationMode = (mdLeft, mdRight, mdPresentation);
+
   TApplicationEntry = record
     Index: Integer;
     Name: String;
     Caption: String;
-    Mode: String;
+    Mode: TApplicationMode;
   end;
 
   TConfig = class(TIniFile)
@@ -132,6 +134,7 @@ type
     function GetApplicationEntry(ANum: Integer): TApplicationEntry;
     function GetApplicationSection(ANum: Integer): string;
     function ApplicationExists(ANum: Integer): Boolean;
+    function GetApplicationMode(AMode: string): TApplicationMode;
   end;
 
 const
@@ -146,6 +149,7 @@ const
   cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia', 'MonitorNumPresentation');
 
   cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption', 'Mode');
+  cApplicationMode: array [TApplicationMode] of string = ('Links Anheften','Rechts Anheften','Präsentation');
 
   cMaxProgrammCount = 99;
 
@@ -192,7 +196,19 @@ begin
   Result.Index   := ANum;
   Result.Name    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apName], EmptyStr);
   Result.Caption := ReadString(GetApplicationSection(ANum), cIdentsApplication[apCaption], EmptyStr);
-  Result.Mode    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr);
+  Result.Mode    := GetApplicationMode(ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr));
+end;
+
+function TConfig.GetApplicationMode(AMode: string): TApplicationMode;
+begin
+if SameStr(AMode,cApplicationMode[mdLeft]) then
+Result := mdLeft
+else if SameStr(AMode,cApplicationMode[mdRight]) then
+Result := mdRight
+else if SameStr(AMode,cApplicationMode[mdPresentation]) then
+Result := mdPresentation
+else
+Result := mdPresentation;
 end;
 
 function TConfig.GetApplicationSection(ANum: Integer): string;
@@ -219,7 +235,7 @@ procedure TConfig.SetApplicationEntry(AApplicationEntry: TApplicationEntry);
 begin
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apName], AApplicationEntry.Name);
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apCaption], AApplicationEntry.Caption);
-  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apMode], AApplicationEntry.Mode);
+  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apMode], cApplicationMode[AApplicationEntry.Mode]);
 end;
 
 procedure TConfig.SetBoolGeneral(Index: TIdentsGeneral; const Value: Boolean);

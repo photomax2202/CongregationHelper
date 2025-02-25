@@ -3,12 +3,12 @@ object FormCongregationHelper: TFormCongregationHelper
   Top = 0
   Caption = 'Congregation Helper'
   ClientHeight = 195
-  ClientWidth = 500
+  ClientWidth = 450
   Color = clBtnFace
   Constraints.MaxHeight = 259
-  Constraints.MaxWidth = 516
+  Constraints.MaxWidth = 466
   Constraints.MinHeight = 259
-  Constraints.MinWidth = 516
+  Constraints.MinWidth = 466
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -22,18 +22,16 @@ object FormCongregationHelper: TFormCongregationHelper
   object pgcMain: TPageControl
     Left = 0
     Top = 0
-    Width = 500
+    Width = 450
     Height = 170
     Align = alClient
     TabOrder = 0
     OnChange = pgcMainChange
-    ExplicitWidth = 498
-    ExplicitHeight = 162
   end
   object pnlBottom: TPanel
     Left = 0
     Top = 170
-    Width = 500
+    Width = 450
     Height = 25
     Align = alBottom
     BevelOuter = bvNone
@@ -43,7 +41,7 @@ object FormCongregationHelper: TFormCongregationHelper
     ExplicitTop = 162
     ExplicitWidth = 498
     DesignSize = (
-      500
+      450
       25)
     object cbxZoomUsers: TCheckBox
       Left = 10

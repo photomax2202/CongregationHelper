@@ -40,12 +40,12 @@ inherited FormConfigMonitor: TFormConfigMonitor
     ExplicitTop = 288
     ExplicitWidth = 532
     inherited btnOk: TButton
-      Left = 291
-      ExplicitLeft = 290
+      Left = 294
+      ExplicitLeft = 293
     end
     inherited btnCancel: TButton
-      Left = 199
-      ExplicitLeft = 198
+      Left = 202
+      ExplicitLeft = 201
     end
   end
   object cbxMonitorMedia: TComboBox
@@ -97,7 +97,7 @@ inherited FormConfigMonitor: TFormConfigMonitor
     Top = 132
     Width = 75
     Height = 25
-    Caption = 'hoch'
+    Caption = 'hoch >'
     TabOrder = 6
     OnClick = btnProgramUpClick
   end
@@ -106,7 +106,7 @@ inherited FormConfigMonitor: TFormConfigMonitor
     Top = 101
     Width = 75
     Height = 25
-    Caption = 'ganz hoch'
+    Caption = 'hoch >>'
     TabOrder = 7
     OnClick = btnProgramTopClick
   end
@@ -133,7 +133,7 @@ inherited FormConfigMonitor: TFormConfigMonitor
     Top = 225
     Width = 75
     Height = 25
-    Caption = 'runter'
+    Caption = 'runter <'
     TabOrder = 10
     OnClick = btnProgramDownClick
   end
@@ -142,7 +142,7 @@ inherited FormConfigMonitor: TFormConfigMonitor
     Top = 256
     Width = 75
     Height = 25
-    Caption = 'ganz runter'
+    Caption = 'runter <<'
     TabOrder = 11
     OnClick = btnProgramBottomClick
   end

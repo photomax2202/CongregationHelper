@@ -211,7 +211,7 @@ begin
       LApplicationEntry.Index   := i;
       LApplicationEntry.Name    := sl.Values[cIdentsApplication[apName]];
       LApplicationEntry.Caption := sl.Values[cIdentsApplication[apCaption]];
-      LApplicationEntry.Mode    := sl.Values[cIdentsApplication[apMode]];
+      LApplicationEntry.Mode    := Config.GetApplicationMode(sl.Values[cIdentsApplication[apMode]]);
       Config.SetApplicationEntry(LApplicationEntry);
     end;
     ACanSave := true;
@@ -243,7 +243,7 @@ begin
           LApplicationEntry := Config.GetApplicationEntry(i);
           sl.AddPair(cIdentsApplication[apName], LApplicationEntry.Name);
           sl.AddPair(cIdentsApplication[apCaption], LApplicationEntry.Caption);
-          sl.AddPair(cIdentsApplication[apMode], LApplicationEntry.Mode);
+          sl.AddPair(cIdentsApplication[apMode], cApplicationMode[LApplicationEntry.Mode]);
           lbPrograms.Items.Add(sl.DelimitedText);
           sl.Clear;
         end;

@@ -1,9 +1,8 @@
 inherited FormPageFunctionSample: TFormPageFunctionSample
   Caption = 'FormPageFunctionSample'
-  ClientHeight = 175
-  ClientWidth = 318
+  ClientHeight = 90
+  Constraints.MinWidth = 466
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitWidth = 334
-  ExplicitHeight = 214
+  ExplicitHeight = 129
   TextHeight = 15
 end
