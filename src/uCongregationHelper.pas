@@ -57,6 +57,8 @@ type
     FUpdateApp    : String;
     FFilePath     : String;
     FUpdateAppUrl : String;
+    FTimerIndex   : Integer;
+    FZoomUserCheck: Boolean;
     { Private-Deklarationen }
     // procedure AddFunctionPages;
     function GetFunctionPages(i: Integer): TFormPageMaster;
@@ -79,6 +81,8 @@ type
       read   GetFunctionPages;
     property FunctionPage: TFormPageMaster
       read   GetFunctionPage;
+    property ZoomUserCheck: Boolean
+      read   FZoomUserCheck;
 
     procedure DoResize;
   end;
@@ -124,7 +128,7 @@ procedure TFormCongregationHelper.cbxZoomUsersClick(Sender: TObject);
 begin
   Config.CheckZoomUsers := cbxZoomUsers.Checked;
   if cbxZoomUsers.Checked then
-    tmrZoomUser.Enabled := True;
+    FZoomUserCheck := True;
 end;
 
 procedure TFormCongregationHelper.CheckZoomUsers;
@@ -153,28 +157,28 @@ end;
 
 procedure TFormCongregationHelper.DoResize;
 var
-  i             : Integer;
-//  LHight: Integer;
+  i: Integer;
+  // LHight: Integer;
 begin
-//  LWidth := 0;
-//  LHight := 0;
-//  for i  := 0 to pgcMain.PageCount - 1 do
-//  begin
-//    if FunctionPages[i].MaxWidth > LWidth then
-//      LWidth := FunctionPages[i].MaxWidth;
-//    if FunctionPages[i].MaxHeight > LHight then
-//      LHight := FunctionPages[i].MaxHeight;
-//  end;
-//  Constraints.MinWidth  := 0;
-//  Constraints.MaxWidth  := 0;
-//  Constraints.MinHeight := 0;
-//  Constraints.MaxHeight := 0;
-//  Width                 := Width - pgcMain.Width + LWidth;
-//  Constraints.MinWidth  := Width;
-//  Constraints.MaxWidth  := Width;
-//  Height                := Height - pgcMain.Height + LHight;
-//  Constraints.MinHeight := Height;
-//  Constraints.MaxHeight := Height;
+  // LWidth := 0;
+  // LHight := 0;
+  // for i  := 0 to pgcMain.PageCount - 1 do
+  // begin
+  // if FunctionPages[i].MaxWidth > LWidth then
+  // LWidth := FunctionPages[i].MaxWidth;
+  // if FunctionPages[i].MaxHeight > LHight then
+  // LHight := FunctionPages[i].MaxHeight;
+  // end;
+  // Constraints.MinWidth  := 0;
+  // Constraints.MaxWidth  := 0;
+  // Constraints.MinHeight := 0;
+  // Constraints.MaxHeight := 0;
+  // Width                 := Width - pgcMain.Width + LWidth;
+  // Constraints.MinWidth  := Width;
+  // Constraints.MaxWidth  := Width;
+  // Height                := Height - pgcMain.Height + LHight;
+  // Constraints.MinHeight := Height;
+  // Constraints.MaxHeight := Height;
 end;
 
 procedure TFormCongregationHelper.FormCreate(Sender: TObject);
@@ -183,7 +187,7 @@ var
   LRespose     : string;
   i            : Integer;
 begin
-
+  FTimerIndex := 0;
 {$IFNDEF DEBUG}
   FFilePath  := ParamStr(0);
   FUpdateApp := StringReplace(FFilePath, ExtractFileName(ParamStr(0)), cUpdateAppName, [rfReplaceAll]);
@@ -223,17 +227,17 @@ end;
 function TFormCongregationHelper.GetFunctionPage: TFormPageMaster;
 begin
   if (pgcMain.ActivePageIndex < 0) and (pgcMain.ActivePageIndex <= FFunctionPages.Count) then
-   Result := nil
+    Result := nil
   else
-  Result := FFunctionPages[pgcMain.ActivePageIndex];
+    Result := FFunctionPages[pgcMain.ActivePageIndex];
 end;
 
 function TFormCongregationHelper.GetFunctionPages(i: Integer): TFormPageMaster;
 begin
   if (i < 0) and (i <= FFunctionPages.Count) then
-   Result := nil
+    Result := nil
   else
-  Result := FFunctionPages[i];
+    Result := FFunctionPages[i];
 end;
 
 procedure TFormCongregationHelper.GetUpdateApp;
@@ -323,14 +327,21 @@ end;
 
 procedure TFormCongregationHelper.tmrZoomUserTimer(Sender: TObject);
 begin
-  if not cbxZoomUsers.Checked then
+  // TimeBase 5000ms
+  if not cbxZoomUsers.Checked and FZoomUserCheck then
   begin
-    tmrZoomUser.Enabled := False;
+    FZoomUserCheck := False;
     SetZoomUserState(pnlZoomUserStage, stInactive);
     SetZoomUserState(pnlZoomUserConference, stInactive);
-    Exit;
   end;
-  CheckZoomUsers;
+  if ((FTimerIndex mod 6) = 0) then
+    If FZoomUserCheck then
+      CheckZoomUsers;
+  if ((FTimerIndex mod 2) = 0) then
+    FunctionPage.DoPageTimer;
+  Inc(FTimerIndex);
+  if FTimerIndex >= 12 then
+    FTimerIndex := 0;
 end;
 
 end.

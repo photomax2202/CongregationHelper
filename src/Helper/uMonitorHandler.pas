@@ -9,13 +9,13 @@ uses
   MultiMon;
 
 
-procedure PinWindowToLeftHalf(AHandle: HWND; MonitorIndex: Integer);
-procedure PinWindowToRightHalf(AHandle: HWND; MonitorIndex: Integer);
-procedure MaximizeWindowOnMonitor(AHandle: HWND; MonitorIndex: Integer);
+procedure PinWindowToLeftHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
+procedure PinWindowToRightHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
+procedure MaximizeWindowOnMonitor(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 
 implementation
 
-procedure PinWindowToLeftHalf(AHandle: HWND; MonitorIndex: Integer);
+procedure PinWindowToLeftHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 var
   Monitors    : array of HMONITOR;
   MonitorCount: Integer;
@@ -44,10 +44,13 @@ begin
     Rect.Right := Rect.Left + (Rect.Right - Rect.Left) div 2;
     // Move and resize the window
     MoveWindow(AHandle, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, True);
+    // Bring the window to the front
+    SetForegroundWindow(AHandle);
+    SetForegroundWindow(AMainHandle);
   end;
 end;
 
-procedure PinWindowToRightHalf(AHandle: HWND; MonitorIndex: Integer);
+procedure PinWindowToRightHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 var
   Monitors    : array of HMONITOR;
   MonitorCount: Integer;
@@ -76,10 +79,13 @@ begin
     Rect.Left := Rect.Left + (Rect.Right - Rect.Left) div 2;
     // Move and resize the window
     MoveWindow(AHandle, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, True);
+    // Bring the window to the front
+    SetForegroundWindow(AHandle);
+    SetForegroundWindow(AMainHandle);
   end;
 end;
 
-procedure MaximizeWindowOnMonitor(AHandle: HWND; MonitorIndex: Integer);
+procedure MaximizeWindowOnMonitor(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 var
   Monitors: array of HMONITOR;
   MonitorCount: Integer;
@@ -106,6 +112,9 @@ begin
     Rect := MonitorInfo.rcWork;
     // Move and resize the window to occupy the entire monitor's work area
     MoveWindow(AHandle, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, True);
+    // Bring the window to the front
+    SetForegroundWindow(AHandle);
+    SetForegroundWindow(AMainHandle);
   end;
 end;
 

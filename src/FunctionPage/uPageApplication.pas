@@ -40,11 +40,13 @@ type
     procedure DoPageCreate; override;
     procedure DoPageShow; override;
     procedure DoPageClose; override;
+    procedure DoPageTimer; override;
     procedure FillForm;
     procedure LoadApplicationList;
     function CompareApplicationList(AList1: TList<TApplicationEntry>; AList2: TList<TApplicationEntry>): Boolean;
     procedure BuildButtons(AApplicationMode: TApplicationMode; var APanel: TPanel; var AButtons: TButtons);
     procedure DeleteButtons(var AButtons: TButtons);
+    procedure EnableButtons(var AButtons: TButtons);
     procedure OnButtonClick(Sender: TObject);
     property MaxPanelHeight: Integer
       read   FMaxPanelHeight;
@@ -56,6 +58,9 @@ var
   FormPageApplication: TFormPageApplication;
 
 implementation
+
+uses
+uMonitorHandler;
 
 {$R *.dfm}
 { TFormPageApplication }
@@ -120,8 +125,20 @@ begin
 end;
 
 procedure TFormPageApplication.OnButtonClick(Sender: TObject);
+var
+LButton: TButton;
+LApplicationEntry: TApplicationEntry;
+LWindow: HWND;
 begin
-  ShowMessage((Sender as TButton).Caption);
+if not (Sender is TButton) then Exit;
+LButton := (Sender as TButton);
+LApplicationEntry := FApplicationList[LButton.Tag];
+LWindow := FindWindow(nil,PChar(LApplicationEntry.Caption));
+case LApplicationEntry.Mode of
+  mdLeft: PinWindowToLeftHalf(LWindow,GetParentHandle,Config.MonitorNumMedia.ToInteger - 1);
+  mdRight: PinWindowToRightHalf(LWindow,GetParentHandle,Config.MonitorNumMedia.ToInteger - 1);
+  mdPresentation: MaximizeWindowOnMonitor(LWindow,GetParentHandle,Config.MonitorNumPresentation.ToInteger - 1);
+end;
 end;
 
 function TFormPageApplication.CompareApplicationList(AList1, AList2: TList<TApplicationEntry>): Boolean;
@@ -180,6 +197,26 @@ procedure TFormPageApplication.DoPageShow;
 begin
   inherited;
   FillForm;
+end;
+
+procedure TFormPageApplication.DoPageTimer;
+begin
+  inherited;
+  EnableButtons(FButtonListLeft);
+  EnableButtons(FButtonListRight);
+  EnableButtons(FButtonListPresentation);
+end;
+
+procedure TFormPageApplication.EnableButtons(var AButtons: TButtons);
+var
+i: Integer;
+LHandle: HWND;
+begin
+ for i := 0 to AButtons.Count - 1 do
+   begin
+       LHandle := FindWindow(nil,PChar(FApplicationList[i].Caption));
+       AButtons[i].Enabled := (LHandle <> 0);
+   end;
 end;
 
 procedure TFormPageApplication.FillForm;

@@ -21,6 +21,7 @@ type
     procedure DoPageCreate; override;
     procedure DoPageShow; override;
     procedure DoPageClose; override;
+    procedure DoPageTimer; override;
   protected
   public
 
@@ -50,6 +51,12 @@ procedure TFormPageFunctionSample.DoPageShow;
 begin
   inherited;
   //
+end;
+
+procedure TFormPageFunctionSample.DoPageTimer;
+begin
+  inherited;
+//
 end;
 
 end.
