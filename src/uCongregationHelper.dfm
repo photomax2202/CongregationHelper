@@ -27,6 +27,8 @@ object FormCongregationHelper: TFormCongregationHelper
     Align = alClient
     TabOrder = 0
     OnChange = pgcMainChange
+    ExplicitWidth = 448
+    ExplicitHeight = 162
   end
   object pnlBottom: TPanel
     Left = 0
@@ -39,7 +41,7 @@ object FormCongregationHelper: TFormCongregationHelper
     ShowCaption = False
     TabOrder = 1
     ExplicitTop = 162
-    ExplicitWidth = 498
+    ExplicitWidth = 448
     DesignSize = (
       450
       25)
@@ -114,8 +116,7 @@ object FormCongregationHelper: TFormCongregationHelper
     end
   end
   object tmrZoomUser: TTimer
-    Enabled = False
-    Interval = 30000
+    Interval = 5000
     OnTimer = tmrZoomUserTimer
     Left = 32
     Top = 87

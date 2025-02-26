@@ -40,6 +40,8 @@ type
       write  FPageName;
     property Config: TConfig
       read   FConfig;
+
+    procedure DoPageTimer; virtual; abstract;
   end;
 
 implementation
