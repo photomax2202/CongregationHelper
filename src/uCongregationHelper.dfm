@@ -42,21 +42,8 @@ object FormCongregationHelper: TFormCongregationHelper
     TabOrder = 1
     ExplicitTop = 162
     ExplicitWidth = 448
-    DesignSize = (
-      450
-      25)
-    object cbxZoomUsers: TCheckBox
-      Left = 10
-      Top = 0
-      Width = 90
-      Height = 25
-      Anchors = [akLeft]
-      Caption = #220'berwachen'
-      TabOrder = 0
-      OnClick = cbxZoomUsersClick
-    end
     object pnlZoomUserStage: TPanel
-      Left = 100
+      Left = 0
       Top = 0
       Width = 100
       Height = 25
@@ -64,10 +51,10 @@ object FormCongregationHelper: TFormCongregationHelper
       Caption = 'B'#252'hne'
       Color = clGray
       ParentBackground = False
-      TabOrder = 1
+      TabOrder = 0
     end
     object pnlZoomUserConference: TPanel
-      Left = 200
+      Left = 106
       Top = 0
       Width = 100
       Height = 25
@@ -75,7 +62,7 @@ object FormCongregationHelper: TFormCongregationHelper
       Caption = 'JW-Conf'
       Color = clGray
       ParentBackground = False
-      TabOrder = 2
+      TabOrder = 1
     end
   end
   object mpMainMenu: TMainMenu
@@ -105,12 +92,20 @@ object FormCongregationHelper: TFormCongregationHelper
         Caption = 'Immer im Vordergrund'
         OnClick = mpAlwaysOnTopClick
       end
+      object mpZoomMonitoring: TMenuItem
+        Caption = 'ZOOM '#252'berwachen'
+        OnClick = mpSettingsClick
+      end
       object mpSettingsCamera: TMenuItem
         Caption = 'Kameraeinstellungen'
         OnClick = mpSettingsClick
       end
       object mpSettingsMonitor: TMenuItem
         Caption = 'Monitoreinstellungen'
+        OnClick = mpSettingsClick
+      end
+      object mpPreReleaseRepo: TMenuItem
+        Caption = 'Pre-Release Versionen'
         OnClick = mpSettingsClick
       end
     end

@@ -8,12 +8,13 @@ uses
   uValidationAndHelper in '..\src\uValidationAndHelper.pas',
   uConfigMonitor in '..\src\Settings\uConfigMonitor.pas' {FormConfigMonitor},
   uPageMaster in '..\src\uPageMaster.pas' {FormPageMaster},
-  uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample},
+  uPageCamera in '..\src\FunctionPage\uPageCamera.pas' {FormPageCamera},
   uConfigFormMaster in '..\src\uConfigFormMaster.pas' {ForrmConfigMaster},
   uGitHub in '..\src\uGitHub.pas',
   uProgramList in '..\src\Helper\uProgramList.pas' {FormProgrammAdd},
   uPageApplication in '..\src\FunctionPage\uPageApplication.pas' {FormPageApplication},
-  uMonitorHandler in '..\src\Helper\uMonitorHandler.pas';
+  uMonitorHandler in '..\src\Helper\uMonitorHandler.pas',
+  uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample};
 
 {$R *.res}
 
@@ -25,5 +26,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormCongregationHelper, FormCongregationHelper);
+  Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
   Application.Run;
 end.

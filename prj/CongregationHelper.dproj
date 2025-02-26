@@ -160,8 +160,8 @@
             <Form>FormPageMaster</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\src\FunctionPage\uPageFunctionSample.pas">
-            <Form>FormPageFunctionSample</Form>
+        <DCCReference Include="..\src\FunctionPage\uPageCamera.pas">
+            <Form>FormPageCamera</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\src\uConfigFormMaster.pas">
@@ -177,6 +177,10 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\src\Helper\uMonitorHandler.pas"/>
+        <DCCReference Include="..\src\FunctionPage\uPageFunctionSample.pas">
+            <Form>FormPageFunctionSample</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -212,6 +216,12 @@
                 <DeployFile LocalName="..\bin\CongregationHelper.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>CongregationHelper.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\bin\CongregationHelper.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>CongregationHelper.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

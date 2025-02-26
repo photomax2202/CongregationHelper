@@ -37,10 +37,11 @@ type
     pgcMain: TPageControl;
     mpHelp: TMenuItem;
     pnlBottom: TPanel;
-    cbxZoomUsers: TCheckBox;
     pnlZoomUserStage: TPanel;
     pnlZoomUserConference: TPanel;
     tmrZoomUser: TTimer;
+    mpZoomMonitoring: TMenuItem;
+    mpPreReleaseRepo: TMenuItem;
     procedure mpAlwaysOnTopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -48,17 +49,17 @@ type
     procedure mpProgramClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure pgcMainChange(Sender: TObject);
-    procedure cbxZoomUsersClick(Sender: TObject);
     procedure tmrZoomUserTimer(Sender: TObject);
     procedure CheckZoomUsers;
   private
-    FConfig       : TConfig;
-    FFunctionPages: TObjectList<TFormPageMaster>;
-    FUpdateApp    : String;
-    FFilePath     : String;
-    FUpdateAppUrl : String;
-    FTimerIndex   : Integer;
-    FZoomUserCheck: Boolean;
+    FConfig          : TConfig;
+    FFunctionPages   : TObjectList<TFormPageMaster>;
+    FUpdateApp       : String;
+    FFilePath        : String;
+    FUpdateAppUrl    : String;
+    FTimerIndex      : Integer;
+    FZoomMonitoring   : Boolean;
+    FPreReleseVersion: Boolean;
     { Private-Deklarationen }
     // procedure AddFunctionPages;
     function GetFunctionPages(i: Integer): TFormPageMaster;
@@ -81,8 +82,10 @@ type
       read   GetFunctionPages;
     property FunctionPage: TFormPageMaster
       read   GetFunctionPage;
-    property ZoomUserCheck: Boolean
-      read   FZoomUserCheck;
+    property ZoomMonitoring: Boolean
+      read   FZoomMonitoring;
+    property PreReleseVersion: Boolean
+      read   FPreReleseVersion;
 
     procedure DoResize;
   end;
@@ -102,7 +105,8 @@ uses
   uConfigCamera,
   uConfigMonitor,
   uPageFunctionSample,
-  uPageApplication;
+  uPageApplication,
+  uPageCamera;
 
 {$R *.dfm}
 // procedure TFormCongregationHelper.AddFunctionPages;
@@ -124,13 +128,6 @@ uses
 // DoResize;
 // end;
 
-procedure TFormCongregationHelper.cbxZoomUsersClick(Sender: TObject);
-begin
-  Config.CheckZoomUsers := cbxZoomUsers.Checked;
-  if cbxZoomUsers.Checked then
-    FZoomUserCheck := True;
-end;
-
 procedure TFormCongregationHelper.CheckZoomUsers;
 begin
   { TODO -oMax -cZoomUsers : Implementation of Checking Zoom user avalibility }
@@ -146,6 +143,7 @@ begin
 {$IFDEF DEBUG}
     LPages.Add(TFormPageFunctionSample.Create(Self));
 {$ENDIF}
+    LPages.Add(TFormPageCamera.Create(Self));
     LPages.Add(TFormPageApplication.Create(Self));
 
     Result := LPages.ToArray;
@@ -187,7 +185,12 @@ var
   LRespose     : string;
   i            : Integer;
 begin
-  FTimerIndex := 0;
+  Config                   := TConfig.Create;
+  FTimerIndex              := 0;
+  mpAlwaysOnTop.Checked    := Config.AlwaysOnTop;
+  mpZoomMonitoring.Checked := Config.ZoomMonitoring;
+  mpPreReleaseRepo.Checked := Config.PreReleaseVersionen;
+  {TODO -oMax -cUpdateprocess : Implementieren der Updatefunktion mit Unterscheidung nach Prereleases}
 {$IFNDEF DEBUG}
   FFilePath  := ParamStr(0);
   FUpdateApp := StringReplace(FFilePath, ExtractFileName(ParamStr(0)), cUpdateAppName, [rfReplaceAll]);
@@ -197,8 +200,6 @@ begin
   end;
   StartNewProcess(UpdateApp, Format('%s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion]), True);
 {$ENDIF}
-  Config := TConfig.Create;
-
   FFunctionPages := TObjectList<TFormPageMaster>.Create(True);
   FFunctionPages.AddRange(CreatePages);
   for i := 0 to FFunctionPages.Count - 1 do
@@ -207,9 +208,7 @@ begin
     FFunctionPages[i].Show;
   end;
   DoResize;
-  Application.Name      := StringReplace(Caption, ' ', '', [rfReplaceAll]);
-  mpAlwaysOnTop.Checked := Config.AlwaysOnTop;
-  cbxZoomUsers.Checked  := Config.CheckZoomUsers;
+  Application.Name := StringReplace(Caption, ' ', '', [rfReplaceAll]);
 end;
 
 procedure TFormCongregationHelper.FormDestroy(Sender: TObject);
@@ -291,6 +290,8 @@ begin
     finally
       FormConfigCamera.Free;
     end;
+    pgcMain.OnChange(Self);
+    DoResize;
   end
   else if (Sender as TMenuItem).Name = mpSettingsMonitor.Name then
   begin
@@ -300,9 +301,25 @@ begin
     finally
       FormConfigMonitor.Free;
     end;
+    pgcMain.OnChange(Self);
+    DoResize;
+  end
+  else if (Sender as TMenuItem).Name = mpZoomMonitoring.Name then
+  begin
+    mpZoomMonitoring.Checked := not mpZoomMonitoring.Checked;
+    Config.ZoomMonitoring    := mpZoomMonitoring.Checked;
+    if mpZoomMonitoring.Checked then
+      FZoomMonitoring := True;
+  end
+  else if (Sender as TMenuItem).Name = mpPreReleaseRepo.Name then
+  begin
+    mpPreReleaseRepo.Checked   := not mpPreReleaseRepo.Checked;
+    FPreReleseVersion          := mpPreReleaseRepo.Checked;
+    Config.PreReleaseVersionen := FPreReleseVersion;
+    if FPreReleseVersion then
+      ShowMessage('Beim nächsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berücksichtigt.')
+
   end;
-  pgcMain.OnChange(Self);
-  DoResize;
 end;
 
 procedure TFormCongregationHelper.pgcMainChange(Sender: TObject);
@@ -328,14 +345,14 @@ end;
 procedure TFormCongregationHelper.tmrZoomUserTimer(Sender: TObject);
 begin
   // TimeBase 5000ms
-  if not cbxZoomUsers.Checked and FZoomUserCheck then
+  if not mpZoomMonitoring.Checked and FZoomMonitoring then
   begin
-    FZoomUserCheck := False;
+    FZoomMonitoring := False;
     SetZoomUserState(pnlZoomUserStage, stInactive);
     SetZoomUserState(pnlZoomUserConference, stInactive);
   end;
   if ((FTimerIndex mod 6) = 0) then
-    If FZoomUserCheck then
+    If FZoomMonitoring then
       CheckZoomUsers;
   if ((FTimerIndex mod 2) = 0) then
     FunctionPage.DoPageTimer;

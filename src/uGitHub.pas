@@ -11,11 +11,12 @@ type
     Version: string;
     Datum: TDateTime;
     Link: string;
+    Prerelease: Boolean;
   end;
 
 function GetGithubReleases(ARepoOwner: String; AAppRepo: String; out AContent: String): Boolean;
 function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLink: String;
-  out AResult: Boolean): String;
+  out AResult: Boolean; APreRelease:Boolean = true): String;
 function DownloadRelease(AUrl: String): Boolean;
 function IsProcessRunning(const AProcessName: string): Boolean;
 procedure StartNewProcess(const ApplicationName, CommandLine: string; AWaitForFinish: Boolean = False);
@@ -90,7 +91,7 @@ begin
 end;
 
 function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLink: String;
-  out AResult: Boolean): String;
+  out AResult: Boolean; APreRelease:Boolean = true): String;
 var
   LReleasesJSON: TJSONArray;
   LReleaseJSON : TJSONObject;
@@ -121,6 +122,7 @@ begin
         LRelease.Version := LReleaseJSON.GetValue('tag_name').Value;
         LRelease.Datum   := Rfc3339ToDatetime(LReleaseJSON.GetValue('published_at').Value);
         LRelease.Link    := LAssetJSON.GetValue('browser_download_url').Value;
+        LRelease.Prerelease := StrToBool(LReleaseJSON.GetValue('prerelease').Value);
         if LRelease.Name = AAppName then
         begin
           LReleases.Add(LRelease);
