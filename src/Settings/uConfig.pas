@@ -9,7 +9,7 @@ uses
 type
   TSections = (scGeneral, scCamera, scMonitor);
 
-  TIdentsGeneral = (idAlwaysOnTop, idCheckZoomUsers);
+  TIdentsGeneral = (idAlwaysOnTop, idZoomMonitoring, idPreReleaseVersion);
 
   TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
     idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosLeftSpace, idCamPosRightSpace, idCamPosTotal,
@@ -47,8 +47,12 @@ type
       index  idAlwaysOnTop
       read   GetBoolGeneral
       write  SetBoolGeneral;
-    property CheckZoomUsers: Boolean
-      index  idCheckZoomUsers
+    property ZoomMonitoring: Boolean
+      index  idZoomMonitoring
+      read   GetBoolGeneral
+      write  SetBoolGeneral;
+    property PreReleaseVersionen: Boolean
+      index  idPreReleaseVersion
       read   GetBoolGeneral
       write  SetBoolGeneral;
 
@@ -140,7 +144,7 @@ type
 const
   cSections: array [TSections] of string = ('General', 'Camera', 'Monitor');
 
-  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'CheckZoomUsers');
+  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'ZoomMonitoring', 'PreReleaseVersion');
 
   cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'Speaker', 'SpeakerS', 'SpeakerL',
     'SpeakerXL', 'Reader', 'Table', 'LeftSpace', 'RightSpace', 'Total', 'Park', 'SpeakerIndex', 'ReadeIndex',
