@@ -3,7 +3,7 @@ unit uGitHub;
 interface
 
 uses
-Windows;
+  Windows;
 
 type
   TRelease = record
@@ -15,8 +15,8 @@ type
   end;
 
 function GetGithubReleases(ARepoOwner: String; AAppRepo: String; out AContent: String): Boolean;
-function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLink: String;
-  out AResult: Boolean; APreRelease:Boolean = true): String;
+function GetLastRelease(AReleasesText: string; AAppName: String; APreRelease: Boolean; out ADonwloadLink: String;
+  out AResult: Boolean): String;
 function DownloadRelease(AUrl: String): Boolean;
 function IsProcessRunning(const AProcessName: string): Boolean;
 procedure StartNewProcess(const ApplicationName, CommandLine: string; AWaitForFinish: Boolean = False);
@@ -90,8 +90,8 @@ begin
   end;
 end;
 
-function GetLastRelease(AReleasesText: string; AAppName: String; out ADonwloadLink: String;
-  out AResult: Boolean; APreRelease:Boolean = true): String;
+function GetLastRelease(AReleasesText: string; AAppName: String; APreRelease: Boolean; out ADonwloadLink: String;
+  out AResult: Boolean): String;
 var
   LReleasesJSON: TJSONArray;
   LReleaseJSON : TJSONObject;
@@ -117,13 +117,13 @@ begin
       LAssetsJSON  := LReleaseJSON.GetValue<TJSONArray>('assets');
       for j        := 0 to LAssetsJSON.Count - 1 do
       begin
-        LAssetJSON       := LAssetsJSON.Items[j] as TJSONObject;
-        LRelease.Name    := LAssetJSON.GetValue('name').Value;
-        LRelease.Version := LReleaseJSON.GetValue('tag_name').Value;
-        LRelease.Datum   := Rfc3339ToDatetime(LReleaseJSON.GetValue('published_at').Value);
-        LRelease.Link    := LAssetJSON.GetValue('browser_download_url').Value;
+        LAssetJSON          := LAssetsJSON.Items[j] as TJSONObject;
+        LRelease.Name       := LAssetJSON.GetValue('name').Value;
+        LRelease.Version    := LReleaseJSON.GetValue('tag_name').Value;
+        LRelease.Datum      := Rfc3339ToDatetime(LReleaseJSON.GetValue('published_at').Value);
+        LRelease.Link       := LAssetJSON.GetValue('browser_download_url').Value;
         LRelease.Prerelease := StrToBool(LReleaseJSON.GetValue('prerelease').Value);
-        if LRelease.Name = AAppName then
+        if (LRelease.Name = AAppName) and (APreRelease or (LRelease.Prerelease = False)) then
         begin
           LReleases.Add(LRelease);
           if LRelease.Datum > LMaxDate then
@@ -158,7 +158,10 @@ begin
     LProgramPath := ExtractFilePath(ParamStr(0)) + ExtractAppFromUrl(AUrl);
     if FileExists(LProgramPath) then
       DeleteFile(PChar(LProgramPath));
-    ShowMessage('Eine Applikation wird nachgeladen:' + #10 + #13 + 'URL: ' + AUrl);
+    ShowMessage(                                         //
+      'Eine Applikation wird nachgeladen:' + #10 + #13 + //
+      'URL: ' + AUrl + #10 + #13 +                       //
+      'Ziel: ' + LProgramPath);                          //
     UrlDownloadToFile(nil, PChar(AUrl), PChar(LProgramPath), 0, nil);
     result := True;
   except

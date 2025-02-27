@@ -38,6 +38,7 @@ type
     FAppVersion      : String;
     FAppUrl          : String;
     FAppVersionGitHub: String;
+    FAppPreReleases  : Boolean;
     { Private-Deklarationen }
     function GetGithubRelease: Boolean;
     procedure ButtonEnable;
@@ -53,6 +54,8 @@ type
       read   FAppVersionGitHub;
     property AppUrl: String
       read   FAppUrl;
+    property AppPreReleases: Boolean
+      read   FAppPreReleases;
   end;
 
 var
@@ -72,14 +75,14 @@ end;
 
 procedure TFormAutoUpdater.btnUpdateClick(Sender: TObject);
 var
-LAppPath: string;
+  LAppPath: string;
 begin
-KillProcess(AppName);
-Sleep(1000);
-DownloadRelease(AppUrl);
-LAppPath := ExtractFilePath(ParamStr(0))  + AppName;
-StartNewProcess(LAppPath,'');
-Application.Terminate;
+  KillProcess(AppName);
+  Sleep(1000);
+  DownloadRelease(AppUrl);
+  LAppPath := ExtractFilePath(ParamStr(0)) + AppName;
+  StartNewProcess(LAppPath, '');
+  Application.Terminate;
 end;
 
 procedure TFormAutoUpdater.ButtonEnable;
@@ -104,16 +107,22 @@ procedure TFormAutoUpdater.FormCreate(Sender: TObject);
 begin
   FormStyle := fsStayOnTop;
   // Überprüfe, ob Startparameter vorhanden sind
-  if ParamCount <> 3 then
+  if ParamCount <> 4 then
   begin
-    ShowMessage('Startparameter fehlerhaft. Die Applikation wird wieder beendet.' + #10#13 +
-      'Die folgenden Parameter werden unterstützt.' + #10#13 + 'Parameter:' + #10#13 + '1 --> GitHub-Repo' + #10#13 +
-      '2 --> Updating Application' + #10#13 + '3 --> Actual Release Tag');
+    ShowMessage( //
+      'Startparameter fehlerhaft. Die Applikation wird wieder beendet.' + #10#13 + //
+      'Die folgenden Parameter werden unterstützt.' + #10#13 + //
+      'Parameter:' + #10#13 + //
+      '1 --> GitHub-Repo' + #10#13 +          //
+      '2 --> Updating Application' + #10#13 + //
+      '3 --> Actual Release Tag' + #10#13 +   //
+      '4 --> PreReleaseState True/False');    //
     Application.Terminate;
   end;
-  FAppRepo    := ParamStr(1);
-  FAppName    := ParamStr(2);
-  FAppVersion := ParamStr(3);
+  FAppRepo        := ParamStr(1);
+  FAppName        := ParamStr(2);
+  FAppVersion     := ParamStr(3);
+  FAppPreReleases := StrToBool(ParamStr(4));
   // Daten des letzten Github Release holen.
   if not GetGithubRelease then
   begin
@@ -139,14 +148,14 @@ end;
 
 function TFormAutoUpdater.GetGithubRelease: Boolean;
 var
-  LResponse      : string;
+  LResponse     : string;
   i             : Integer;
   LReleaseResult: Boolean;
 begin
   Result := False;
   if not GetGithubReleases('photomax2202', AppRepo, LResponse) then
     Exit;
-  FAppVersionGitHub := GetLastRelease(LResponse, AppName, FAppUrl, LReleaseResult);
+  FAppVersionGitHub := GetLastRelease(LResponse, AppName, FAppPreReleases, FAppUrl, LReleaseResult);
   if not LReleaseResult then
     Exit;
   Result := True;

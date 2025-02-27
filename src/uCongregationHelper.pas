@@ -42,6 +42,7 @@ type
     tmrZoomUser: TTimer;
     mpZoomMonitoring: TMenuItem;
     mpPreReleaseRepo: TMenuItem;
+    pnlZoomActive: TPanel;
     procedure mpAlwaysOnTopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -60,7 +61,6 @@ type
     FTimerIndex      : Integer;
     FZoomMonitoring   : Boolean;
     FPreReleseVersion: Boolean;
-    { Private-Deklarationen }
     // procedure AddFunctionPages;
     function GetFunctionPages(i: Integer): TFormPageMaster;
     function GetFunctionPage: TFormPageMaster;
@@ -68,7 +68,6 @@ type
     procedure SetZoomUserState(Sender: TObject; AState: TZoomUserState);
     function CreatePages: TArray<TFormPageMaster>;
   public
-    { Public-Deklarationen }
     property Config: TConfig
       read   FConfig
       write  FConfig;
@@ -156,27 +155,29 @@ end;
 procedure TFormCongregationHelper.DoResize;
 var
   i: Integer;
-  // LHight: Integer;
+   LHight: Integer;
+   LPageControlHeight: Integer;
 begin
   // LWidth := 0;
-  // LHight := 0;
-  // for i  := 0 to pgcMain.PageCount - 1 do
-  // begin
+   LHight := 0;
+   for i  := 0 to pgcMain.PageCount - 1 do
+   begin
   // if FunctionPages[i].MaxWidth > LWidth then
   // LWidth := FunctionPages[i].MaxWidth;
-  // if FunctionPages[i].MaxHeight > LHight then
-  // LHight := FunctionPages[i].MaxHeight;
-  // end;
+   if FunctionPages[i].MaxHeight > LHight then
+   LHight := FunctionPages[i].MaxHeight;
+   end;
   // Constraints.MinWidth  := 0;
   // Constraints.MaxWidth  := 0;
-  // Constraints.MinHeight := 0;
-  // Constraints.MaxHeight := 0;
+   Constraints.MinHeight := 0;
+   Constraints.MaxHeight := 0;
   // Width                 := Width - pgcMain.Width + LWidth;
   // Constraints.MinWidth  := Width;
   // Constraints.MaxWidth  := Width;
-  // Height                := Height - pgcMain.Height + LHight;
-  // Constraints.MinHeight := Height;
-  // Constraints.MaxHeight := Height;
+  LPageControlHeight := pgcMain.ActivePage.Height;
+   Height                := Height - LPageControlHeight + LHight;
+   Constraints.MinHeight := Height;
+   Constraints.MaxHeight := Height;
 end;
 
 procedure TFormCongregationHelper.FormCreate(Sender: TObject);
@@ -246,7 +247,7 @@ var
 begin
   if not GetGithubReleases('photomax2202', 'CongregationHelper', LResponse) then
     Exit;
-  GetLastRelease(LResponse, ExtractFileName(UpdateApp), FUpdateAppUrl, LReleaseResult);
+  GetLastRelease(LResponse, ExtractFileName(UpdateApp), FPreReleseVersion, FUpdateAppUrl, LReleaseResult);
   if LReleaseResult then
   begin
     if not DownloadRelease(UpdateAppUrl) then

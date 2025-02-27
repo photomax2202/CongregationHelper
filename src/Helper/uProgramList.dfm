@@ -59,7 +59,7 @@ object FormProgrammAdd: TFormProgrammAdd
     Height = 25
     Caption = 'Abbrechen'
     ModalResult = 2
-    TabOrder = 2
+    TabOrder = 4
   end
   object btnOk: TButton
     Left = 120
@@ -78,7 +78,7 @@ object FormProgrammAdd: TFormProgrammAdd
     Height = 23
     Style = csDropDownList
     ItemIndex = 0
-    TabOrder = 4
+    TabOrder = 2
     Text = 'Links Anheften'
     OnChange = cbxProgramModeChange
     Items.Strings = (
