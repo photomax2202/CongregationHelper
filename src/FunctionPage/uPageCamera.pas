@@ -34,6 +34,7 @@ type
     btnRightSpace: TButton;
     btnHomePosition: TButton;
     btnTotal: TButton;
+    procedure btnCameraClick(Sender: TObject);
   private
     FHttpClient : TNetHTTPClient;
     FHttpRequest: TNetHTTPRequest;
@@ -58,6 +59,14 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TFormPageCamera.btnCameraClick(Sender: TObject);
+var
+  LResponse: string;
+begin
+  inherited;
+  HttpGetWithBasicAuth(Config.CameraIp, Config.CameraURL, Config.CameraToken, LResponse);
+end;
 
 function TFormPageCamera.BuildBasicAuthString(AToken: String): string;
 begin
@@ -157,6 +166,9 @@ begin
   FHttpRequest := TNetHTTPRequest.Create(nil);
   try
     FHttpRequest.Client                         := FHttpClient;
+    FHttpRequest.ConnectionTimeout              := 1000;
+    FHttpRequest.SendTimeout                    := 1000;
+    FHttpRequest.ResponseTimeout                := 1000;
     FHttpRequest.CustomHeaders['Authorization'] := BuildBasicAuthString(Config.CameraToken);
     FResponse                                   := FHttpRequest.Get(Format('https://%s/%s', [AURL, AEndpoint]));
     if FResponse.StatusCode = 200 then

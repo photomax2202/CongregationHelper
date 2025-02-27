@@ -349,6 +349,7 @@ begin
   if not mpZoomMonitoring.Checked and FZoomMonitoring then
   begin
     FZoomMonitoring := False;
+    SetZoomUserState(pnlZoomActive, stInactive);
     SetZoomUserState(pnlZoomUserStage, stInactive);
     SetZoomUserState(pnlZoomUserConference, stInactive);
   end;

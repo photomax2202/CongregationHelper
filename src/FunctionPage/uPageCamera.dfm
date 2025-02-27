@@ -149,5 +149,6 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ParentFont = False
     TabOrder = 6
+    OnClick = btnCameraClick
   end
 end
