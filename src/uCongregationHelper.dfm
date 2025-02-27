@@ -14,6 +14,8 @@ object FormCongregationHelper: TFormCongregationHelper
   Font.Name = 'Segoe UI'
   Font.Style = []
   Menu = mpMainMenu
+  PrintScale = poNone
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
