@@ -184,8 +184,8 @@ begin
     Config.CameraPosPark       := ledPosPark.Text;
 
     Config.CameraPosSpeakerIndex := cbxPosSpeaker.Items[cbxPosSpeaker.ItemIndex];
-    Config.CameraPosReaderIndex  := cbxPosReader.Items[cbxPosSpeaker.ItemIndex];
-    Config.CameraPosTableIndex   := cbxPosTable.Items[cbxPosSpeaker.ItemIndex];
+    Config.CameraPosReaderIndex  := cbxPosReader.Items[cbxPosReader.ItemIndex];
+    Config.CameraPosTableIndex   := cbxPosTable.Items[cbxPosTable.ItemIndex];
   finally
     if not ACanSave then
       ShowMessage('Markiertes Feld hat nicht das richtige Format.');
