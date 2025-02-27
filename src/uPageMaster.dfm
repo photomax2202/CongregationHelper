@@ -15,6 +15,8 @@ object FormPageMaster: TFormPageMaster
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  PrintScale = poNone
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
