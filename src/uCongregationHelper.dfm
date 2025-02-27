@@ -69,7 +69,7 @@ object FormCongregationHelper: TFormCongregationHelper
       Width = 75
       Height = 25
       BevelOuter = bvSpace
-      Caption = 'B'#252'hne'
+      Caption = 'Zoom'
       Color = clGray
       ParentBackground = False
       TabOrder = 2
