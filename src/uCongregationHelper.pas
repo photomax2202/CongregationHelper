@@ -59,7 +59,7 @@ type
     FFilePath        : String;
     FUpdateAppUrl    : String;
     FTimerIndex      : Integer;
-    FZoomMonitoring   : Boolean;
+    FZoomMonitoring  : Boolean;
     FPreReleseVersion: Boolean;
     // procedure AddFunctionPages;
     function GetFunctionPages(i: Integer): TFormPageMaster;
@@ -90,7 +90,7 @@ type
   end;
 
 const
-  cVersion       = 'v0.0.2';
+  cVersion       = 'v0.0.3';
   cRepoName      = 'CongregationHelper';
   cUpdateAppName = 'AutoUpdater.exe';
 
@@ -138,7 +138,7 @@ var
 begin
   LPages := TObjectList<TFormPageMaster>.Create(False);
   try
-    // TODO: für jede Funktion eine EditPage in eigener Unit erstellen und der Liste hinzufügen
+    // TODO: fÃ¼r jede Funktion eine EditPage in eigener Unit erstellen und der Liste hinzufÃ¼gen
 {$IFDEF DEBUG}
     LPages.Add(TFormPageFunctionSample.Create(Self));
 {$ENDIF}
@@ -154,30 +154,30 @@ end;
 
 procedure TFormCongregationHelper.DoResize;
 var
-  i: Integer;
-   LHight: Integer;
-   LPageControlHeight: Integer;
+  i                 : Integer;
+  LHight            : Integer;
+  LPageControlHeight: Integer;
 begin
   // LWidth := 0;
-   LHight := 0;
-   for i  := 0 to pgcMain.PageCount - 1 do
-   begin
-  // if FunctionPages[i].MaxWidth > LWidth then
-  // LWidth := FunctionPages[i].MaxWidth;
-   if FunctionPages[i].MaxHeight > LHight then
-   LHight := FunctionPages[i].MaxHeight;
-   end;
+  LHight := 0;
+  for i  := 0 to pgcMain.PageCount - 1 do
+  begin
+    // if FunctionPages[i].MaxWidth > LWidth then
+    // LWidth := FunctionPages[i].MaxWidth;
+    if FunctionPages[i].MaxHeight > LHight then
+      LHight := FunctionPages[i].MaxHeight;
+  end;
   // Constraints.MinWidth  := 0;
   // Constraints.MaxWidth  := 0;
-   Constraints.MinHeight := 0;
-   Constraints.MaxHeight := 0;
+  Constraints.MinHeight := 0;
+  Constraints.MaxHeight := 0;
   // Width                 := Width - pgcMain.Width + LWidth;
   // Constraints.MinWidth  := Width;
   // Constraints.MaxWidth  := Width;
-  LPageControlHeight := pgcMain.ActivePage.Height;
-   Height                := Height - LPageControlHeight + LHight;
-   Constraints.MinHeight := Height;
-   Constraints.MaxHeight := Height;
+  LPageControlHeight    := pgcMain.ActivePage.Height;
+  Height                := Height - LPageControlHeight + LHight;
+  Constraints.MinHeight := Height;
+  Constraints.MaxHeight := Height;
 end;
 
 procedure TFormCongregationHelper.FormCreate(Sender: TObject);
@@ -191,7 +191,7 @@ begin
   mpAlwaysOnTop.Checked    := Config.AlwaysOnTop;
   mpZoomMonitoring.Checked := Config.ZoomMonitoring;
   mpPreReleaseRepo.Checked := Config.PreReleaseVersionen;
-  {TODO -oMax -cUpdateprocess : Implementieren der Updatefunktion mit Unterscheidung nach Prereleases}
+  { TODO -oMax -cUpdateprocess : Implementieren der Updatefunktion mit Unterscheidung nach Prereleases }
 {$IFNDEF DEBUG}
   FFilePath  := ParamStr(0);
   FUpdateApp := StringReplace(FFilePath, ExtractFileName(ParamStr(0)), cUpdateAppName, [rfReplaceAll]);
@@ -199,7 +199,8 @@ begin
   begin
     GetUpdateApp;
   end;
-  StartNewProcess(UpdateApp, Format('%s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion]), True);
+  StartNewProcess(UpdateApp, Format('%s %s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion,
+    BoolToStr(FPreReleseVersion)]), True);
 {$ENDIF}
   FFunctionPages := TObjectList<TFormPageMaster>.Create(True);
   FFunctionPages.AddRange(CreatePages);
@@ -318,7 +319,7 @@ begin
     FPreReleseVersion          := mpPreReleaseRepo.Checked;
     Config.PreReleaseVersionen := FPreReleseVersion;
     if FPreReleseVersion then
-      ShowMessage('Beim nächsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berücksichtigt.')
+      ShowMessage('Beim nÃ¤chsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berÃ¼cksichtigt.')
 
   end;
 end;
