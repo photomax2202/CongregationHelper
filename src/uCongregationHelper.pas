@@ -138,7 +138,7 @@ var
 begin
   LPages := TObjectList<TFormPageMaster>.Create(False);
   try
-    // TODO: für jede Funktion eine EditPage in eigener Unit erstellen und der Liste hinzufügen
+    // TODO: fÃ¼r jede Funktion eine EditPage in eigener Unit erstellen und der Liste hinzufÃ¼gen
 {$IFDEF DEBUG}
     LPages.Add(TFormPageFunctionSample.Create(Self));
 {$ENDIF}
@@ -319,7 +319,7 @@ begin
     FPreReleseVersion          := mpPreReleaseRepo.Checked;
     Config.PreReleaseVersionen := FPreReleseVersion;
     if FPreReleseVersion then
-      ShowMessage('Beim nächsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berücksichtigt.')
+      ShowMessage('Beim nÃ¤chsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berÃ¼cksichtigt.')
 
   end;
 end;
