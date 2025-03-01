@@ -18,7 +18,9 @@ uses
   System.Net.HttpClientComponent,
   // System.Net.URLClient,
   // System.NetConsts,
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls,
+  System.ImageList,
+  Vcl.ImgList;
 
 type
   TFormPageCamera = class(TFormPageMaster)
@@ -32,7 +34,7 @@ type
     btnTable: TButton;
     btnLeftSpace: TButton;
     btnRightSpace: TButton;
-    btnHomePosition: TButton;
+    btnParking: TButton;
     btnTotal: TButton;
     procedure btnCameraClick(Sender: TObject);
   private
@@ -48,6 +50,7 @@ type
     procedure FillButtonCaptionSecond(AText: string);
     procedure FillButtonCaptionThird(AText: string);
     function HttpGetWithBasicAuth(const AURL, AEndpoint, AToken: string; out AResponseContent: string): Boolean;
+    function ApiEndpointPosition(AUrl1, AUrl2: string): string;
   protected
   public
 
@@ -60,12 +63,43 @@ implementation
 
 {$R *.dfm}
 
+function TFormPageCamera.ApiEndpointPosition(AUrl1, AUrl2: string): string;
+begin
+  Result := EmptyStr;
+  if (AUrl1 = EmptyStr) or (AUrl2 = EmptyStr) then
+    Exit;
+  Result := Format('%s/%s', [AUrl1, AUrl2]);
+end;
+
 procedure TFormPageCamera.btnCameraClick(Sender: TObject);
 var
-  LResponse: string;
+  LEndpoint, LResponse: string;
 begin
-  inherited;
-  HttpGetWithBasicAuth(Config.CameraIp, Config.CameraURL, Config.CameraToken, LResponse);
+  if (Sender as TButton).Name = btnSpeaker.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosSpeaker)
+  else if (Sender as TButton).Name = btnSpeakerS.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosSpeakerS)
+  else if (Sender as TButton).Name = btnSpeakerL.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosSpeakerL)
+  else if (Sender as TButton).Name = btnSpeakerXL.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosSpeakerXL)
+  else if (Sender as TButton).Name = btnReader.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosReader)
+  else if (Sender as TButton).Name = btnTable.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosTable)
+  else if (Sender as TButton).Name = btnLeftSpace.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosLeftSpace)
+  else if (Sender as TButton).Name = btnRightSpace.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosRightSpace)
+  else if (Sender as TButton).Name = btnTotal.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosTotal)
+  else if (Sender as TButton).Name = btnParking.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosPark)
+  else
+    Exit;
+    if LEndpoint = EmptyStr then Exit;
+  // HTTP Request
+  HttpGetWithBasicAuth(Config.CameraIp, LEndpoint, Config.CameraToken, LResponse);
 end;
 
 function TFormPageCamera.BuildBasicAuthString(AToken: String): string;
@@ -98,7 +132,18 @@ begin
   pnlSpeaker.Left := (Config.CameraPosSpeakerIndex.ToInteger - 1) * 150;
   btnReader.Left  := (Config.CameraPosReaderIndex.ToInteger - 1) * 150;
   btnTable.Left   := (Config.CameraPosTableIndex.ToInteger - 1) * 150;
-  for i           := 1 to 3 do
+  if Config.CameraPosSpeakerIndex.ToInteger = 3 then
+  begin
+    pnlSpeakerSize.Left := 75;
+    btnSpeaker.Left     := 0;
+  end
+  else
+  begin
+
+    pnlSpeakerSize.Left := 0;
+    btnSpeaker.Left     := 75;
+  end;
+  for i := 1 to 3 do
   begin
     if Config.CameraPosSpeakerIndex.ToInteger = i then
     begin
@@ -170,7 +215,7 @@ begin
     FHttpRequest.SendTimeout                    := 1000;
     FHttpRequest.ResponseTimeout                := 1000;
     FHttpRequest.CustomHeaders['Authorization'] := BuildBasicAuthString(Config.CameraToken);
-    FResponse                                   := FHttpRequest.Get(Format('https://%s/%s', [AURL, AEndpoint]));
+    FResponse                                   := FHttpRequest.Get(Format('http://%s/%s', [AURL, AEndpoint]));
     if FResponse.StatusCode = 200 then
     begin
       Result           := True;

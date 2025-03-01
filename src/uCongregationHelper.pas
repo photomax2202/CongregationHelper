@@ -90,7 +90,7 @@ type
   end;
 
 const
-  cVersion       = 'v0.0.1_alpha';
+  cVersion       = 'v0.0.2';
   cRepoName      = 'CongregationHelper';
   cUpdateAppName = 'AutoUpdater.exe';
 

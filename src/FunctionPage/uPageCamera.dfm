@@ -74,6 +74,12 @@ inherited FormPageCamera: TFormPageCamera
       Width = 75
       Height = 90
       Caption = 'Redner'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
       TabStop = False
     end
@@ -84,6 +90,12 @@ inherited FormPageCamera: TFormPageCamera
     Width = 150
     Height = 90
     Caption = 'Leser'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 1
   end
   object btnTable: TButton
@@ -92,6 +104,13 @@ inherited FormPageCamera: TFormPageCamera
     Width = 150
     Height = 90
     Caption = 'Tisch'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ImageAlignment = iaCenter
+    ParentFont = False
     TabOrder = 2
   end
   object btnLeftSpace: TButton
@@ -122,7 +141,7 @@ inherited FormPageCamera: TFormPageCamera
     ParentFont = False
     TabOrder = 4
   end
-  object btnHomePosition: TButton
+  object btnParking: TButton
     Left = 225
     Top = 130
     Width = 225
