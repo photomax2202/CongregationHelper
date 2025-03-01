@@ -28,7 +28,8 @@ object FormCongregationHelper: TFormCongregationHelper
     Align = alClient
     TabOrder = 0
     OnChange = pgcMainChange
-    ExplicitHeight = 170
+    ExplicitWidth = 448
+    ExplicitHeight = 189
   end
   object pnlBottom: TPanel
     Left = 0
@@ -40,7 +41,8 @@ object FormCongregationHelper: TFormCongregationHelper
     Caption = 'pnlBottom'
     ShowCaption = False
     TabOrder = 1
-    ExplicitTop = 170
+    ExplicitTop = 189
+    ExplicitWidth = 448
     object pnlZoomUserStage: TPanel
       Left = 75
       Top = 0
