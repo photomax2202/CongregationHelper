@@ -44,9 +44,9 @@ object FormCongregationHelper: TFormCongregationHelper
     ExplicitTop = 189
     ExplicitWidth = 448
     object pnlZoomUserStage: TPanel
-      Left = 75
+      Left = 240
       Top = 0
-      Width = 75
+      Width = 60
       Height = 25
       BevelOuter = bvSpace
       Caption = 'B'#252'hne'
@@ -55,9 +55,9 @@ object FormCongregationHelper: TFormCongregationHelper
       TabOrder = 0
     end
     object pnlZoomUserConference: TPanel
-      Left = 150
+      Left = 300
       Top = 0
-      Width = 75
+      Width = 60
       Height = 25
       BevelOuter = bvSpace
       Caption = 'JW-Conf'
@@ -68,13 +68,46 @@ object FormCongregationHelper: TFormCongregationHelper
     object pnlZoomActive: TPanel
       Left = 0
       Top = 0
-      Width = 75
+      Width = 60
       Height = 25
       BevelOuter = bvSpace
       Caption = 'Zoom'
       Color = clGray
       ParentBackground = False
       TabOrder = 2
+    end
+    object pnlZoomUserHost: TPanel
+      Left = 60
+      Top = 0
+      Width = 60
+      Height = 25
+      BevelOuter = bvSpace
+      Caption = 'Host'
+      Color = clGray
+      ParentBackground = False
+      TabOrder = 3
+    end
+    object pnlZoomUserUsher: TPanel
+      Left = 120
+      Top = 0
+      Width = 60
+      Height = 25
+      BevelOuter = bvSpace
+      Caption = 'Ordner'
+      Color = clGray
+      ParentBackground = False
+      TabOrder = 4
+    end
+    object pnlZoomUserSound: TPanel
+      Left = 180
+      Top = 0
+      Width = 60
+      Height = 25
+      BevelOuter = bvSpace
+      Caption = 'Ton'
+      Color = clGray
+      ParentBackground = False
+      TabOrder = 5
     end
   end
   object mpMainMenu: TMainMenu
@@ -102,18 +135,22 @@ object FormCongregationHelper: TFormCongregationHelper
       Caption = 'Einstellungen'
       object mpAlwaysOnTop: TMenuItem
         Caption = 'Immer im Vordergrund'
-        OnClick = mpAlwaysOnTopClick
+        OnClick = mpSettingsClick
       end
       object mpZoomMonitoring: TMenuItem
         Caption = 'Zoom '#252'berwachen'
         OnClick = mpSettingsClick
       end
+      object mpSettingsZoom: TMenuItem
+        Caption = 'Zoom'
+        OnClick = mpSettingsClick
+      end
       object mpSettingsCamera: TMenuItem
-        Caption = 'Kameraeinstellungen'
+        Caption = 'Kamera'
         OnClick = mpSettingsClick
       end
       object mpSettingsMonitor: TMenuItem
-        Caption = 'Monitoreinstellungen'
+        Caption = 'Monitor'
         OnClick = mpSettingsClick
       end
       object mpPreReleaseRepo: TMenuItem

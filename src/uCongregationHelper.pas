@@ -1,4 +1,4 @@
-unit uCongregationHelper;
+﻿unit uCongregationHelper;
 
 interface
 
@@ -23,7 +23,7 @@ uses
 
 type
 
-  TZoomUserState = (stInactive, stOnline, stOffline);
+  TZoomUserState = (stInvalid, stInactive, stOnline, stOffline, stNeedsAttention);
 
   TFormCongregationHelper = class(TForm)
     mpMainMenu: TMainMenu;
@@ -43,7 +43,10 @@ type
     mpZoomMonitoring: TMenuItem;
     mpPreReleaseRepo: TMenuItem;
     pnlZoomActive: TPanel;
-    procedure mpAlwaysOnTopClick(Sender: TObject);
+    mpSettingsZoom: TMenuItem;
+    pnlZoomUserHost: TPanel;
+    pnlZoomUserUsher: TPanel;
+    pnlZoomUserSound: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mpSettingsClick(Sender: TObject);
@@ -65,7 +68,9 @@ type
     function GetFunctionPages(i: Integer): TFormPageMaster;
     function GetFunctionPage: TFormPageMaster;
     procedure GetUpdateApp;
-    procedure SetZoomUserState(Sender: TObject; AState: TZoomUserState);
+    function GetAppVersion: string;
+    procedure SetZoomUserState(Sender: TPanel; AState: TZoomUserState);
+    function GetZoomUserState(Sender: TPanel): TZoomUserState;
     function CreatePages: TArray<TFormPageMaster>;
   public
     property Config: TConfig
@@ -90,7 +95,8 @@ type
   end;
 
 const
-  cVersion       = 'v0.0.3';
+  // App Version wird aus compilierten Daten ermittelt
+  // cVersion       = 'v0.0.3';
   cRepoName      = 'CongregationHelper';
   cUpdateAppName = 'AutoUpdater.exe';
 
@@ -103,6 +109,7 @@ uses
   StrUtils,
   uConfigCamera,
   uConfigMonitor,
+  uConfigZoom,
   uPageFunctionSample,
   uPageApplication,
   uPageCamera;
@@ -199,7 +206,7 @@ begin
   begin
     GetUpdateApp;
   end;
-  StartNewProcess(UpdateApp, Format('%s %s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), cVersion,
+  StartNewProcess(UpdateApp, Format('%s %s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), GetAppVersion,
     BoolToStr(FPreReleseVersion)]), True);
 {$ENDIF}
   FFunctionPages := TObjectList<TFormPageMaster>.Create(True);
@@ -223,6 +230,37 @@ procedure TFormCongregationHelper.FormShow(Sender: TObject);
 begin
   DoResize;
   // AddFunctionPages;
+end;
+
+function TFormCongregationHelper.GetAppVersion: string;
+var
+  VersionInfoSize, VersionValueSize: DWORD;
+  VersionInfo, VersionValue        : Pointer;
+  TranslationValue                 : PChar;
+  Major, Minor, Release, Build     : Cardinal;
+begin
+  VersionInfoSize := GetFileVersionInfoSize(PChar(Application.ExeName), VersionValueSize);
+  if VersionInfoSize > 0 then
+  begin
+    GetMem(VersionInfo, VersionInfoSize);
+    try
+      if GetFileVersionInfo(PChar(Application.ExeName), 0, VersionInfoSize, VersionInfo) then
+      begin
+        VerQueryValue(VersionInfo, '\', VersionValue, VersionValueSize);
+        Major   := HiWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionMS);
+        Minor   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionMS);
+        Release := HiWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
+        Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
+        // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
+        Result := Format('v%d.%d.%d', [Major, Minor, Release]);
+      end;
+    finally
+      FreeMem(VersionInfo);
+    end;
+  end
+  else
+    // WriteLn('Keine Versionsinformationen gefunden.');
+    Result := EmptyStr;
 end;
 
 function TFormCongregationHelper.GetFunctionPage: TFormPageMaster;
@@ -256,14 +294,18 @@ begin
   end;
 end;
 
-procedure TFormCongregationHelper.mpAlwaysOnTopClick(Sender: TObject);
+function TFormCongregationHelper.GetZoomUserState(Sender: TPanel): TZoomUserState;
 begin
-  mpAlwaysOnTop.Checked := not mpAlwaysOnTop.Checked;
-  Config.AlwaysOnTop    := mpAlwaysOnTop.Checked;
-  if mpAlwaysOnTop.Checked then
-    FormStyle := fsStayOnTop
+  if (Sender as TPanel).Color = clGrayText then
+    Result := stInactive
+  else if (Sender as TPanel).Color = clLime then
+    Result := stOnline
+  else if (Sender as TPanel).Color = clRed then
+    Result := stOnline
+  else if (Sender as TPanel).Color = clTeal then
+    Result := stNeedsAttention
   else
-    FormStyle := fsNormal;
+    Result := stInvalid;
 end;
 
 procedure TFormCongregationHelper.mpProgramClick(Sender: TObject);
@@ -274,7 +316,11 @@ begin
   end
   else if (Sender as TMenuItem).Name = mpInfo.Name then
   begin
-    ShowMessage(Caption + #10#13 + 'Version ' + cVersion + #10#13 + 'GitHub-Repo: ' + cRepoName);
+    ShowMessage(                            //
+      Caption + #10#13 +                    //
+      'Version ' + GetAppVersion + #10#13 + //
+      'GitHub-Repo: ' + cRepoName           //
+      );
   end
   else if (Sender as TMenuItem).Name = mpExit.Name then
   begin
@@ -306,6 +352,17 @@ begin
     pgcMain.OnChange(Self);
     DoResize;
   end
+  else if (Sender as TMenuItem).Name = mpSettingsZoom.Name then
+  begin
+    FormConfigZoom := TFormConfigZoom.Create(FormCongregationHelper);
+    try
+      FormConfigZoom.ShowModal;
+    finally
+      FormConfigZoom.Free;
+    end;
+    pgcMain.OnChange(Self);
+    DoResize;
+  end
   else if (Sender as TMenuItem).Name = mpZoomMonitoring.Name then
   begin
     mpZoomMonitoring.Checked := not mpZoomMonitoring.Checked;
@@ -320,7 +377,15 @@ begin
     Config.PreReleaseVersionen := FPreReleseVersion;
     if FPreReleseVersion then
       ShowMessage('Beim nächsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berücksichtigt.')
-
+  end
+  else if (Sender as TMenuItem).Name = mpAlwaysOnTop.Name then
+  begin
+    mpAlwaysOnTop.Checked := not mpAlwaysOnTop.Checked;
+    Config.AlwaysOnTop    := mpAlwaysOnTop.Checked;
+    if mpAlwaysOnTop.Checked then
+      FormStyle := fsStayOnTop
+    else
+      FormStyle := fsNormal;
   end;
 end;
 
@@ -332,16 +397,16 @@ begin
   end;
 end;
 
-procedure TFormCongregationHelper.SetZoomUserState(Sender: TObject; AState: TZoomUserState);
+procedure TFormCongregationHelper.SetZoomUserState(Sender: TPanel; AState: TZoomUserState);
 begin
-  if not(Sender is TPanel) then
-    Exit;
   if AState = stInactive then
     (Sender as TPanel).Color := clGrayText
   else if AState = stOnline then
     (Sender as TPanel).Color := clLime
   else if AState = stOffline then
-    (Sender as TPanel).Color := clRed;
+    (Sender as TPanel).Color := clRed
+  else if AState = stNeedsAttention then
+    (Sender as TPanel).Color := clTeal;
 end;
 
 procedure TFormCongregationHelper.tmrZoomUserTimer(Sender: TObject);
@@ -353,6 +418,9 @@ begin
     SetZoomUserState(pnlZoomActive, stInactive);
     SetZoomUserState(pnlZoomUserStage, stInactive);
     SetZoomUserState(pnlZoomUserConference, stInactive);
+    SetZoomUserState(pnlZoomUserHost, stInactive);
+    SetZoomUserState(pnlZoomUserUsher, stInactive);
+    SetZoomUserState(pnlZoomUserSound, stInactive);
   end;
   if ((FTimerIndex mod 6) = 0) then
     If FZoomMonitoring then

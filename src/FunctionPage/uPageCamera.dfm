@@ -36,6 +36,7 @@ inherited FormPageCamera: TFormPageCamera
         ParentFont = False
         TabOrder = 0
         TabStop = False
+        OnClick = btnCameraClick
       end
       object btnSpeakerL: TButton
         Left = 0
@@ -51,6 +52,7 @@ inherited FormPageCamera: TFormPageCamera
         ParentFont = False
         TabOrder = 1
         TabStop = False
+        OnClick = btnCameraClick
       end
       object btnSpeakerS: TButton
         Left = 0
@@ -66,6 +68,7 @@ inherited FormPageCamera: TFormPageCamera
         ParentFont = False
         TabOrder = 2
         TabStop = False
+        OnClick = btnCameraClick
       end
     end
     object btnSpeaker: TButton
@@ -82,6 +85,7 @@ inherited FormPageCamera: TFormPageCamera
       ParentFont = False
       TabOrder = 1
       TabStop = False
+      OnClick = btnCameraClick
     end
   end
   object btnReader: TButton
@@ -97,6 +101,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = btnCameraClick
   end
   object btnTable: TButton
     Left = 300
@@ -112,6 +117,7 @@ inherited FormPageCamera: TFormPageCamera
     ImageAlignment = iaCenter
     ParentFont = False
     TabOrder = 2
+    OnClick = btnCameraClick
   end
   object btnLeftSpace: TButton
     Left = 0
@@ -126,6 +132,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    OnClick = btnCameraClick
   end
   object btnRightSpace: TButton
     Left = 225
@@ -140,6 +147,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ParentFont = False
     TabOrder = 4
+    OnClick = btnCameraClick
   end
   object btnParking: TButton
     Left = 225
@@ -154,6 +162,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ParentFont = False
     TabOrder = 5
+    OnClick = btnCameraClick
   end
   object btnTotal: TButton
     Left = 0

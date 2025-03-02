@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">CongregationHelper</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -177,8 +177,18 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\src\Helper\uMonitorHandler.pas"/>
+        <DCCReference Include="..\src\Zoom\zoom_sdk.pas"/>
+        <DCCReference Include="..\src\Zoom\zoom_sdk_def.pas"/>
         <DCCReference Include="..\src\FunctionPage\uPageFunctionSample.pas">
             <Form>FormPageFunctionSample</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\src\Settings\uConfigPageSample.pas">
+            <Form>FormConfigPageSample</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\src\Settings\uConfigZoom.pas">
+            <Form>FormConfigZoom</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
