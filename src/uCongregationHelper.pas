@@ -47,7 +47,6 @@ type
     pnlZoomUserHost: TPanel;
     pnlZoomUserUsher: TPanel;
     pnlZoomUserSound: TPanel;
-    procedure mpAlwaysOnTopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mpSettingsClick(Sender: TObject);
@@ -194,8 +193,8 @@ var
   LRespose     : string;
   i            : Integer;
 begin
-  Config      := TConfig.Create;
-  FTimerIndex := 0;
+  Config                   := TConfig.Create;
+  FTimerIndex              := 0;
   mpAlwaysOnTop.Checked    := Config.AlwaysOnTop;
   mpZoomMonitoring.Checked := Config.ZoomMonitoring;
   mpPreReleaseRepo.Checked := Config.PreReleaseVersionen;
@@ -309,16 +308,6 @@ begin
     Result := stInvalid;
 end;
 
-procedure TFormCongregationHelper.mpAlwaysOnTopClick(Sender: TObject);
-begin
-  mpAlwaysOnTop.Checked := not mpAlwaysOnTop.Checked;
-  Config.AlwaysOnTop    := mpAlwaysOnTop.Checked;
-  if mpAlwaysOnTop.Checked then
-    FormStyle := fsStayOnTop
-  else
-    FormStyle := fsNormal;
-end;
-
 procedure TFormCongregationHelper.mpProgramClick(Sender: TObject);
 begin
   if (Sender as TMenuItem).Name = mpHelp.Name then
@@ -388,7 +377,15 @@ begin
     Config.PreReleaseVersionen := FPreReleseVersion;
     if FPreReleseVersion then
       ShowMessage('Beim nächsten Programmstart werden bei Aktualisierungen Pre-Release Versionen berücksichtigt.')
-
+  end
+  else if (Sender as TMenuItem).Name = mpAlwaysOnTop.Name then
+  begin
+    mpAlwaysOnTop.Checked := not mpAlwaysOnTop.Checked;
+    Config.AlwaysOnTop    := mpAlwaysOnTop.Checked;
+    if mpAlwaysOnTop.Checked then
+      FormStyle := fsStayOnTop
+    else
+      FormStyle := fsNormal;
   end;
 end;
 
