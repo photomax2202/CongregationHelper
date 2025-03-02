@@ -160,6 +160,7 @@ object FormCongregationHelper: TFormCongregationHelper
     end
   end
   object tmrZoomUser: TTimer
+    Enabled = False
     Interval = 5000
     OnTimer = tmrZoomUserTimer
     Left = 32
