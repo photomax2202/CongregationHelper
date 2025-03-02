@@ -14,7 +14,11 @@ uses
   uProgramList in '..\src\Helper\uProgramList.pas' {FormProgrammAdd},
   uPageApplication in '..\src\FunctionPage\uPageApplication.pas' {FormPageApplication},
   uMonitorHandler in '..\src\Helper\uMonitorHandler.pas',
-  uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample};
+  zoom_sdk in '..\src\Zoom\zoom_sdk.pas',
+  zoom_sdk_def in '..\src\Zoom\zoom_sdk_def.pas',
+  uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample},
+  uConfigPageSample in '..\src\Settings\uConfigPageSample.pas' {FormConfigPageSample},
+  uConfigZoom in '..\src\Settings\uConfigZoom.pas' {FormConfigZoom};
 
 {$R *.res}
 
@@ -27,5 +31,8 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormCongregationHelper, FormCongregationHelper);
   Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
+  Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
+  Application.CreateForm(TFormConfigPageSample, FormConfigPageSample);
+  Application.CreateForm(TFormConfigZoom, FormConfigZoom);
   Application.Run;
 end.
