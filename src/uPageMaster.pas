@@ -30,6 +30,7 @@ type
     procedure DoPageCreate; virtual; abstract;
     procedure DoPageShow; virtual; abstract;
     procedure DoPageClose; virtual; abstract;
+    procedure DoLog(AText:String);
   public
     property MaxWidth: Integer
       read   GetMaxWidth;
@@ -47,10 +48,16 @@ type
 implementation
 
 uses
-  uCongregationHelper;
+  uCongregationHelper,
+  uLog;
 
 {$R *.dfm}
 { TFormPageMaster }
+
+procedure TFormPageMaster.DoLog(AText: String);
+begin
+FormLog.DoLog(AText);
+end;
 
 procedure TFormPageMaster.FormCreate(Sender: TObject);
 begin
@@ -66,6 +73,7 @@ end;
 
 procedure TFormPageMaster.FormShow(Sender: TObject);
 begin
+  DoLog(Format('Seite anzeigen: %s',[Caption]));
   DoPageShow;
 end;
 

@@ -47,6 +47,7 @@ type
     pnlZoomUserHost: TPanel;
     pnlZoomUserUsher: TPanel;
     pnlZoomUserSound: TPanel;
+    mpLog: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mpSettingsClick(Sender: TObject);
@@ -112,7 +113,8 @@ uses
   uConfigZoom,
   uPageFunctionSample,
   uPageApplication,
-  uPageCamera;
+  uPageCamera,
+  uLog;
 
 {$R *.dfm}
 // procedure TFormCongregationHelper.AddFunctionPages;
@@ -198,7 +200,6 @@ begin
   mpAlwaysOnTop.Checked    := Config.AlwaysOnTop;
   mpZoomMonitoring.Checked := Config.ZoomMonitoring;
   mpPreReleaseRepo.Checked := Config.PreReleaseVersionen;
-  { TODO -oMax -cUpdateprocess : Implementieren der Updatefunktion mit Unterscheidung nach Prereleases }
 {$IFNDEF DEBUG}
   FFilePath  := ParamStr(0);
   FUpdateApp := StringReplace(FFilePath, ExtractFileName(ParamStr(0)), cUpdateAppName, [rfReplaceAll]);
@@ -217,7 +218,7 @@ begin
     FFunctionPages[i].Show;
   end;
   DoResize;
-  Application.Name := StringReplace(Caption, ' ', '', [rfReplaceAll]);
+  Application.Name    := StringReplace(Caption, ' ', '', [rfReplaceAll]);
   tmrZoomUser.Enabled := True;
 end;
 
@@ -255,6 +256,7 @@ begin
         Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
         Result := Format('v%d.%d.%d.%d', [Major, Minor, Release, Build]);
+        FormLog.DoLog(Format('Appversion abrufen: %s',[Result]));
       end;
     finally
       FreeMem(VersionInfo);
@@ -312,6 +314,9 @@ end;
 
 procedure TFormCongregationHelper.mpProgramClick(Sender: TObject);
 begin
+  if not(Sender is TMenuItem) then
+    Exit;
+  FormLog.DoLog(Format('Button Programm klick: %s', [(Sender as TMenuItem).Caption]));
   if (Sender as TMenuItem).Name = mpHelp.Name then
   begin
     OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper/wiki');
@@ -332,6 +337,9 @@ end;
 
 procedure TFormCongregationHelper.mpSettingsClick(Sender: TObject);
 begin
+  if not(Sender is TMenuItem) then
+    Exit;
+  FormLog.DoLog(Format('Button Einstellungen klick: %s', [(Sender as TMenuItem).Caption]));
   if (Sender as TMenuItem).Name = mpSettingsCamera.Name then
   begin
     FormConfigCamera := TFormConfigCamera.Create(FormCongregationHelper);
@@ -388,6 +396,13 @@ begin
       FormStyle := fsStayOnTop
     else
       FormStyle := fsNormal;
+  end
+  else if (Sender as TMenuItem).Name = mpLog.Name then
+  begin
+    if FormLog.Visible then
+      FormLog.Hide
+    else
+      FormLog.Show;
   end;
 end;
 
@@ -429,8 +444,8 @@ begin
       CheckZoomUsers;
   if ((FTimerIndex mod 2) = 0) then
   begin
-  if Assigned(FunctionPage) then
-    FunctionPage.DoPageTimer;
+    if Assigned(FunctionPage) then
+      FunctionPage.DoPageTimer;
   end;
   Inc(FTimerIndex);
   if FTimerIndex >= 12 then

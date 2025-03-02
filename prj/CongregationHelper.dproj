@@ -220,6 +220,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>FormConfigZoom</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\src\Helper\uLog.pas">
+            <Form>FormLog</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -255,12 +259,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <DeployFile LocalName="..\bin\CongregationHelper.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>CongregationHelper.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\bin\CongregationHelper.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>CongregationHelper.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

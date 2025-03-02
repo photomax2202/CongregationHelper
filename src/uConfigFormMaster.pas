@@ -34,6 +34,7 @@ type
     procedure DoFormLoad; virtual; abstract;
     procedure DoFormShow; virtual; abstract;
     procedure DoFormSave(out ACanSave: Boolean); virtual; abstract;
+    procedure DoLog(AText:String);
     property Config: TConfig
       read   FConfig;
   public
@@ -44,7 +45,8 @@ implementation
 
 uses
   Math,
-  uCongregationHelper;
+  uCongregationHelper,
+  uLog;
 
 {$R *.dfm}
 
@@ -54,7 +56,17 @@ var
 begin
   DoFormSave(LCanSave);
   if not LCanSave then
+  begin
     ModalResult := mrNone;
+    DoLog(Format('Einstellungen korrigieren: %s',[Caption]));
+  end
+  else
+    DoLog(Format('Einstellungen sichern: %s',[Caption]));
+end;
+
+procedure TForrmConfigMaster.DoLog(AText: String);
+begin
+FormLog.DoLog(AText);
 end;
 
 procedure TForrmConfigMaster.FormCreate(Sender: TObject);
@@ -66,6 +78,7 @@ end;
 
 procedure TForrmConfigMaster.FormShow(Sender: TObject);
 begin
+  DoLog(Format('Einstellungsfenster anzeigen: %s',[Caption]));
   BringToFront;
   DoFormShow;
   if Config.AlwaysOnTop then

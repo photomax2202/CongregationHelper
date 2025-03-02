@@ -157,6 +157,10 @@ object FormCongregationHelper: TFormCongregationHelper
         Caption = 'Pre-Release Versionen'
         OnClick = mpSettingsClick
       end
+      object mpLog: TMenuItem
+        Caption = 'Logfenster'
+        OnClick = mpSettingsClick
+      end
     end
   end
   object tmrZoomUser: TTimer

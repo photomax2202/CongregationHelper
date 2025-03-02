@@ -18,7 +18,8 @@ uses
   zoom_sdk_def in '..\src\Zoom\zoom_sdk_def.pas',
   uPageFunctionSample in '..\src\FunctionPage\uPageFunctionSample.pas' {FormPageFunctionSample},
   uConfigPageSample in '..\src\Settings\uConfigPageSample.pas' {FormConfigPageSample},
-  uConfigZoom in '..\src\Settings\uConfigZoom.pas' {FormConfigZoom};
+  uConfigZoom in '..\src\Settings\uConfigZoom.pas' {FormConfigZoom},
+  uLog in '..\src\Helper\uLog.pas' {FormLog};
 
 {$R *.res}
 
@@ -30,9 +31,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFormCongregationHelper, FormCongregationHelper);
-  Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
-  Application.CreateForm(TFormPageFunctionSample, FormPageFunctionSample);
-  Application.CreateForm(TFormConfigPageSample, FormConfigPageSample);
-  Application.CreateForm(TFormConfigZoom, FormConfigZoom);
+  Application.CreateForm(TFormLog, FormLog);
   Application.Run;
 end.
