@@ -97,7 +97,8 @@ begin
     LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosPark)
   else
     Exit;
-    if LEndpoint = EmptyStr then Exit;
+  if LEndpoint = EmptyStr then
+    Exit;
   // HTTP Request
   HttpGetWithBasicAuth(Config.CameraIp, LEndpoint, Config.CameraToken, LResponse);
 end;
@@ -126,13 +127,29 @@ end;
 
 procedure TFormPageCamera.DoPageShow;
 var
-  i: Integer;
+  i, LPosSpeaker, LPosReader, LPosTable: Integer;
 begin
   inherited;
-  pnlSpeaker.Left := (Config.CameraPosSpeakerIndex.ToInteger - 1) * 150;
-  btnReader.Left  := (Config.CameraPosReaderIndex.ToInteger - 1) * 150;
-  btnTable.Left   := (Config.CameraPosTableIndex.ToInteger - 1) * 150;
-  if Config.CameraPosSpeakerIndex.ToInteger = 3 then
+  if Config.CameraPosSpeakerIndex = EmptyStr then
+    LPosSpeaker := 1
+  else
+    LPosSpeaker := Config.CameraPosSpeakerIndex.ToInteger;
+
+  if Config.CameraPosReaderIndex = EmptyStr then
+    LPosReader := 2
+  else
+    LPosReader := Config.CameraPosReaderIndex.ToInteger;
+
+  if Config.CameraPosTableIndex = EmptyStr then
+    LPosTable := 3
+  else
+    LPosTable := Config.CameraPosTableIndex.ToInteger;
+
+    pnlSpeaker.Left := (LPosSpeaker - 1) * 150;
+    btnReader.Left := (LPosReader - 1) * 150;
+    btnTable.Left := (LPosTable - 1) * 150;
+
+  if LPosSpeaker = 3 then
   begin
     pnlSpeakerSize.Left := 75;
     btnSpeaker.Left     := 0;
@@ -145,7 +162,7 @@ begin
   end;
   for i := 1 to 3 do
   begin
-    if Config.CameraPosSpeakerIndex.ToInteger = i then
+    if LPosSpeaker = i then
     begin
       case i of
         1:
@@ -156,7 +173,7 @@ begin
           FillButtonCaptionThird('Redner');
       end;
     end
-    else if Config.CameraPosReaderIndex.ToInteger = i then
+    else if LPosReader = i then
     begin
       case i of
         1:
@@ -167,7 +184,7 @@ begin
           FillButtonCaptionThird('Leser');
       end;
     end
-    else if Config.CameraPosTableIndex.ToInteger = i then
+    else if LPosTable = i then
     begin
       case i of
         1:
