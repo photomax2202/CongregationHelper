@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">CongregationHelper</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -180,7 +180,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>FormConfigCamera</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\src\uValidationAndHelper.pas"/>
+        <DCCReference Include="..\src\Helper\uValidationAndHelper.pas"/>
         <DCCReference Include="..\src\Settings\uConfigMonitor.pas">
             <Form>FormConfigMonitor</Form>
             <FormType>dfm</FormType>
@@ -196,7 +196,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="..\src\uConfigFormMaster.pas">
             <Form>ForrmConfigMaster</Form>
         </DCCReference>
-        <DCCReference Include="..\src\uGitHub.pas"/>
+        <DCCReference Include="..\src\Helper\uGitHub.pas"/>
         <DCCReference Include="..\src\Helper\uProgramList.pas">
             <Form>FormProgrammAdd</Form>
             <FormType>dfm</FormType>

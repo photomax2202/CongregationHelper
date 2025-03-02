@@ -139,6 +139,14 @@ uses
 procedure TFormCongregationHelper.CheckZoomUsers;
 begin
   { TODO -oMax -cZoomUsers : Implementation of Checking Zoom user avalibility }
+
+  SetZoomUserState(pnlZoomActive, stOffline);
+  SetZoomUserState(pnlZoomUserHost, stOnline);
+  SetZoomUserState(pnlZoomUserUsher, stOffline);
+  SetZoomUserState(pnlZoomUserSound, stOnline);
+  SetZoomUserState(pnlZoomUserStage, stOffline);
+  SetZoomUserState(pnlZoomUserConference, stOnline);
+
 end;
 
 function TFormCongregationHelper.CreatePages: TArray<TFormPageMaster>;
@@ -218,7 +226,7 @@ begin
     FFunctionPages[i].Show;
   end;
   DoResize;
-  Application.Name    := StringReplace(Caption, ' ', '', [rfReplaceAll]);
+  // Application.Name    := StringReplace(Caption, ' ', '', [rfReplaceAll]);
   tmrZoomUser.Enabled := True;
 end;
 
@@ -256,7 +264,7 @@ begin
         Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
         Result := Format('v%d.%d.%d.%d', [Major, Minor, Release, Build]);
-        FormLog.DoLog(Format('Appversion abrufen: %s',[Result]));
+        FormLog.DoLog(Format('Appversion abrufen: %s', [Result]));
       end;
     finally
       FreeMem(VersionInfo);

@@ -78,7 +78,7 @@ end;
 
 procedure TForrmConfigMaster.FormShow(Sender: TObject);
 begin
-  DoLog(Format('Einstellungsfenster anzeigen: %s',[Caption]));
+  DoLog(Format('Einstellungen anzeigen: %s',[Caption]));
   BringToFront;
   DoFormShow;
   if Config.AlwaysOnTop then
