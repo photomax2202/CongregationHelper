@@ -207,7 +207,7 @@ begin
     GetUpdateApp;
   end;
   StartNewProcess(UpdateApp, Format('%s %s %s %s %s', [UpdateApp, cRepoName, ExtractFileName(FFilePath), GetAppVersion,
-    BoolToStr(FPreReleseVersion)]), True);
+    BoolToStr(FPreReleseVersion, True)]), True);
 {$ENDIF}
   FFunctionPages := TObjectList<TFormPageMaster>.Create(True);
   FFunctionPages.AddRange(CreatePages);
@@ -218,10 +218,12 @@ begin
   end;
   DoResize;
   Application.Name := StringReplace(Caption, ' ', '', [rfReplaceAll]);
+  tmrZoomUser.Enabled := True;
 end;
 
 procedure TFormCongregationHelper.FormDestroy(Sender: TObject);
 begin
+  tmrZoomUser.Enabled := False;
   Config.Free;
   FFunctionPages.Free;
 end;
@@ -252,7 +254,7 @@ begin
         Release := HiWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
-        Result := Format('v%d.%d.%d', [Major, Minor, Release]);
+        Result := Format('v%d.%d.%d.%d', [Major, Minor, Release, Build]);
       end;
     finally
       FreeMem(VersionInfo);
@@ -426,7 +428,10 @@ begin
     If FZoomMonitoring then
       CheckZoomUsers;
   if ((FTimerIndex mod 2) = 0) then
+  begin
+  if Assigned(FunctionPage) then
     FunctionPage.DoPageTimer;
+  end;
   Inc(FTimerIndex);
   if FTimerIndex >= 12 then
     FTimerIndex := 0;
