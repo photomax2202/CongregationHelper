@@ -1,6 +1,0 @@
-
-ProductVersion   FileVersion      FileName                                                                             
---------------   -----------      --------                                                                             
-1.0.0.0          1.0.0.3          C:\GitRepository\Delphi\CongregationHelper\bin\CongregationHelper.exe                
-
-
