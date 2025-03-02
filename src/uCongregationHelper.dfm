@@ -135,7 +135,7 @@ object FormCongregationHelper: TFormCongregationHelper
       Caption = 'Einstellungen'
       object mpAlwaysOnTop: TMenuItem
         Caption = 'Immer im Vordergrund'
-        OnClick = mpAlwaysOnTopClick
+        OnClick = mpSettingsClick
       end
       object mpZoomMonitoring: TMenuItem
         Caption = 'Zoom '#252'berwachen'
