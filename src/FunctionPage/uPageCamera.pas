@@ -69,12 +69,14 @@ begin
   if (AUrl1 = EmptyStr) or (AUrl2 = EmptyStr) then
     Exit;
   Result := Format('%s/%s', [AUrl1, AUrl2]);
+  DoLog(Format('API Endpunkt: %s - %s', [Caption, Result]));
 end;
 
 procedure TFormPageCamera.btnCameraClick(Sender: TObject);
 var
   LEndpoint, LResponse: string;
 begin
+  DoLog(Format('Button klick: %s - %s', [Caption, (Sender as TButton).Caption]));
   if (Sender as TButton).Name = btnSpeaker.Name then
     LEndpoint := ApiEndpointPosition(Config.CameraURL, Config.CameraPosSpeaker)
   else if (Sender as TButton).Name = btnSpeakerS.Name then
@@ -98,7 +100,11 @@ begin
   else
     Exit;
   if LEndpoint = EmptyStr then
+  begin
+    DoLog(Format('API Endpunkt: %s - leer', [Caption]));
     Exit;
+  end;
+
   // HTTP Request
   HttpGetWithBasicAuth(Config.CameraIp, LEndpoint, Config.CameraToken, LResponse);
 end;
@@ -145,9 +151,9 @@ begin
   else
     LPosTable := Config.CameraPosTableIndex.ToInteger;
 
-    pnlSpeaker.Left := (LPosSpeaker - 1) * 150;
-    btnReader.Left := (LPosReader - 1) * 150;
-    btnTable.Left := (LPosTable - 1) * 150;
+  pnlSpeaker.Left := (LPosSpeaker - 1) * 150;
+  btnReader.Left  := (LPosReader - 1) * 150;
+  btnTable.Left   := (LPosTable - 1) * 150;
 
   if LPosSpeaker = 3 then
   begin
@@ -222,6 +228,8 @@ end;
 
 function TFormPageCamera.HttpGetWithBasicAuth(const AURL, AEndpoint, AToken: string;
   out AResponseContent: string): Boolean;
+var
+LRequestUrl:String;
 begin
   Result       := false;
   FHttpClient  := TNetHTTPClient.Create(nil);
@@ -232,11 +240,14 @@ begin
     FHttpRequest.SendTimeout                    := 1000;
     FHttpRequest.ResponseTimeout                := 1000;
     FHttpRequest.CustomHeaders['Authorization'] := BuildBasicAuthString(Config.CameraToken);
-    FResponse                                   := FHttpRequest.Get(Format('http://%s/%s', [AURL, AEndpoint]));
+    LRequestUrl :=    Format('http://%s/%s', [AURL, AEndpoint]);
+    DoLog(Format('URL Request: %s',[LRequestUrl]));
+    FResponse                                   := FHttpRequest.Get(LRequestUrl);
     if FResponse.StatusCode = 200 then
     begin
       Result           := True;
       AResponseContent := FResponse.ContentAsString;
+      DoLog(Format('URL Response: %s',[AResponseContent]));
     end
     else
     begin
