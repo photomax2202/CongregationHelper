@@ -3,7 +3,8 @@ unit uValidationAndHelper;
 interface
 
 uses
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls,
+  Vcl.Forms;
 
 function ValidateToken(AToken: String): Boolean;
 function ValidateIp(AIPAddress: String): Boolean;
@@ -11,6 +12,9 @@ function ValidateUrl(AUrl: String): Boolean;
 function ValidatePosition(APosition: String): Boolean;
 
 procedure MarkValidation(AField: TLabeledEdit; AValid: Boolean);
+
+function ReplaceCharactersEnumWindows(AString: String):String;
+function ReplaceCharactersFindWindows(AString: String):String;
 
 implementation
 
@@ -60,6 +64,16 @@ begin
   // Regulärer Ausdruck zur Validierung einer Zahl zwischen 0 und 99
   Regex  := TRegEx.Create('^(?:[0-9]|[1-9][0-9])$');
   Result := Regex.IsMatch(APosition) or (APosition = EmptyStr);
+end;
+
+function ReplaceCharactersEnumWindows(AString: String):String;
+begin
+  Result := StringReplace(AString,#$200E,'#bdLeftToRight',[rfReplaceAll]);
+end;
+
+function ReplaceCharactersFindWindows(AString: String):String;
+begin
+  Result := StringReplace(AString,'#bdLeftToRight',#$200E,[rfReplaceAll]);
 end;
 
 end.

@@ -1,19 +1,21 @@
 object FormProgrammAdd: TFormProgrammAdd
   Left = 0
   Top = 0
-  Caption = 'FormProgrammAdd'
-  ClientHeight = 211
+  Caption = 'Hinzuf'#252'gen'
+  ClientHeight = 251
   ClientWidth = 234
   Color = clBtnFace
-  Constraints.MaxHeight = 250
+  Constraints.MaxHeight = 290
   Constraints.MaxWidth = 250
-  Constraints.MinHeight = 250
+  Constraints.MinHeight = 270
   Constraints.MinWidth = 250
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   TextHeight = 15
   object lblProgramCaption: TLabel
@@ -25,7 +27,7 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object lblProgrammMode: TLabel
     Left = 8
-    Top = 110
+    Top = 158
     Width = 94
     Height = 15
     Caption = 'Programmmodus'
@@ -54,7 +56,7 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object btnCancel: TButton
     Left = 8
-    Top = 168
+    Top = 216
     Width = 101
     Height = 25
     Caption = 'Abbrechen'
@@ -63,7 +65,7 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object btnOk: TButton
     Left = 120
-    Top = 168
+    Top = 216
     Width = 97
     Height = 25
     Caption = 'OK'
@@ -73,7 +75,7 @@ object FormProgrammAdd: TFormProgrammAdd
   end
   object cbxProgramMode: TComboBox
     Left = 8
-    Top = 131
+    Top = 179
     Width = 209
     Height = 23
     Style = csDropDownList
@@ -85,5 +87,18 @@ object FormProgrammAdd: TFormProgrammAdd
       'Links Anheften'
       'Rechts Anheften'
       'Pr'#228'sentation')
+  end
+  object ledProgrammClass: TLabeledEdit
+    Left = 8
+    Top = 129
+    Width = 209
+    Height = 23
+    EditLabel.Width = 95
+    EditLabel.Height = 15
+    EditLabel.Caption = 'Programm Klasse:'
+    ReadOnly = True
+    TabOrder = 5
+    Text = ''
+    OnChange = ledProgrammClassChange
   end
 end

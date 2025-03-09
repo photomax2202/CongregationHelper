@@ -8,7 +8,6 @@ uses
   SysUtils,
   MultiMon;
 
-
 procedure PinWindowToLeftHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 procedure PinWindowToRightHalf(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 procedure MaximizeWindowOnMonitor(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
@@ -87,10 +86,10 @@ end;
 
 procedure MaximizeWindowOnMonitor(AHandle, AMainHandle: HWND; MonitorIndex: Integer);
 var
-  Monitors: array of HMONITOR;
+  Monitors    : array of HMONITOR;
   MonitorCount: Integer;
-  MonitorInfo: TMonitorInfo;
-  Rect: TRect;
+  MonitorInfo : TMonitorInfo;
+  Rect        : TRect;
 begin
   // Initialize monitor info
   MonitorInfo.cbSize := SizeOf(MonitorInfo);
@@ -103,7 +102,7 @@ begin
   Monitors := nil;
   SetLength(Monitors, MonitorCount);
 
-  for var i := 0 to MonitorCount - 1 do
+  for var i     := 0 to MonitorCount - 1 do
     Monitors[i] := Screen.Monitors[i].Handle;
 
   // Get information of the specified monitor
@@ -111,10 +110,13 @@ begin
   begin
     Rect := MonitorInfo.rcWork;
     // Move and resize the window to occupy the entire monitor's work area
-    MoveWindow(AHandle, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, True);
+    // MoveWindow(AHandle, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, True);
+//    SetWindowPos(AHandle, HWND_TOP, Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - -Rect.Top, SW_NORMAL);
+
+
     // Bring the window to the front
     SetForegroundWindow(AHandle);
-    SetForegroundWindow(AMainHandle);
+    // SetForegroundWindow(AMainHandle);
   end;
 end;
 

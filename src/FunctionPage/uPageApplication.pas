@@ -60,7 +60,8 @@ var
 implementation
 
 uses
-  uMonitorHandler;
+  uMonitorHandler,
+  uValidationAndHelper;
 
 {$R *.dfm}
 { TFormPageApplication }
@@ -136,7 +137,7 @@ begin
     Exit;
   LButton           := (Sender as TButton);
   LApplicationEntry := FApplicationList[LButton.Tag];
-  LWindow           := FindWindow(nil, PChar(LApplicationEntry.Caption));
+  LWindow           := FindWindow(nil, PChar(ReplaceCharactersFindWindows(LApplicationEntry.Caption)));
   if LWindow <= 0 then
     Exit;
   case LApplicationEntry.Mode of
@@ -222,7 +223,7 @@ var
 begin
   for i := 0 to AButtons.Count - 1 do
   begin
-    LHandle             := FindWindow(nil, PChar(FApplicationList[AButtons[i].Tag].Caption));
+    LHandle := FindWindow(nil, PChar(ReplaceCharactersFindWindows(FApplicationList[AButtons[i].Tag].Caption)));
     AButtons[i].Enabled := (LHandle <> 0);
   end;
 end;

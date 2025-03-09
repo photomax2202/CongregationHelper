@@ -17,7 +17,7 @@ type
 
   TIdentsMonitor = (idMonNumMedia, idMonNumPresentation);
 
-  TIdentsApplication = (apName, apCaption, apMode);
+  TIdentsApplication = (apName, apCaption, apClass, apMode);
 
   TApplicationMode = (mdLeft, mdRight, mdPresentation);
 
@@ -25,6 +25,7 @@ type
     Index: Integer;
     Name: String;
     Caption: String;
+    sClass: String;
     Mode: TApplicationMode;
   end;
 
@@ -156,8 +157,8 @@ const
 
   cIdentsMonitor: array [TIdentsMonitor] of string = ('MonitorNumMedia', 'MonitorNumPresentation');
 
-  cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption', 'Mode');
-  cApplicationMode: array [TApplicationMode] of string = ('Links Anheften','Rechts Anheften','Präsentation');
+  cIdentsApplication: array [TIdentsApplication] of string = ('Name', 'Caption', 'Class', 'Mode');
+  cApplicationMode: array [TApplicationMode] of string     = ('Links Anheften', 'Rechts Anheften', 'Präsentation');
 
   cMaxProgrammCount = 99;
 
@@ -204,19 +205,20 @@ begin
   Result.Index   := ANum;
   Result.Name    := ReadString(GetApplicationSection(ANum), cIdentsApplication[apName], EmptyStr);
   Result.Caption := ReadString(GetApplicationSection(ANum), cIdentsApplication[apCaption], EmptyStr);
+  Result.sClass  := ReadString(GetApplicationSection(ANum), cIdentsApplication[apClass], EmptyStr);
   Result.Mode    := GetApplicationMode(ReadString(GetApplicationSection(ANum), cIdentsApplication[apMode], EmptyStr));
 end;
 
 function TConfig.GetApplicationMode(AMode: string): TApplicationMode;
 begin
-if SameStr(AMode,cApplicationMode[mdLeft]) then
-Result := mdLeft
-else if SameStr(AMode,cApplicationMode[mdRight]) then
-Result := mdRight
-else if SameStr(AMode,cApplicationMode[mdPresentation]) then
-Result := mdPresentation
-else
-Result := mdPresentation;
+  if SameStr(AMode, cApplicationMode[mdLeft]) then
+    Result := mdLeft
+  else if SameStr(AMode, cApplicationMode[mdRight]) then
+    Result := mdRight
+  else if SameStr(AMode, cApplicationMode[mdPresentation]) then
+    Result := mdPresentation
+  else
+    Result := mdPresentation;
 end;
 
 function TConfig.GetApplicationSection(ANum: Integer): string;
@@ -243,7 +245,9 @@ procedure TConfig.SetApplicationEntry(AApplicationEntry: TApplicationEntry);
 begin
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apName], AApplicationEntry.Name);
   WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apCaption], AApplicationEntry.Caption);
-  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apMode], cApplicationMode[AApplicationEntry.Mode]);
+  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apClass], AApplicationEntry.sClass);
+  WriteString(GetApplicationSection(AApplicationEntry.Index), cIdentsApplication[apMode],
+    cApplicationMode[AApplicationEntry.Mode]);
 end;
 
 procedure TConfig.SetBoolGeneral(Index: TIdentsGeneral; const Value: Boolean);

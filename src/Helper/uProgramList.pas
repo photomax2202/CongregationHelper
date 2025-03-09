@@ -26,30 +26,41 @@ type
     btnOk: TButton;
     lblProgrammMode: TLabel;
     cbxProgramMode: TComboBox;
+    ledProgrammClass: TLabeledEdit;
     procedure ledProgramNameChange(Sender: TObject);
     procedure cbxProgramCaptionChange(Sender: TObject);
     procedure cbxProgramModeChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ledProgrammClassChange(Sender: TObject);
   private
-    FProgramName   : String;
-    FProgramCaption: String;
-    FProgramMode   : String;
+    FProgramName     : String;
+    FProgramCaption  : String;
+    FProgramMode     : String;
+    FProgramClass    : string;
+    FProgramClassList: TStringList;
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
     property WindowList: TComboBox
       read   cbxProgramCaption
       write  cbxProgramCaption;
+    property ProgramClassList: TStringList
+      read   FProgramClassList
+      write  FProgramClassList;
     property ProgramName: String
       read   FProgramName;
     property ProgramCaption: String
       read   FProgramCaption;
     property ProgramMode: String
       read   FProgramMode;
+    property ProgramClass: String
+      read   FProgramClass;
   end;
 
 function EnumWindowsProc(Wnd: HWND; lParam: lParam): BOOL; stdcall;
-function GetWindowEntry(out AName: String; out ACaption: string; out AMode: String): TModalResult;
+function GetWindowEntry(out AName: String; out ACaption: string; out AClass: string; out AMode: String): TModalResult;
 
 var
   FormProgramAdd: TFormProgrammAdd;
@@ -60,20 +71,31 @@ implementation
 
 function EnumWindowsProc(Wnd: HWND; lParam: lParam): BOOL; stdcall;
 var
-  Title  : array [0 .. 255] of Char;
-  ExStyle: Longint;
+  Title                   : array [0 .. 255] of Char;
+  ClassName               : array [0 .. 255] of Char;
+  StringTitle, StringClass: String;
+  ExStyle                 : Longint;
 begin
   ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
+  GetWindowText(Wnd, Title, Length(Title));
+  GetClassName(Wnd, ClassName, Length(ClassName));
+  if StrLen(Title) > 0 then
+  begin
+    SetString(StringTitle, Title, StrLen(Title));
+    SetString(StringClass, ClassName, StrLen(ClassName));
+  end;
   if IsWindow(Wnd) and IsWindowVisible(Wnd) { and ((ExStyle and WS_EX_APPWINDOW) = WS_EX_APPWINDOW) } then
   begin
-    GetWindowText(Wnd, Title, Length(Title));
     if StrLen(Title) > 0 then
-      FormProgramAdd.WindowList.Items.Add(Title);
+    begin
+      FormProgramAdd.WindowList.Items.Add(StringTitle);
+      FormProgramAdd.ProgramClassList.Add(StringClass);
+    end;
   end;
   Result := True;
 end;
 
-function GetWindowEntry(out AName: String; out ACaption: string; out AMode: String): TModalResult;
+function GetWindowEntry(out AName: String; out ACaption: string; out AClass: string; out AMode: String): TModalResult;
 begin
   FormProgramAdd := TFormProgrammAdd.Create(nil);
   try
@@ -81,10 +103,11 @@ begin
     EnumWindows(@EnumWindowsProc, 0);
     FormProgramAdd.BringToFront;
     FormProgramAdd.FormStyle := fsStayOnTop;
-    Result   := FormProgramAdd.ShowModal;
-    AName    := FormProgramAdd.ProgramName;
-    ACaption := FormProgramAdd.ProgramCaption;
-    AMode    := FormProgramAdd.ProgramMode;
+    Result                   := FormProgramAdd.ShowModal;
+    AName                    := FormProgramAdd.ProgramName;
+    ACaption                 := FormProgramAdd.ProgramCaption;
+    AClass                   := FormProgramAdd.ProgramClass;
+    AMode                    := FormProgramAdd.ProgramMode;
   finally
     FormProgramAdd.Free;
   end;
@@ -94,7 +117,8 @@ end;
 
 procedure TFormProgrammAdd.cbxProgramCaptionChange(Sender: TObject);
 begin
-  FProgramCaption := cbxProgramCaption.Items[cbxProgramCaption.ItemIndex];
+  FProgramCaption       := cbxProgramCaption.Items[cbxProgramCaption.ItemIndex];
+  ledProgrammClass.Text := FProgramClassList.Strings[cbxProgramCaption.ItemIndex];
 end;
 
 procedure TFormProgrammAdd.cbxProgramModeChange(Sender: TObject);
@@ -102,9 +126,24 @@ begin
   FProgramMode := cbxProgramMode.Items[cbxProgramMode.ItemIndex];
 end;
 
+procedure TFormProgrammAdd.FormCreate(Sender: TObject);
+begin
+  FProgramClassList := TStringList.Create;
+end;
+
+procedure TFormProgrammAdd.FormDestroy(Sender: TObject);
+begin
+  FProgramClassList.Free;
+end;
+
 procedure TFormProgrammAdd.FormShow(Sender: TObject);
 begin
   cbxProgramMode.OnChange(Self);
+end;
+
+procedure TFormProgrammAdd.ledProgrammClassChange(Sender: TObject);
+begin
+  FProgramClass := ledProgrammClass.Text;
 end;
 
 procedure TFormProgrammAdd.ledProgramNameChange(Sender: TObject);

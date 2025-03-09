@@ -418,6 +418,7 @@ begin
   if Assigned(FunctionPage) then
   begin
     FunctionPage.FormShow(FunctionPage);
+    FunctionPage.DoPageTimer;
   end;
 end;
 
