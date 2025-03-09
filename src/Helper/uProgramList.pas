@@ -40,9 +40,8 @@ type
     FProgramMode     : String;
     FProgramClass    : string;
     FProgramClassList: TStringList;
-    { Private-Deklarationen }
+
   public
-    { Public-Deklarationen }
     property WindowList: TComboBox
       read   cbxProgramCaption
       write  cbxProgramCaption;
@@ -57,6 +56,7 @@ type
       read   FProgramMode;
     property ProgramClass: String
       read   FProgramClass;
+    procedure SortList;
   end;
 
 function EnumWindowsProc(Wnd: HWND; lParam: lParam): BOOL; stdcall;
@@ -101,6 +101,7 @@ begin
   try
     FormProgramAdd.WindowList.Items.Clear;
     EnumWindows(@EnumWindowsProc, 0);
+    FormProgramAdd.SortList;
     FormProgramAdd.BringToFront;
     FormProgramAdd.FormStyle := fsStayOnTop;
     Result                   := FormProgramAdd.ShowModal;
@@ -149,6 +150,41 @@ end;
 procedure TFormProgrammAdd.ledProgramNameChange(Sender: TObject);
 begin
   FProgramName := ledProgramName.Text;
+end;
+
+procedure TFormProgrammAdd.SortList;
+var
+  LComboBoxList, LClassList: TStringList;
+  i                        : Integer;
+begin
+  LComboBoxList := TStringList.Create;
+  LClassList    := TStringList.Create;
+  try
+    for i := 0 to cbxProgramCaption.Items.Count - 1 do
+    begin
+      cbxProgramCaption.Items[i] := cbxProgramCaption.Items[i] + '---' + i.ToString;
+    end;
+    LComboBoxList.Assign(cbxProgramCaption.Items);
+    LComboBoxList.Sort;
+    for i := 0 to LComboBoxList.Count - 1 do
+    begin
+      LClassList.Add(FProgramClassList[cbxProgramCaption.Items.IndexOf(LComboBoxList[i])]);
+    end;
+    for i := 0 to LComboBoxList.Count - 1 do
+    begin
+      LComboBoxList[i] := Copy(LComboBoxList[i],0,Pos('---',LComboBoxList[i])-1)
+    end;
+    cbxProgramCaption.Items.Clear;
+    FProgramClassList.Clear;
+    cbxProgramCaption.Items.Assign(LComboBoxList);
+    FProgramClassList.Assign(LClassList);
+    cbxProgramCaption.ItemIndex := 0;
+    cbxProgramCaption.OnChange(Self);
+  finally
+    LComboBoxList.Free;
+    LClassList.Free;
+  end;
+
 end;
 
 end.

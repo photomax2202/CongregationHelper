@@ -50,7 +50,6 @@ object FormProgrammAdd: TFormProgrammAdd
     Width = 209
     Height = 23
     Style = csDropDownList
-    Sorted = True
     TabOrder = 1
     OnChange = cbxProgramCaptionChange
   end

@@ -136,8 +136,9 @@ begin
   if not(Sender is TButton) then
     Exit;
   LButton           := (Sender as TButton);
+  DoLog(Format('Button Pressed: %s',[LButton.Caption]));
   LApplicationEntry := FApplicationList[LButton.Tag];
-  LWindow           := FindWindow(nil, PChar(ReplaceCharactersFindWindows(LApplicationEntry.Caption)));
+  LWindow           := FindWindow(PChar(LApplicationEntry.sClass), PChar(ReplaceCharactersFindWindows(LApplicationEntry.Caption)));
   if LWindow <= 0 then
     Exit;
   case LApplicationEntry.Mode of
@@ -223,7 +224,7 @@ var
 begin
   for i := 0 to AButtons.Count - 1 do
   begin
-    LHandle := FindWindow(nil, PChar(ReplaceCharactersFindWindows(FApplicationList[AButtons[i].Tag].Caption)));
+    LHandle := FindWindow(PChar(FApplicationList[AButtons[i].Tag].sClass), PChar(ReplaceCharactersFindWindows(FApplicationList[AButtons[i].Tag].Caption)));
     AButtons[i].Enabled := (LHandle <> 0);
   end;
 end;
