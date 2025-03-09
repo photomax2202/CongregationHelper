@@ -60,7 +60,7 @@ var
 implementation
 
 uses
-uMonitorHandler;
+  uMonitorHandler;
 
 {$R *.dfm}
 { TFormPageApplication }
@@ -79,7 +79,7 @@ procedure TFormPageApplication.BuildButtons(AApplicationMode: TApplicationMode; 
     Result.Visible := true;
     Result.Name    := 'btn' + APanel.Name + IntToStr(AButtonCountNow + 1);
     Result.Caption := AApplicationEntry.Name;
-    Result.Tag     := AApplicationEntry.Index;  //Tag speichert Index in ApplicationList
+    Result.Tag     := AApplicationEntry.Index; // Tag speichert Index in ApplicationList
     Result.OnClick := OnButtonClick;
   end;
 
@@ -100,7 +100,9 @@ begin
   APanel.Repaint;
   Application.ProcessMessages;
   APanel.Update;
-  LHeight := AButtons[AButtons.Count - 1].Top + AButtons[AButtons.Count - 1].Height;
+  LHeight := 0;
+  if AButtons.Count > 0 then
+    LHeight := AButtons[AButtons.Count - 1].Top + AButtons[AButtons.Count - 1].Height;
   if FMaxPanelHeight < LHeight then
     FMaxPanelHeight := LHeight;
 end;
@@ -126,19 +128,25 @@ end;
 
 procedure TFormPageApplication.OnButtonClick(Sender: TObject);
 var
-LButton: TButton;
-LApplicationEntry: TApplicationEntry;
-LWindow: HWND;
+  LButton          : TButton;
+  LApplicationEntry: TApplicationEntry;
+  LWindow          : HWND;
 begin
-if not (Sender is TButton) then Exit;
-LButton := (Sender as TButton);
-LApplicationEntry := FApplicationList[LButton.Tag];
-LWindow := FindWindow(nil,PChar(LApplicationEntry.Caption));
-case LApplicationEntry.Mode of
-  mdLeft: PinWindowToLeftHalf(LWindow,GetParentHandle,Config.MonitorNumMedia.ToInteger - 1);
-  mdRight: PinWindowToRightHalf(LWindow,GetParentHandle,Config.MonitorNumMedia.ToInteger - 1);
-  mdPresentation: MaximizeWindowOnMonitor(LWindow,GetParentHandle,Config.MonitorNumPresentation.ToInteger - 1);
-end;
+  if not(Sender is TButton) then
+    Exit;
+  LButton           := (Sender as TButton);
+  LApplicationEntry := FApplicationList[LButton.Tag];
+  LWindow           := FindWindow(nil, PChar(LApplicationEntry.Caption));
+  if LWindow <= 0 then
+    Exit;
+  case LApplicationEntry.Mode of
+    mdLeft:
+      PinWindowToLeftHalf(LWindow, GetParentHandle, Config.MonitorNumMedia.ToInteger - 1);
+    mdRight:
+      PinWindowToRightHalf(LWindow, GetParentHandle, Config.MonitorNumMedia.ToInteger - 1);
+    mdPresentation:
+      MaximizeWindowOnMonitor(LWindow, GetParentHandle, Config.MonitorNumPresentation.ToInteger - 1);
+  end;
 end;
 
 function TFormPageApplication.CompareApplicationList(AList1, AList2: TList<TApplicationEntry>): Boolean;
@@ -209,14 +217,14 @@ end;
 
 procedure TFormPageApplication.EnableButtons(var AButtons: TButtons);
 var
-i: Integer;
-LHandle: HWND;
+  i      : Integer;
+  LHandle: HWND;
 begin
- for i := 0 to AButtons.Count - 1 do
-   begin
-       LHandle := FindWindow(nil,PChar(FApplicationList[i].Caption));
-       AButtons[i].Enabled := (LHandle <> 0);
-   end;
+  for i := 0 to AButtons.Count - 1 do
+  begin
+    LHandle             := FindWindow(nil, PChar(FApplicationList[AButtons[i].Tag].Caption));
+    AButtons[i].Enabled := (LHandle <> 0);
+  end;
 end;
 
 procedure TFormPageApplication.FillForm;

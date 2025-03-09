@@ -34,6 +34,7 @@ inherited FormPageCamera: TFormPageCamera
         Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
+        PopupMenu = pmSet
         TabOrder = 0
         TabStop = False
         OnClick = btnCameraClick
@@ -50,6 +51,7 @@ inherited FormPageCamera: TFormPageCamera
         Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
+        PopupMenu = pmSet
         TabOrder = 1
         TabStop = False
         OnClick = btnCameraClick
@@ -66,6 +68,7 @@ inherited FormPageCamera: TFormPageCamera
         Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
+        PopupMenu = pmSet
         TabOrder = 2
         TabStop = False
         OnClick = btnCameraClick
@@ -83,6 +86,7 @@ inherited FormPageCamera: TFormPageCamera
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      PopupMenu = pmSet
       TabOrder = 1
       TabStop = False
       OnClick = btnCameraClick
@@ -100,6 +104,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 1
     OnClick = btnCameraClick
   end
@@ -116,6 +121,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Style = []
     ImageAlignment = iaCenter
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 2
     OnClick = btnCameraClick
   end
@@ -131,6 +137,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 3
     OnClick = btnCameraClick
   end
@@ -146,6 +153,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 4
     OnClick = btnCameraClick
   end
@@ -161,6 +169,7 @@ inherited FormPageCamera: TFormPageCamera
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 5
     OnClick = btnCameraClick
   end
@@ -176,7 +185,16 @@ inherited FormPageCamera: TFormPageCamera
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    PopupMenu = pmSet
     TabOrder = 6
     OnClick = btnCameraClick
+  end
+  object pmSet: TPopupMenu
+    Left = 208
+    Top = 104
+    object pmSetPosition: TMenuItem
+      Caption = 'Position Speichern'
+      OnClick = pmSetPositionClick
+    end
   end
 end

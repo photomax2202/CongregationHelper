@@ -11,7 +11,7 @@ type
 
   TIdentsGeneral = (idAlwaysOnTop, idZoomMonitoring, idPreReleaseVersion);
 
-  TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
+  TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamURLSet, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
     idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosLeftSpace, idCamPosRightSpace, idCamPosTotal,
     idCamPosPark, idCamPosSpeakerIndex, idCamPosReaderIndex, idCamPosTableIndex);
 
@@ -66,6 +66,10 @@ type
       write  SetStringCamera;
     property CameraURL: String
       index  idCamURL
+      read   GetStringCamera
+      write  SetStringCamera;
+    property CameraURLSet: String
+      index  idCamURLSet
       read   GetStringCamera
       write  SetStringCamera;
     property CameraPosSpeaker: String
@@ -146,7 +150,7 @@ const
 
   cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'ZoomMonitoring', 'PreReleaseVersion');
 
-  cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'Speaker', 'SpeakerS', 'SpeakerL',
+  cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'URL_Set', 'Speaker', 'SpeakerS', 'SpeakerL',
     'SpeakerXL', 'Reader', 'Table', 'LeftSpace', 'RightSpace', 'Total', 'Park', 'SpeakerIndex', 'ReadeIndex',
     'TableIndex');
 

@@ -1,7 +1,6 @@
 inherited FormPageApplication: TFormPageApplication
   Caption = 'FormPageApplication'
   ClientHeight = 146
-  Constraints.MinWidth = 466
   StyleElements = [seFont, seClient, seBorder]
   ExplicitHeight = 185
   TextHeight = 15

@@ -20,7 +20,7 @@ uses
   // System.NetConsts,
   Vcl.ExtCtrls,
   System.ImageList,
-  Vcl.ImgList;
+  Vcl.ImgList, Vcl.Menus;
 
 type
   TFormPageCamera = class(TFormPageMaster)
@@ -36,7 +36,10 @@ type
     btnRightSpace: TButton;
     btnParking: TButton;
     btnTotal: TButton;
+    pmSet: TPopupMenu;
+    pmSetPosition: TMenuItem;
     procedure btnCameraClick(Sender: TObject);
+    procedure pmSetPositionClick(Sender: TObject);
   private
     FHttpClient : TNetHTTPClient;
     FHttpRequest: TNetHTTPRequest;
@@ -229,35 +232,75 @@ end;
 function TFormPageCamera.HttpGetWithBasicAuth(const AURL, AEndpoint, AToken: string;
   out AResponseContent: string): Boolean;
 var
-LRequestUrl:String;
+  LRequestUrl: String;
 begin
   Result       := false;
   FHttpClient  := TNetHTTPClient.Create(nil);
   FHttpRequest := TNetHTTPRequest.Create(nil);
   try
-    FHttpRequest.Client                         := FHttpClient;
-    FHttpRequest.ConnectionTimeout              := 1000;
-    FHttpRequest.SendTimeout                    := 1000;
-    FHttpRequest.ResponseTimeout                := 1000;
-    FHttpRequest.CustomHeaders['Authorization'] := BuildBasicAuthString(Config.CameraToken);
-    LRequestUrl :=    Format('http://%s/%s', [AURL, AEndpoint]);
-    DoLog(Format('URL Request: %s',[LRequestUrl]));
-    FResponse                                   := FHttpRequest.Get(LRequestUrl);
-    if FResponse.StatusCode = 200 then
-    begin
-      Result           := True;
-      AResponseContent := FResponse.ContentAsString;
-      DoLog(Format('URL Response: %s',[AResponseContent]));
-    end
-    else
-    begin
+    try
       Result := false;
-      raise Exception.CreateFmt('HTTP GET failed with status code %d', [FResponse.StatusCode]);
+      FHttpRequest.Client                         := FHttpClient;
+      FHttpRequest.ConnectionTimeout              := 1000;
+      FHttpRequest.SendTimeout                    := 1000;
+      FHttpRequest.ResponseTimeout                := 1000;
+      FHttpRequest.CustomHeaders['Authorization'] := BuildBasicAuthString(Config.CameraToken);
+      LRequestUrl                                 := Format('http://%s/%s', [AURL, AEndpoint]);
+      DoLog(Format('URL Request: %s', [LRequestUrl]));
+      FResponse := FHttpRequest.Get(LRequestUrl);
+      if FResponse.StatusCode = 200 then
+      begin
+        Result           := True;
+        AResponseContent := FResponse.ContentAsString;
+        DoLog(Format('URL Response: %s', [AResponseContent]));
+      end;
+    except
+      DoLog('HTTP GET failed');
     end;
   finally
     FreeAndNil(FHttpClient);
     FreeAndNil(FHttpRequest);
   end;
+end;
+
+procedure TFormPageCamera.pmSetPositionClick(Sender: TObject);
+var
+LResponse, LEndpoint: String;
+LButton: TButton;
+begin
+  inherited;
+  LButton := (((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent as TButton);
+   DoLog(Format('Set Position - Button klick: %s - %s', [Caption, LButton.Caption]));
+  if LButton.Name = btnSpeaker.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosSpeaker)
+  else if LButton.Name = btnSpeakerS.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosSpeakerS)
+  else if LButton.Name = btnSpeakerL.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosSpeakerL)
+  else if LButton.Name = btnSpeakerXL.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosSpeakerXL)
+  else if LButton.Name = btnReader.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosReader)
+  else if LButton.Name = btnTable.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosTable)
+  else if LButton.Name = btnLeftSpace.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosLeftSpace)
+  else if LButton.Name = btnRightSpace.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosRightSpace)
+  else if LButton.Name = btnTotal.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosTotal)
+  else if LButton.Name = btnParking.Name then
+    LEndpoint := ApiEndpointPosition(Config.CameraURLSet, Config.CameraPosPark)
+  else
+    Exit;
+  if LEndpoint = EmptyStr then
+  begin
+    DoLog(Format('API Endpunkt: %s - leer', [Caption]));
+    Exit;
+  end;
+
+  // HTTP Request
+  HttpGetWithBasicAuth(Config.CameraIp, LEndpoint, Config.CameraToken, LResponse);
 end;
 
 end.

@@ -1,26 +1,28 @@
 inherited FormConfigCamera: TFormConfigCamera
   BorderIcons = []
   Caption = 'Kamerakonfiguration'
-  ClientHeight = 397
+  ClientHeight = 417
   ClientWidth = 420
-  Constraints.MaxHeight = 436
+  Constraints.MaxHeight = 456
   Constraints.MaxWidth = 436
   Constraints.MinHeight = 436
   Constraints.MinWidth = 436
   StyleElements = [seFont, seClient, seBorder]
+  ExplicitLeft = 3
+  ExplicitTop = 3
   ExplicitWidth = 436
-  ExplicitHeight = 436
+  ExplicitHeight = 456
   TextHeight = 15
   object lblPositions: TLabel [0]
     Left = 16
-    Top = 168
+    Top = 192
     Width = 164
     Height = 15
     Caption = 'Positionen (links/mitte/rechts):'
   end
   object lblPositionsOverwiew: TLabel [1]
     Left = 16
-    Top = 189
+    Top = 213
     Width = 175
     Height = 21
     Alignment = taCenter
@@ -33,7 +35,7 @@ inherited FormConfigCamera: TFormConfigCamera
     ParentFont = False
   end
   inherited pnlButtons: TPanel
-    Top = 356
+    Top = 376
     Width = 420
     TabOrder = 15
     StyleElements = [seFont, seClient, seBorder]
@@ -107,9 +109,9 @@ inherited FormConfigCamera: TFormConfigCamera
     Top = 124
     Width = 313
     Height = 23
-    EditLabel.Width = 80
+    EditLabel.Width = 82
     EditLabel.Height = 23
-    EditLabel.Caption = 'URL-Endpunkt:'
+    EditLabel.Caption = 'URL-End "Call":'
     LabelPosition = lpLeft
     TabOrder = 4
     Text = ''
@@ -117,7 +119,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosSpeaker: TLabeledEdit
     Left = 16
-    Top = 241
+    Top = 265
     Width = 60
     Height = 23
     EditLabel.Width = 37
@@ -129,7 +131,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosReader: TLabeledEdit
     Left = 82
-    Top = 241
+    Top = 265
     Width = 60
     Height = 23
     EditLabel.Width = 27
@@ -141,7 +143,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosTable: TLabeledEdit
     Left = 148
-    Top = 241
+    Top = 265
     Width = 60
     Height = 23
     EditLabel.Width = 28
@@ -153,7 +155,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosLeftSpace: TLabeledEdit
     Left = 16
-    Top = 321
+    Top = 345
     Width = 89
     Height = 23
     EditLabel.Width = 71
@@ -165,7 +167,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosRightSpace: TLabeledEdit
     Left = 119
-    Top = 321
+    Top = 345
     Width = 89
     Height = 23
     EditLabel.Width = 79
@@ -177,7 +179,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosSpeakerS: TLabeledEdit
     Left = 214
-    Top = 321
+    Top = 345
     Width = 60
     Height = 23
     EditLabel.Width = 46
@@ -189,7 +191,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosSpeakerL: TLabeledEdit
     Left = 280
-    Top = 321
+    Top = 345
     Width = 60
     Height = 23
     EditLabel.Width = 46
@@ -201,7 +203,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosSpeakerXL: TLabeledEdit
     Left = 346
-    Top = 321
+    Top = 345
     Width = 60
     Height = 23
     EditLabel.Width = 53
@@ -213,7 +215,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosTotal: TLabeledEdit
     Left = 214
-    Top = 241
+    Top = 265
     Width = 60
     Height = 23
     EditLabel.Width = 26
@@ -225,7 +227,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object ledPosPark: TLabeledEdit
     Left = 280
-    Top = 241
+    Top = 265
     Width = 60
     Height = 23
     EditLabel.Width = 36
@@ -237,7 +239,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object cbxPosSpeaker: TComboBox
     Left = 16
-    Top = 270
+    Top = 294
     Width = 60
     Height = 23
     Style = csDropDownList
@@ -252,7 +254,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object cbxPosReader: TComboBox
     Left = 82
-    Top = 270
+    Top = 294
     Width = 60
     Height = 23
     Style = csDropDownList
@@ -267,7 +269,7 @@ inherited FormConfigCamera: TFormConfigCamera
   end
   object cbxPosTable: TComboBox
     Left = 148
-    Top = 270
+    Top = 294
     Width = 60
     Height = 23
     Style = csDropDownList
@@ -279,5 +281,18 @@ inherited FormConfigCamera: TFormConfigCamera
       '1'
       '2'
       '3')
+  end
+  object ledMidURLSet: TLabeledEdit
+    Left = 96
+    Top = 153
+    Width = 313
+    Height = 23
+    EditLabel.Width = 78
+    EditLabel.Height = 23
+    EditLabel.Caption = 'URL-End "Set":'
+    LabelPosition = lpLeft
+    TabOrder = 19
+    Text = ''
+    OnChange = ledFieldValidation
   end
 end
