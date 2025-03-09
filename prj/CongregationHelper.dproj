@@ -4,7 +4,7 @@
         <ProjectVersion>20.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">CongregationHelper</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -180,7 +180,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>FormConfigCamera</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\src\uValidationAndHelper.pas"/>
+        <DCCReference Include="..\src\Helper\uValidationAndHelper.pas"/>
         <DCCReference Include="..\src\Settings\uConfigMonitor.pas">
             <Form>FormConfigMonitor</Form>
             <FormType>dfm</FormType>
@@ -196,7 +196,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="..\src\uConfigFormMaster.pas">
             <Form>ForrmConfigMaster</Form>
         </DCCReference>
-        <DCCReference Include="..\src\uGitHub.pas"/>
+        <DCCReference Include="..\src\Helper\uGitHub.pas"/>
         <DCCReference Include="..\src\Helper\uProgramList.pas">
             <Form>FormProgrammAdd</Form>
             <FormType>dfm</FormType>
@@ -218,6 +218,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="..\src\Settings\uConfigZoom.pas">
             <Form>FormConfigZoom</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\src\Helper\uLog.pas">
+            <Form>FormLog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
@@ -255,12 +259,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <DeployFile LocalName="..\bin\CongregationHelper.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>CongregationHelper.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="..\bin\CongregationHelper.rsm" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win64">
-                        <RemoteName>CongregationHelper.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
