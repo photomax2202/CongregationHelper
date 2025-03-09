@@ -40,6 +40,7 @@ type
     cbxPosSpeaker: TComboBox;
     cbxPosReader: TComboBox;
     cbxPosTable: TComboBox;
+    ledMidURLSet: TLabeledEdit;
     procedure ledCredentialsChange(Sender: TObject);
     procedure ledFieldValidation(Sender: TObject);
     procedure cbxPosIndexChange(Sender: TObject);
@@ -147,6 +148,8 @@ begin
       Exit;
     if not ValidateUrl(ledMidURL.Text) then
       Exit;
+    if not ValidateUrl(ledMidURLSet.Text) then
+      Exit;
     if not ValidatePosition(ledPosSpeaker.Text) then
       Exit;
     if not ValidatePosition(ledPosSpeakerS.Text) then
@@ -172,6 +175,7 @@ begin
     Config.CameraToken         := ledToken.Text;
     Config.CameraIp            := ledIP.Text;
     Config.CameraURL           := ledMidURL.Text;
+    Config.CameraURLSet        := ledMidURLSet.Text;
     Config.CameraPosSpeaker    := ledPosSpeaker.Text;
     Config.CameraPosSpeakerS   := ledPosSpeakerS.Text;
     Config.CameraPosSpeakerL   := ledPosSpeakerL.Text;
@@ -207,6 +211,7 @@ begin
   ledToken.Text         := Config.CameraToken;
   ledIP.Text            := Config.CameraIp;
   ledMidURL.Text        := Config.CameraURL;
+  ledMidURLSet.Text     := Config.CameraURLSet;
   ledPosSpeaker.Text    := Config.CameraPosSpeaker;
   ledPosSpeakerS.Text   := Config.CameraPosSpeakerS;
   ledPosSpeakerL.Text   := Config.CameraPosSpeakerL;
@@ -251,6 +256,8 @@ begin
     MarkValidation(ledIP, ValidateIP(LText))
   else if LName = ledMidURL.Name then
     MarkValidation(ledMidURL, ValidateUrl(LText))
+  else if LName = ledMidURLSet.Name then
+    MarkValidation(ledMidURLSet, ValidateUrl(LText))
   else if LName = ledPosSpeaker.Name then
     MarkValidation(ledPosSpeaker, ValidatePosition(LText))
   else if LName = ledPosSpeakerS.Name then

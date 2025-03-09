@@ -264,7 +264,6 @@ begin
         Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
         Result := Format('v%d.%d.%d.%d', [Major, Minor, Release, Build]);
-        FormLog.DoLog(Format('Appversion abrufen: %s', [Result]));
       end;
     finally
       FreeMem(VersionInfo);
