@@ -46,7 +46,7 @@ type
     { Private-Deklarationen }
     procedure DoFormLoad; override;
     procedure DoFormShow; override;
-    procedure DoFormSave(out ACanSave:Boolean); override;
+    procedure DoFormSave(out ACanSave: Boolean); override;
 
     procedure FillMonitorList;
     function GetMonitorName(LMonitoNum: Integer): String;
@@ -59,21 +59,26 @@ var
 
 implementation
 
+uses
+  uValidationAndHelper;
+
 {$R *.dfm}
 
 procedure TFormConfigMonitor.btnProgramAddClick(Sender: TObject);
 var
-  LName, LCaption, LMode: String;
-  sl                    : TStringList;
+  LName, LCaption, LClass, LMode: String;
+  sl                            : TStringList;
 begin
   sl := TStringList.Create;
   try
-    if GetWindowEntry(LName, LCaption, LMode) <> mrOk then
+    if GetWindowEntry(LName, LCaption, LClass, LMode) <> mrOk then
       Exit;
+    LCaption           := ReplaceCharactersEnumWindows(LCaption);
     sl.Delimiter       := ';';
     sl.StrictDelimiter := true;
     sl.AddPair(cIdentsApplication[apName], LName);
     sl.AddPair(cIdentsApplication[apCaption], LCaption);
+    sl.AddPair(cIdentsApplication[apClass], LClass);
     sl.AddPair(cIdentsApplication[apMode], LMode);
     lbPrograms.Items.Add(sl.DelimitedText);
   finally
@@ -182,7 +187,7 @@ begin
   FillMonitorList;
 end;
 
-procedure TFormConfigMonitor.DoFormSave(out ACanSave:Boolean);
+procedure TFormConfigMonitor.DoFormSave(out ACanSave: Boolean);
 var
   i                : Integer;
   sl               : TStringList;
@@ -206,11 +211,14 @@ begin
         Break;
       if sl.IndexOfName(cIdentsApplication[apCaption]) = -1 then
         Break;
+      if sl.IndexOfName(cIdentsApplication[apClass]) = -1 then
+        Break;
       if sl.IndexOfName(cIdentsApplication[apMode]) = -1 then
         Break;
       LApplicationEntry.Index   := i;
       LApplicationEntry.Name    := sl.Values[cIdentsApplication[apName]];
       LApplicationEntry.Caption := sl.Values[cIdentsApplication[apCaption]];
+      LApplicationEntry.sClass  := sl.Values[cIdentsApplication[apClass]];
       LApplicationEntry.Mode    := Config.GetApplicationMode(sl.Values[cIdentsApplication[apMode]]);
       Config.SetApplicationEntry(LApplicationEntry);
     end;
