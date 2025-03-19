@@ -154,35 +154,39 @@ end;
 
 procedure TFormProgrammAdd.SortList;
 var
-  LComboBoxList, LClassList: TStringList;
-  i                        : Integer;
+  LSortList : TStringList;
+  LSortEntry: TStringList;
+  i         : Integer;
 begin
-  LComboBoxList := TStringList.Create;
-  LClassList    := TStringList.Create;
+  LSortList                  := TStringList.Create;
+  LSortList.Delimiter        := '/';
+  LSortList.StrictDelimiter  := True;
+  LSortEntry                 := TStringList.Create;
+  LSortEntry.Delimiter       := ';';
+  LSortEntry.StrictDelimiter := True;
   try
     for i := 0 to cbxProgramCaption.Items.Count - 1 do
     begin
-      cbxProgramCaption.Items[i] := cbxProgramCaption.Items[i] + '---' + i.ToString;
-    end;
-    LComboBoxList.Assign(cbxProgramCaption.Items);
-    LComboBoxList.Sort;
-    for i := 0 to LComboBoxList.Count - 1 do
-    begin
-      LClassList.Add(FProgramClassList[cbxProgramCaption.Items.IndexOf(LComboBoxList[i])]);
-    end;
-    for i := 0 to LComboBoxList.Count - 1 do
-    begin
-      LComboBoxList[i] := Copy(LComboBoxList[i],0,Pos('---',LComboBoxList[i])-1)
+      // LSortEntry := Format('App=%s;Class=%s',[cbxProgramCaption.Items[i],FProgramClassList[i]]);
+      LSortEntry.Clear;
+      LSortEntry.AddPair('Name', cbxProgramCaption.Items[i]);
+      LSortEntry.AddPair('Class', FProgramClassList[i]);
+      LSortList.Add(LSortEntry.DelimitedText);
     end;
     cbxProgramCaption.Items.Clear;
     FProgramClassList.Clear;
-    cbxProgramCaption.Items.Assign(LComboBoxList);
-    FProgramClassList.Assign(LClassList);
+    LSortList.Sort;
+    for i := 0 to LSortList.Count - 1 do
+    begin
+      LSortEntry.DelimitedText := LSortList[i];
+      cbxProgramCaption.Items.Add(LSortEntry.Values['Name']);
+      FProgramClassList.Add(LSortEntry.Values['Class']);
+    end;
     cbxProgramCaption.ItemIndex := 0;
     cbxProgramCaption.OnChange(Self);
   finally
-    LComboBoxList.Free;
-    LClassList.Free;
+    LSortList.Free;
+    LSortEntry.Free;
   end;
 
 end;

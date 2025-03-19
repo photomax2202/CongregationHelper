@@ -43,7 +43,6 @@ type
     procedure btnProgramAddClick(Sender: TObject);
     procedure btnProgramDeleteClick(Sender: TObject);
   private
-    { Private-Deklarationen }
     procedure DoFormLoad; override;
     procedure DoFormShow; override;
     procedure DoFormSave(out ACanSave: Boolean); override;
@@ -51,7 +50,6 @@ type
     procedure FillMonitorList;
     function GetMonitorName(LMonitoNum: Integer): String;
   public
-    { Public-Deklarationen }
   end;
 
 var
@@ -81,6 +79,7 @@ begin
     sl.AddPair(cIdentsApplication[apClass], LClass);
     sl.AddPair(cIdentsApplication[apMode], LMode);
     lbPrograms.Items.Add(sl.DelimitedText);
+    DoLog(Format('AddProgramm: %s', [sl.DelimitedText]));
   finally
     sl.Free;
   end;
@@ -95,6 +94,7 @@ begin
   SelectedIndex := lbPrograms.ItemIndex;
   if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
+    DoLog(Format('Button klick', [(Sender as TButton).Caption]));
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
     lbPrograms.Items.Insert(lbPrograms.Items.Count - 1, SelectedText);
@@ -110,6 +110,7 @@ begin
   SelectedIndex := lbPrograms.ItemIndex;
   if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
+    DoLog(Format('Delete Application: %s', [lbPrograms.Items[SelectedIndex]]));
     lbPrograms.Items.Delete(SelectedIndex);
     lbPrograms.ItemIndex := SelectedIndex - 1;
   end;
@@ -124,6 +125,7 @@ begin
   SelectedIndex := lbPrograms.ItemIndex;
   if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
+    DoLog(Format('Button klick', [(Sender as TButton).Caption]));
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
     lbPrograms.Items.Insert(SelectedIndex + 1, SelectedText);
@@ -140,6 +142,7 @@ begin
   SelectedIndex := lbPrograms.ItemIndex;
   if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
+    DoLog(Format('Button klick', [(Sender as TButton).Caption]));
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
     lbPrograms.Items.Insert(0, SelectedText);
@@ -156,6 +159,7 @@ begin
   SelectedIndex := lbPrograms.ItemIndex;
   if (SelectedIndex >= 0) and (SelectedIndex < lbPrograms.Items.Count) then
   begin
+    DoLog(Format('Button klick', [(Sender as TButton).Caption]));
     SelectedText := lbPrograms.Items[SelectedIndex];
     lbPrograms.Items.Delete(SelectedIndex);
     lbPrograms.Items.Insert(SelectedIndex - 1, SelectedText);
@@ -282,6 +286,7 @@ var
   LMonitor: TMonitor;
   i       : Integer;
 begin
+  DoLog('FillMonitorList');
   cbxMonitorMedia.Clear;
   cbxMonitorPresentation.Clear;
   for i := 1 to Screen.MonitorCount do

@@ -2,8 +2,6 @@ inherited FormPageApplication: TFormPageApplication
   Caption = 'FormPageApplication'
   ClientHeight = 157
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitLeft = 3
-  ExplicitTop = 3
   ExplicitHeight = 196
   TextHeight = 15
   object pnlBtnLeft: TPanel
