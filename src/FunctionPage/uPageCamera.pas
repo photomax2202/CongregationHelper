@@ -71,7 +71,7 @@ begin
   Result := EmptyStr;
   if (AUrl1 = EmptyStr) or (AUrl2 = EmptyStr) then
     Exit;
-  Result := Format('%s/%s', [AUrl1, AUrl2]);
+  Result := AUrl1 + AUrl2;
   DoLog(Format('API Endpunkt: %s - %s', [Caption, Result]));
 end;
 
