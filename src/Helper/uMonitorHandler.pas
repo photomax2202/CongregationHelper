@@ -115,7 +115,10 @@ begin
 
 
     // Bring the window to the front
+    ShowWindow(AHandle,SW_RESTORE);
+    ShowWindow(AHandle,SW_SHOW);
     SetForegroundWindow(AHandle);
+
     // SetForegroundWindow(AMainHandle);
   end;
 end;
