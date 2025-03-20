@@ -234,7 +234,7 @@ begin
   LoadApplicationList;
   if FUpdatedApplicationList then
   begin
-    FMaxPanelHeight := 0;
+    FMaxPanelHeight := 20;
     BuildButtons(mdLeft, pnlBtnLeft, FButtonListLeft);
     BuildButtons(mdRight, pnlBtnRight, FButtonListRight);
     BuildButtons(mdPresentation, pnlBtnPresentation, FButtonListPresentation);

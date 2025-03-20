@@ -74,19 +74,14 @@ var
   Title                   : array [0 .. 255] of Char;
   ClassName               : array [0 .. 255] of Char;
   StringTitle, StringClass: String;
-  ExStyle                 : Longint;
 begin
-  ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
-  GetWindowText(Wnd, Title, Length(Title));
-  GetClassName(Wnd, ClassName, Length(ClassName));
-  if StrLen(Title) > 0 then
+  if IsWindowVisible(Wnd) then
   begin
+    GetWindowText(Wnd, Title, Length(Title));
+    GetClassName(Wnd, ClassName, Length(ClassName));
     SetString(StringTitle, Title, StrLen(Title));
     SetString(StringClass, ClassName, StrLen(ClassName));
-  end;
-  if IsWindow(Wnd) and IsWindowVisible(Wnd) { and ((ExStyle and WS_EX_APPWINDOW) = WS_EX_APPWINDOW) } then
-  begin
-    if StrLen(Title) > 0 then
+    if (StrLen(Title) > 0) and (StrLen(ClassName) > 0) then
     begin
       FormProgramAdd.WindowList.Items.Add(StringTitle);
       FormProgramAdd.ProgramClassList.Add(StringClass);

@@ -212,13 +212,13 @@ begin
     begin
       sl.DelimitedText := lbPrograms.Items[i];
       if sl.IndexOfName(cIdentsApplication[apName]) = -1 then
-        Break;
+        Exit;
       if sl.IndexOfName(cIdentsApplication[apCaption]) = -1 then
-        Break;
+        Exit;
       if sl.IndexOfName(cIdentsApplication[apClass]) = -1 then
-        Break;
+        Exit;
       if sl.IndexOfName(cIdentsApplication[apMode]) = -1 then
-        Break;
+        Exit;
       LApplicationEntry.Index   := i;
       LApplicationEntry.Name    := sl.Values[cIdentsApplication[apName]];
       LApplicationEntry.Caption := sl.Values[cIdentsApplication[apCaption]];
@@ -255,6 +255,7 @@ begin
           LApplicationEntry := Config.GetApplicationEntry(i);
           sl.AddPair(cIdentsApplication[apName], LApplicationEntry.Name);
           sl.AddPair(cIdentsApplication[apCaption], LApplicationEntry.Caption);
+          sl.AddPair(cIdentsApplication[apClass], LApplicationEntry.sClass);
           sl.AddPair(cIdentsApplication[apMode], cApplicationMode[LApplicationEntry.Mode]);
           lbPrograms.Items.Add(sl.DelimitedText);
           sl.Clear;
