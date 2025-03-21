@@ -3,7 +3,7 @@ program AutoUpdater;
 uses
   Vcl.Forms,
   uAutoUpdater in '..\src\uAutoUpdater.pas' {FormAutoUpdater},
-  uGitHub in '..\src\uGitHub.pas';
+  uGitHub in '..\src\Helper\uGitHub.pas';
 
 {$R *.res}
 

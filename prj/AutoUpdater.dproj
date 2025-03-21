@@ -141,7 +141,7 @@
         <DCCReference Include="..\src\uAutoUpdater.pas">
             <Form>FormAutoUpdater</Form>
         </DCCReference>
-        <DCCReference Include="..\src\uGitHub.pas"/>
+        <DCCReference Include="..\src\Helper\uGitHub.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

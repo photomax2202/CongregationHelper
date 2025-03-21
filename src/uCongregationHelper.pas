@@ -266,7 +266,7 @@ begin
         Release := HiWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         Build   := LoWord(PVSFixedFileInfo(VersionValue)^.dwFileVersionLS);
         // WriteLn(Format('Version: %d.%d.%d.%d', [Major, Minor, Release, Build]));
-        Result := Format('v%d.%d.%d.%d', [Major, Minor, Release, Build]);
+        Result := Format('%d.%d.%d.%d', [Major, Minor, Release, Build]);
       end;
     finally
       FreeMem(VersionInfo);
@@ -339,7 +339,7 @@ begin
   begin
     ShowMessage(                            //
       Caption + #10#13 +                    //
-      'Version ' + GetAppVersion + #10#13 + //
+      'Version: ' + GetAppVersion + #10#13 + //
       'GitHub-Repo: ' + cRepoName           //
       );
   end
