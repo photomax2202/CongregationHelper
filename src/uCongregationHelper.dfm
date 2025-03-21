@@ -120,6 +120,10 @@ object FormCongregationHelper: TFormCongregationHelper
         ShortCut = 112
         OnClick = mpProgramClick
       end
+      object mpChecklist: TMenuItem
+        Caption = 'Checkliste'
+        OnClick = mpProgramClick
+      end
       object mpInfo: TMenuItem
         Caption = 'Info'
         ShortCut = 36937
@@ -139,6 +143,10 @@ object FormCongregationHelper: TFormCongregationHelper
       end
       object mpZoomMonitoring: TMenuItem
         Caption = 'Zoom '#252'berwachen'
+        OnClick = mpSettingsClick
+      end
+      object mpGeneral: TMenuItem
+        Caption = 'Allgemein'
         OnClick = mpSettingsClick
       end
       object mpSettingsZoom: TMenuItem

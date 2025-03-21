@@ -232,6 +232,7 @@ procedure TFormConfigCamera.ledCredentialsChange(Sender: TObject);
 var
   Coder: TBase64StringEncoding;
 begin
+  inherited;
   Coder := TBase64StringEncoding.Create;
   try
     ledToken.Text := Coder.Encode(Format('%s:%s', [ledUsername.Text, ledPassword.Text]));
@@ -244,10 +245,10 @@ end;
 
 procedure TFormConfigCamera.ledFieldValidation(Sender: TObject);
 var
-  LValid: Boolean;
-  LName : String;
-  LText : string;
+  LName: String;
+  LText: string;
 begin
+  inherited;
   LName := (Sender as TLabeledEdit).Name;
   LText := (Sender as TLabeledEdit).Text;
   if LName = ledToken.Name then

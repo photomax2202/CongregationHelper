@@ -9,7 +9,7 @@ uses
 type
   TSections = (scGeneral, scCamera, scMonitor);
 
-  TIdentsGeneral = (idAlwaysOnTop, idZoomMonitoring, idPreReleaseVersion);
+  TIdentsGeneral = (idAlwaysOnTop, idZoomMonitoring, idPreReleaseVersion, idUrlChecklist);
 
   TIdentsCamera = (idCamToken, idCamIP, idCamURL, idCamURLSet, idCamPosSpeaker, idCamPosSpeakerS, idCamPosSpeakerL,
     idCamPosSpeakerXL, idCamPosReader, idCamPosTable, idCamPosLeftSpace, idCamPosRightSpace, idCamPosTotal,
@@ -33,6 +33,8 @@ type
   private
     function GetBoolGeneral(Index: TIdentsGeneral): Boolean;
     procedure SetBoolGeneral(Index: TIdentsGeneral; const Value: Boolean);
+    function GetStringGeneral(Index: TIdentsGeneral): String;
+    procedure SetStringGeneral(Index: TIdentsGeneral; const Value: String);
     function GetStringCamera(Index: TIdentsCamera): String;
     procedure SetStringCamera(Index: TIdentsCamera; const Value: String);
     function GetStringMonitor(Index: TIdentsMonitor): String;
@@ -56,6 +58,10 @@ type
       index  idPreReleaseVersion
       read   GetBoolGeneral
       write  SetBoolGeneral;
+    property UrlChecklist: String
+      index  idUrlChecklist
+      read   GetStringGeneral
+      write  SetStringGeneral;
 
     property CameraToken: String
       index  idCamToken
@@ -149,7 +155,8 @@ type
 const
   cSections: array [TSections] of string = ('General', 'Camera', 'Monitor');
 
-  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'ZoomMonitoring', 'PreReleaseVersion');
+  cIdentsGeneral: array [TIdentsGeneral] of string = ('AlwaysOnTop', 'ZoomMonitoring', 'PreReleaseVersion',
+    'UrlChecklist');
 
   cIdentsCamera: array [TIdentsCamera] of string = ('Token', 'IP', 'URL', 'URL_Set', 'Speaker', 'SpeakerS', 'SpeakerL',
     'SpeakerXL', 'Reader', 'Table', 'LeftSpace', 'RightSpace', 'Total', 'Park', 'SpeakerIndex', 'ReadeIndex',
@@ -231,6 +238,11 @@ begin
   Result := ReadBool(cSections[scGeneral], cIdentsGeneral[Index], False);
 end;
 
+function TConfig.GetStringGeneral(Index: TIdentsGeneral): String;
+begin
+  Result := ReadString(cSections[scGeneral], cIdentsGeneral[Index], EmptyStr);
+end;
+
 function TConfig.GetStringCamera(Index: TIdentsCamera): String;
 begin
   Result := ReadString(cSections[scCamera], cIdentsCamera[Index], EmptyStr);
@@ -253,6 +265,11 @@ end;
 procedure TConfig.SetBoolGeneral(Index: TIdentsGeneral; const Value: Boolean);
 begin
   WriteBool(cSections[scGeneral], cIdentsGeneral[Index], Value);
+end;
+
+procedure TConfig.SetStringGeneral(Index: TIdentsGeneral; const Value: String);
+begin
+  WriteString(cSections[scGeneral], cIdentsGeneral[Index], Value);
 end;
 
 procedure TConfig.SetStringCamera(Index: TIdentsCamera; const Value: String);

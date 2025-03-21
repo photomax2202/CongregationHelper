@@ -48,6 +48,8 @@ type
     pnlZoomUserUsher: TPanel;
     pnlZoomUserSound: TPanel;
     mpLog: TMenuItem;
+    mpChecklist: TMenuItem;
+    mpGeneral: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mpSettingsClick(Sender: TObject);
@@ -110,6 +112,7 @@ uses
   StrUtils,
   uConfigCamera,
   uConfigMonitor,
+  uConfigGeneral,
   uConfigZoom,
   uPageFunctionSample,
   uPageApplication,
@@ -328,6 +331,10 @@ begin
   begin
     OpenURLInDefaultBrowser('https://github.com/photomax2202/CongregationHelper/wiki');
   end
+  else if (Sender as TMenuItem).Name = mpChecklist.Name then
+  begin
+    OpenURLInDefaultBrowser(Config.UrlChecklist);
+  end
   else if (Sender as TMenuItem).Name = mpInfo.Name then
   begin
     ShowMessage(                            //
@@ -376,6 +383,17 @@ begin
       FormConfigZoom.ShowModal;
     finally
       FormConfigZoom.Free;
+    end;
+    pgcMain.OnChange(Self);
+    DoResize;
+  end
+  else if (Sender as TMenuItem).Name = mpGeneral.Name then
+  begin
+    FormConfigGeneral := TFormConfigGeneral.Create(FormCongregationHelper);
+    try
+      FormConfigGeneral.ShowModal;
+    finally
+      FormConfigGeneral.Free;
     end;
     pgcMain.OnChange(Self);
     DoResize;

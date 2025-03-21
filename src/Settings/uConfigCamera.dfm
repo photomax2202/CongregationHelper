@@ -8,8 +8,6 @@ inherited FormConfigCamera: TFormConfigCamera
   Constraints.MinHeight = 436
   Constraints.MinWidth = 436
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitLeft = 3
-  ExplicitTop = 3
   ExplicitWidth = 436
   ExplicitHeight = 456
   TextHeight = 15
@@ -39,7 +37,7 @@ inherited FormConfigCamera: TFormConfigCamera
     Width = 420
     TabOrder = 15
     StyleElements = [seFont, seClient, seBorder]
-    ExplicitTop = 348
+    ExplicitTop = 368
     ExplicitWidth = 418
     inherited btnOk: TButton
       Left = 224

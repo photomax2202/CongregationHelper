@@ -9,6 +9,7 @@ uses
 function ValidateToken(AToken: String): Boolean;
 function ValidateIp(AIPAddress: String): Boolean;
 function ValidateUrl(AUrl: String): Boolean;
+function ValidateWebAdress(AWebAdress: String): Boolean;
 function ValidatePosition(APosition: String): Boolean;
 
 procedure MarkValidation(AField: TLabeledEdit; AValid: Boolean);
@@ -55,6 +56,18 @@ begin
   // Regulärer Ausdruck zur Validierung des mittleren Teils einer URL (Domainname und Pfad)
   Regex  := TRegEx.Create('^[^\s/$.?#].[^\s]*$');
   Result := Regex.IsMatch(AUrl) or (AUrl = EmptyStr);
+end;
+
+function ValidateWebAdress(AWebAdress: String): Boolean;
+begin
+  // Check if URL starts with 'http'
+  if not ((AWebAdress.StartsWith('http://')) or (AWebAdress.StartsWith('https://'))) then
+    Exit(False);
+  // Überprüfen, ob doppelte Punkte („..“) in der URL vorhanden sind
+  if Pos('..', AWebAdress) > 0 then
+    Exit(False);
+
+  Result := ValidateUrl(AWebAdress);
 end;
 
 function ValidatePosition(APosition: String): Boolean;
