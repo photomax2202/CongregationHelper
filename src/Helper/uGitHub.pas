@@ -268,7 +268,10 @@ end;
 
 procedure OpenURLInDefaultBrowser(const URL: string);
 begin
-  ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL);
+  if URL <> EmptyStr then
+    ShellExecute(0, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL)
+  else
+    ShowMessage('Keine URL übergeben.');
 end;
 
 end.
